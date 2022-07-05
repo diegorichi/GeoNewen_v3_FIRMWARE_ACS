@@ -1,11 +1,11 @@
 #ifndef keyboard__
 #define keyboard__
 
+#include "vars.h"
+
 #include "functionsLCDMenu.h"
 #include "routines.h"
-#include "eeprom.h"
-
-#include "vars.h"
+#include "kume_eeprom.h"
 
 
 extern const int DI_Teclado_Arriba ; //7; //BOTONES DE TECLADO (no se pueden modificar)

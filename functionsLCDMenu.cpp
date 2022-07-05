@@ -188,9 +188,9 @@ void lcdRefreshValues()
     lcd.print(Potencia, 0);
     }*/
 
-  if (MenuActual == 200)  // Modo Frio / Calor
+  if (MenuActual == 20)  // Modo Frio / Calor
   {
-    lcd.setCursor(10, 3);
+    lcd.setCursor(12, 3);
     if (ModoFrioCalor == true)
     {
       lcd.print("FRIO ");
@@ -209,15 +209,15 @@ void lcdRefreshValues()
     lcd.print(SetP_ACS_Edit);
   }
 
-  if (MenuActual == 230)  // Alarmas
+  if (MenuActual == 23)  // Alarmas
   {
-    lcd.setCursor(0, 1);
+    lcd.setCursor(8, 2);
     if (Flag_Alarma_EN == true)
     {
-      lcd.print("Alarmas habilitadas ");
+      lcd.print("ON ");
     }
     else
-      lcd.print("Alarmas desactivadas");
+      lcd.print("OFF");
   }
 
   if (MenuActual == 24) // Funcionamiento Auto/Manual
@@ -237,9 +237,9 @@ void lcdRefreshValues()
     lcd.print(Pos_Valv);
   }
 
-  if (MenuActual == 270)  // Conexion de WIFI (Conectado/No Conectado)
+  if (MenuActual == 27)  // Conexion de WIFI (Conectado/No Conectado)
   {
-    lcd.setCursor(8, 3);
+    lcd.setCursor(8, 2);
     if (Flag_Wifi == true)
     {
       lcd.print("Conectado:  ");
@@ -251,26 +251,26 @@ void lcdRefreshValues()
     lcd.print(local_ip);
   }
 
-  if (MenuActual == 280) //Activacion/desactivacion de ACS
+  if (MenuActual == 28) //Activacion/desactivacion de ACS
   {
-    lcd.setCursor(0, 1);
+    lcd.setCursor(15, 1);
     if (Flag_ACS_EN == true)
     {
-      lcd.print("ACS habilitado ");
+      lcd.print("ON ");
     }
     else
-      lcd.print("ACS desactivado");
+      lcd.print("OFF");
   }
 
-  if (MenuActual == 290) //Activacion/desactivacion de ACS electrico
+  if (MenuActual == 29) //Activacion/desactivacion de ACS electrico
   {
-    lcd.setCursor(0, 1);
+    lcd.setCursor(15, 1);
     if (Flag_ACS_EN_ELECT == true)
     {
-      lcd.print("ACS ELECT ON ");
+      lcd.print("ON ");
     }
     else
-      lcd.print("ACS ELECT OFF");
+      lcd.print("OFF");
   }
 
   if (MenuActual == 30) //Estado caldera (ENCENDIDA/APAGADA)
@@ -624,7 +624,7 @@ void MenuUnoDos() //3º Ventana de Monitor
 {
   lcd.begin(20, 4);
   lcd.clear();
-  lcd.print(" MONITOR COMPRESOR "); //editar parametros a mostrar
+  lcd.print(" MONITOR COMPRESOR ");
   lcd.setCursor(0, 1);
   lcd.print("I=");
   lcd.setCursor(8, 1);
@@ -661,13 +661,15 @@ void MenuDosCero() //Menú de Cambio de Modo de Funcionamiento
   lcd.begin(20, 4);
   lcd.clear();
   lcd.print("MODO FRIO/CALOR     ");
+  lcd.setCursor(0, 2);
+  lcd.print("Modo Activo:");  
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para ver...");
+  lcd.print("ENTER para modificar");  
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
 
-void MenuDosCeroCero() //Ventana de Cambio de Modo de Funcionamiento
+/*void MenuDosCeroCero() //Ventana de Cambio de Modo de Funcionamiento
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -676,7 +678,7 @@ void MenuDosCeroCero() //Ventana de Cambio de Modo de Funcionamiento
   lcd.print("cambiar modo de func.");
   lcd.setCursor(0, 3);
   lcd.print("Modo Act:");
-}
+}*/
 
 void MenuDosUno()  // Configuracion de temp de ACS
 {
@@ -684,7 +686,7 @@ void MenuDosUno()  // Configuracion de temp de ACS
   lcd.clear();
   lcd.print("CONFIGURACION DE    ");
   lcd.setCursor(0, 1);
-  lcd.print("PARAMETRO: Temp ACS ");
+  lcd.print("TEMPERATURA DE ACS  ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   lcd.setCursor(19, 0);
@@ -706,7 +708,7 @@ void MenuDosUnoCero()  //Seteo de temp de ACS
   lcd.print("CONFIRME CON ENTER  ");
 }
 
-void MenuDosDos()  // var_mod_2
+/*void MenuDosDos()  // var_mod_2
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -733,7 +735,7 @@ void MenuDosDosCero()
   lcd.setCursor(0, 3);
   lcd.print("CONFIRME CON ENTER  ");
 }
-
+*/
 void MenuDosTres()   // Habilitacion alarmas de caudal
 {
   lcd.begin(20, 4);
@@ -741,6 +743,8 @@ void MenuDosTres()   // Habilitacion alarmas de caudal
   lcd.print("HABILITACION DE     ");
   lcd.setCursor(0, 1);
   lcd.print("ALARMAS DE CAUDAL   ");
+  lcd.setCursor(0, 2);
+  lcd.print("ALARMAS:   ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   lcd.setCursor(19, 0);
@@ -775,7 +779,7 @@ void MenuDosCuatro() // Cambio a modo manual o automatico
   lcd.write(1);
 }
 
-void MenuDosCinco()  // Control manual de compresor
+/*void MenuDosCinco()  // Control manual de compresor
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -788,7 +792,7 @@ void MenuDosCinco()  // Control manual de compresor
   lcd.write(2);
   lcd.setCursor(19, 3);
   lcd.write(1);
-}
+}*/
 
 void MenuDosSeis()  // Control manual de valvula
 {
@@ -818,20 +822,22 @@ void MenuDosSeisCero()
   lcd.print("ATRAS para salir");
 }
 
-void MenuDosSiete() //confiuracion de WIFI
+void MenuDosSiete() //configuracion de WIFI
 {
   lcd.begin(20, 4);
   lcd.clear();
   lcd.print("CONFIGURACION WIFI");
   lcd.setCursor(0, 1);
   lcd.print("ip:"+local_ip);
+  lcd.setCursor(0, 2);
+  lcd.print("ESTADO: ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   lcd.setCursor(19, 0);
   lcd.write(2);
 }
 
-void MenuDosSieteCero()
+/*void MenuDosSieteCero()
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -840,7 +846,7 @@ void MenuDosSieteCero()
   lcd.print("iniciar config.          ");
   lcd.setCursor(0, 3);
   lcd.print("ESTADO: ");
-}
+}*/
 
 void MenuDosOcho() // Habilitacion de Generacion de ACS 
 {
@@ -848,7 +854,7 @@ void MenuDosOcho() // Habilitacion de Generacion de ACS
   lcd.clear();
   lcd.print("HABILITACION DE     ");
   lcd.setCursor(0, 1);
-  lcd.print("GENERACION ACS   ");
+  lcd.print("GENERACION ACS:     ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   lcd.setCursor(19, 0);
@@ -857,7 +863,7 @@ void MenuDosOcho() // Habilitacion de Generacion de ACS
   lcd.write(1);
 }
 
-void MenuDosOchoCero()
+/*void MenuDosOchoCero()
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -865,14 +871,14 @@ void MenuDosOchoCero()
   lcd.setCursor(0, 3);
   lcd.print("MODIFIQUE CON ENTER ");
 }
-
+*/
 void MenuDosNueve()  // ACS electrico
 {
   lcd.begin(20, 4);
   lcd.clear();
   lcd.print("HABILITACION DE     ");
   lcd.setCursor(0, 1);
-  lcd.print("ACS ELECTRICO");
+  lcd.print("ACS ELECTRICO:      ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   lcd.setCursor(19, 0);
@@ -880,7 +886,7 @@ void MenuDosNueve()  // ACS electrico
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
-
+/*
 void MenuDosNueveCero()
 {
   lcd.begin(20, 4);
@@ -888,7 +894,7 @@ void MenuDosNueveCero()
   lcd.print("OPCION ACTUAL:");
   lcd.setCursor(0, 3);
   lcd.print("MODIFIQUE CON ENTER ");
-}
+}*/
 
 void MenuTres() //Menú de Configuración de Caldera Eléctrica
 {

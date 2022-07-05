@@ -2,7 +2,7 @@
 #include "keyboard.h"
 #include "functionsLCDMenu.h"
 #include "routines.h"
-#include "eeprom.h"
+#include "kume_eeprom.h"
 #include "thingspeak.h"
 
 #define ONE_WIRE_BUS 22
@@ -607,7 +607,7 @@ void loop()
     if (Estado_Maquina == 3) //Este es el estado final del sistema, donde se controlan las condiciones de alarma
     {
 
-      if (Temp_ACS < (SetP_ACS - 2) && Flag_ACS_EN == true) //Si estamos en el estado 3 y hay que generar ACS, por razones de seguridad pasamos siempre por es estado 0
+      if (Temp_ACS < (SetP_ACS - 2) && Flag_ACS_EN) //Si estamos en el estado 3 y hay que generar ACS, por razones de seguridad pasamos siempre por es estado 0
       {
         Estado_Maquina = 0;
       }
@@ -617,7 +617,7 @@ void loop()
       //Valor_DO_V4V = LOW;
       Valor_DO_VACS = LOW;
 
-      if (digitalRead(DI_Marcha_on) == LOW || Flag_Caldera == true)
+      if (digitalRead(DI_Marcha_on) == LOW || Flag_Caldera)
       {
         Estado_Maquina = 0;
         Flag_Marcha_ON = false;
@@ -626,7 +626,7 @@ void loop()
       //Condiciones de Apagado del Compresor
       if ((millis() - Ingreso_E3) > 1000)
       {
-        if (Flag_TempComp01 == true || PressOK == false || Flag_CaudT == true || Flag_CaudH == true || Flag_Temp_Adm == true || Flag_Temp_Descarga == true) //|| Flag_Aporte_E == true || Flag_Temp_Des == true
+        if (Flag_TempComp01 || PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) //|| Flag_Aporte_E == true || Flag_Temp_Des == true
         {
           Estado_Maquina = 4;
           MenuCuatroCero();

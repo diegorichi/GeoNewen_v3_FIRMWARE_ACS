@@ -58,7 +58,7 @@ void MenuDosTresCero();
 void MenuDosCuatro(); // Cambio a modo manual o automatico
 
 
-//void MenuDosCinco();
+void MenuDosCinco();
 
 
 void MenuDosSeis();
@@ -70,7 +70,7 @@ void MenuDosSeisCero();
 void MenuDosSiete(); //confiuracion de WIFI
 
 
-//void MenuDosSieteCero();
+void MenuDosSieteCero();
 
 
 void MenuTres(); //Menú de Configuración de Caldera Eléctrica
@@ -94,12 +94,12 @@ void MenuCincoCero();
 void MenuDosOcho(); // Habilitacion de Generacion de ACS 
 
 
-//void MenuDosOchoCero();
+void MenuDosOchoCero();
 
 
 void MenuDosNueve();  // ACS electrico
 
 
-//void MenuDosNueveCero();
+void MenuDosNueveCero();
 
 #endif

@@ -35,8 +35,8 @@ void FrioCalor() //Función de cambio de Modo de Funcionamiento  (Bromberg: modo
   {
     wdt_reset();
   }
-  MenuActual = 200;
-  MenuDosCeroCero();
+  MenuActual = 20;
+  MenuDosCero();
   //Estado_Maquina = 0;  //Al cambiar el modo de funcionamiento se resetea el sistema
 }
 
