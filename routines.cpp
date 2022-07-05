@@ -1,33 +1,32 @@
 #include "routines.h"
 
-
-void FrioCalor() //Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
+void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
 
-  Valor_DO_Comp_01 = LOW; //Primer paso es apagar el compresor
+  Valor_DO_Comp_01 = LOW; // Primer paso es apagar el compresor
   Estado_Comp = 0;
   Activacion_Comp = 0;
-  //Modo_Funcionamiento = true;
+  // Modo_Funcionamiento = true;
   lcd.clear();
   lcd.write("POR FAVOR, ESPERE   ");
   lcd.setCursor(0, 2);
   lcd.write("CAMBIANDO MODO...   ");
-  for (unsigned long i = 0; i < 3000000; i++) //Se espera un cierto tiempo antes de activar la válvula de 4 vías
+  for (unsigned long i = 0; i < 3000000; i++) // Se espera un cierto tiempo antes de activar la válvula de 4 vías
   {
     wdt_reset();
   }
-  if (ModoFrioCalor) //Se activa la válvula
+  if (ModoFrioCalor) // Se activa la válvula
   {
     Valor_DO_V4V = HIGH;
     ModoFrioCalor = false;
   }
   else
-  {    
+  {
     Valor_DO_V4V = LOW;
     ModoFrioCalor = true;
   }
 
-  lcd.clear(); //Se espera un cierto tiempo antes de reactivar el compresor
+  lcd.clear(); // Se espera un cierto tiempo antes de reactivar el compresor
   lcd.write("POR FAVOR, ESPERE   ");
   lcd.setCursor(0, 2);
   lcd.write("CAMBIANDO MODO...   ");
@@ -37,10 +36,10 @@ void FrioCalor() //Función de cambio de Modo de Funcionamiento  (Bromberg: modo
   }
   MenuActual = 20;
   MenuDosCero();
-  //Estado_Maquina = 0;  //Al cambiar el modo de funcionamiento se resetea el sistema
+  // Estado_Maquina = 0;  //Al cambiar el modo de funcionamiento se resetea el sistema
 }
 
-int Alarmas() //Función de identificación de Alarma Activa
+int Alarmas() // Función de identificación de Alarma Activa
 {
   if (Flag_TempIntXT_Baja == true)
   {
@@ -105,7 +104,7 @@ int Alarmas() //Función de identificación de Alarma Activa
   else if (Flag_Alarma_Trif == true)
   {
     Flag_Alarma_General = true;
-    //Nro_Alarma = 14;
+    // Nro_Alarma = 14;
   }
   else if (Flag_Temp_Adm == true)
   {
@@ -138,7 +137,7 @@ int Alarmas() //Función de identificación de Alarma Activa
   return Nro_Alarma;
 }
 
-void ResetFlags() //Luego de ocurrida una alarma y revisada por parte del usuario, esta funcion resetea los flagas y contadores a cero
+void ResetFlags() // Luego de ocurrida una alarma y revisada por parte del usuario, esta funcion resetea los flagas y contadores a cero
 {
   Flag_TempIntXT_Baja = false;
   Flag_TempIntXT_Alta = false;
@@ -170,4 +169,41 @@ void ResetFlags() //Luego de ocurrida una alarma y revisada por parte del usuari
   Cont_Press_HI = 0;
   Cont_Press_LOW = 0;
   Cont_Temp_Des = 0;
+}
+
+void checkWifi()
+{
+  Flag_Wifi = false;
+  if (Flag_ESP){
+    Serial3.println("AT+CWJAP?"); // Consulta el estado del ESP8266, si está conectado a una red o no
+    delay(100);
+    if (Serial3.find(":")) // Si lo está, detiene el modo Smart y queda listo para funcionar
+    {
+      Serial.print("Conectado a red");
+      Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
+
+      local_ip = "";
+      // Loop through all the data returned
+      while (Serial3.available())
+      {
+        delay(200); // wait for all characters arrive
+
+        char c = Serial3.read(); // read the next character.
+        local_ip.concat(c);
+      }
+      Serial.print("ip is:" + local_ip);
+      Flag_Wifi = true;
+    }
+    else
+    {
+      Serial.print("No Conectado a red");
+    }
+  }
+}
+
+
+void checkESP(){
+  Serial3.println("AT");
+  delay(100);
+  Flag_ESP = Serial3.find("OK");
 }

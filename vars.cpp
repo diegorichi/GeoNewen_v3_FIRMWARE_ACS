@@ -106,7 +106,6 @@ int Cont_CaudH = 0;
 int Cont_Temp_Des = 0;
 int Pos_Valv = 0;
 int Pos_Valv_Edit = 0;
-int Error_Wifi = 0;
 
 String W = " ";
 char w;
@@ -318,7 +317,6 @@ volatile bool Modo_Funcionamiento = false; //false = Automatico, true = Manual
 volatile bool Flag_Buzzer;
 volatile bool Flag_Alarma_Caudal;
 bool Flag_Corriente = false;
-bool Flag_Start = false;
 bool Flag_Wifi;
 bool Flag_ESP;
 bool Flag_Caldera;

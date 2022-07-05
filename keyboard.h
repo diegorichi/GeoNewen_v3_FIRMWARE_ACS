@@ -16,10 +16,7 @@ extern volatile bool BotonArriba ; //false; //Variables auxiliares para el funci
 extern volatile bool BotonAtras ; //false;
 extern volatile bool BotonAbajo ; //false;
 extern volatile bool BotonEnter ; //false;
-extern volatile int BotonArribaT ; //false;
-extern volatile int BotonAtrasT ; //false;
-extern volatile int BotonAbajoT ; //false;
-extern volatile int BotonEnterT ; //false;
+
 
 void AtencionTeclado(); //Función de Navegación entre Menús y Modificación de Parámetros
 

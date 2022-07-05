@@ -114,7 +114,6 @@ extern int Cont_CaudH ; // 0;
 extern int Cont_Temp_Des ; // 0;
 extern int Pos_Valv ; // 0;
 extern int Pos_Valv_Edit ; // 0;
-extern int Error_Wifi ; // 0;
 
 extern String W ; // " ";
 extern char w;
@@ -326,7 +325,6 @@ extern volatile bool Modo_Funcionamiento ; // false; //false ; // Automatico, tr
 extern volatile bool Flag_Buzzer;
 extern volatile bool Flag_Alarma_Caudal;
 extern bool Flag_Corriente ; // false;
-extern bool Flag_Start ; // false;
 extern bool Flag_Wifi;
 extern bool Flag_ESP;
 extern bool Flag_Caldera;

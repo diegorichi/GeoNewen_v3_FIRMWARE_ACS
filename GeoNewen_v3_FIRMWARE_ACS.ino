@@ -14,11 +14,11 @@ DallasTemperature sensors(&oneWire);
 /*******/
 
 void setup()
-{ //Inicializacion de I/O y variables generales
+{ // Inicializacion de I/O y variables generales
 
   wdt_disable();
 
-  pinMode(DI_Teclado_Arriba, INPUT); //Definición de entradas y salidas
+  pinMode(DI_Teclado_Arriba, INPUT); // Definición de entradas y salidas
   pinMode(DI_Teclado_Abajo, INPUT);
   pinMode(DI_Teclado_Enter, INPUT);
   pinMode(DI_Teclado_Atras, INPUT);
@@ -38,29 +38,29 @@ void setup()
 
   pinMode(DO_Triac_01, OUTPUT);
   pinMode(DO_Buzzer, OUTPUT);
-  //pinMode(DO_Contraste, OUTPUT);
+  // pinMode(DO_Contraste, OUTPUT);
 
   pinMode(DIR, OUTPUT);
   pinMode(STEP, OUTPUT);
   pinMode(ED_ENABLE, OUTPUT);
 
-  digitalWrite(ED_ENABLE, LOW); //Inicialización de salidas
+  digitalWrite(ED_ENABLE, LOW); // Inicialización de salidas
   digitalWrite(DO_Comp_01, LOW);
-  digitalWrite(DO_Val1, LOW); //Inicia con la valvula de loza encendida
+  digitalWrite(DO_Val1, LOW); // Inicia con la valvula de loza encendida
   digitalWrite(DO_Val2, LOW);
   digitalWrite(DO_Bombas, LOW);
   digitalWrite(DO_Calentador, LOW);
-  //digitalWrite(DO_Aux, LOW);
+  // digitalWrite(DO_Aux, LOW);
   digitalWrite(DO_Triac_01, LOW);
   digitalWrite(DO_Buzzer, LOW);
 
-  attachInterrupt(1, AtencionTeclado, FALLING); //Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
-  attachInterrupt(4, Caudal1, FALLING);         //Pin 19
-  attachInterrupt(5, Caudal2, FALLING);         //Pin 18
+  attachInterrupt(1, AtencionTeclado, FALLING); // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
+  attachInterrupt(4, Caudal1, FALLING);         // Pin 19
+  attachInterrupt(5, Caudal2, FALLING);         // Pin 18
 
   lcdCreateSpecialChars();
 
-  Caud_T = 0; //Inicialización de variables
+  Caud_T = 0; // Inicialización de variables
   Caud_H = 0;
   Pulsos_Caud_T = 0;
   Pulsos_Caud_H = 0;
@@ -78,10 +78,10 @@ void setup()
   Valor_DO_VACS = HIGH;
   Valor_DO_V4V = LOW;
 
-  //Valor_Per_Esp_C = 20000;
-  //Per_Esp_C = (Valor_Per_Esp_C/1000);
+  // Valor_Per_Esp_C = 20000;
+  // Per_Esp_C = (Valor_Per_Esp_C/1000);
 
-  Flag_TempIntXT_Baja = false; //inicializacion  de banderas
+  Flag_TempIntXT_Baja = false; // inicializacion  de banderas
   Flag_TempIntXT_Alta = false;
   Flag_TempIntXH_Baja = false;
   Flag_TempIntXH_Alta = false;
@@ -111,61 +111,35 @@ void setup()
 
   Timer1.initialize(100000);
 
-  delay(50); //Delay para que se establezca el display
+  delay(50); // Delay para que se establezca el display
   lcd.begin(20, 4);
 
   Serial.begin(115200);
   Serial3.begin(115200);
-  Serial3.println("AT");
-  if (Serial3.find("OK")) // ESP inicializado
+
+  checkESP();
+
+  if (Flag_ESP)
   {
-    Flag_ESP = true;
-    Serial3.println("AT+CWMODE=1");
+    Serial3.println("AT+CWMODE=1"); // 1:Mode station 2:Mode AP 3:Mode BOTH
     delay(100);
     Serial3.println("AT+CWSTOPSMART");
     delay(100);
-    Serial3.println("AT+CIPMUX=0");
+    Serial3.println("AT+CIPMUX=0"); // 1:multiple connection 0:single connection
     delay(100);
     Serial.println("ESP Inicializado");
     delay(100);
-    //Serial3.println("AT+CWJAP=\"Velazquez-UBNET\",\"hv45av25\"");
-    //delay(10000);
-    Serial3.println("AT+CWJAP?"); //Consulta el estado del ESP8266, si está conectado a una red o no
-    delay(100);
-    if (Serial3.find(":")) //Si lo está, detiene el modo Smart y queda listo para funcionar
-    {
-      Serial.print("Conectado a red");
-      Serial3.println("AT+CIFSR");
-
-      local_ip = "";
-      // Loop through all the data returned
-      while (Serial3.available()) {
-        delay(200); // wait for all characters arrive
-
-        char c = Serial3.read(); // read the next character.
-        local_ip.concat(c);
-      }
-      Serial.print("ip is:" + local_ip);
-      Flag_Wifi = true;
-    }
-    else
-    {
-      Serial.print("No Conectado a red");
-      Flag_Wifi = false;
-    }
+    // Serial3.println("AT+CWJAP=\"Velazquez-UBNET\",\"hv45av25\"");
+    // delay(10000);
+    checkWifi();
   }
   else
   {
-    Flag_ESP = false; //Si no está conectado, modifica este flag para luego mostrar el mensaje de "No Conectado" en el menú de configuración
     Flag_Wifi = false;
     Serial.println("Fallo en inicializacion de ESP");
   }
 
-  EEPROMLectura(); //Carga parametros guardados en la memoria EEPROM
-  /*if(SetP_ACS_Edit != 0)
-    {
-     SetP_ACS_Edit = 0;
-    }*/
+  EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
 
   if (SetP_ACS < 30)
   {
@@ -192,11 +166,10 @@ void loop()
   if (Estado_ConfigWIFI == 0)
   {
 
-    //CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
-
-    if ((millis() - LecturaDSB) > 5000) //Se toma una lectura de los sensores DS18B20 cada 5 segundos, demoran aproximadamente 200ms en entregar un resultado, 750ms máx
+    // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
+    if ((millis() - LecturaDSB) > 5000) // Se toma una lectura de los sensores DS18B20 cada 5 segundos, demoran aproximadamente 200ms en entregar un resultado, 750ms máx
     {
-      sensors.requestTemperatures(); //se les envía un comando para que inicien la toma de datos
+      sensors.requestTemperatures(); // se les envía un comando para que inicien la toma de datos
       delay(100);
 
       Temp_Admisionaux = sensors.getTempC(DI_Temp_Admision);
@@ -232,59 +205,63 @@ void loop()
         Temp_ACS = Temp_ACSaux;
     }
 
-    //Determinación de Caudal
-    {
-      Pulsos_Caud_H_Bis = Pulsos_Caud_H;       //Variable auxiliar para visualizar los pulsos contados directamente
-      if ((millis() - Ventana_Caudal1) > 1000) //Se contabilizan los pulsos de los caudalímetros durante un segundo, y se calcula el caudal
+    {                                          // Determinación de Caudal
+      Pulsos_Caud_H_Bis = Pulsos_Caud_H;       // Variable auxiliar para visualizar los pulsos contados directamente
+      if ((millis() - Ventana_Caudal1) > 1000) // Se contabilizan los pulsos de los caudalímetros durante un segundo, y se calcula el caudal
       {
         detachInterrupt(4);
-        Caud_H = ((60000.0 / (millis() - Ventana_Caudal1)) * Pulsos_Caud_H) * FCal; //Los cálculos resultan de la constante de pulsos/caudal indicados en la hoja de datos de los caudalímetros
-        //Caud_H = Caud_H;                                                           //El cálculo está escalado al tamaño de la ventana de muestreo, que puede no ser exactamente de 1 segundo
+        Caud_H = ((60000.0 / (millis() - Ventana_Caudal1)) * Pulsos_Caud_H) * FCal; // Los cálculos resultan de la constante de pulsos/caudal indicados en la hoja de datos de los caudalímetros
+        // Caud_H = Caud_H;                                                           //El cálculo está escalado al tamaño de la ventana de muestreo, que puede no ser exactamente de 1 segundo
         Ventana_Caudal1 = millis();
         Pulsos_Caud_H = 0;
-        attachInterrupt(4, Caudal1, FALLING); //Las interrupciones se deshabilitan al principio del cálculo para no contabilizar pulsos de más, luego se reestablecen
+        attachInterrupt(4, Caudal1, FALLING); // Las interrupciones se deshabilitan al principio del cálculo para no contabilizar pulsos de más, luego se reestablecen
       }
       Pulsos_Caud_T_Bis = Pulsos_Caud_T;
       if ((millis() - Ventana_Caudal2) > 1000)
       {
         detachInterrupt(5);
         Caud_T = ((60000.0 / (millis() - Ventana_Caudal2)) * Pulsos_Caud_T) * FCal;
-        //Caud_T = Caud_T;
+        // Caud_T = Caud_T;
         Ventana_Caudal2 = millis();
         Pulsos_Caud_T = 0;
         attachInterrupt(5, Caudal2, FALLING);
       }
     }
 
-    //Cálculo de Eficiencia Térmica
+    // Cálculo de Eficiencia Térmica
 
-    //Ef_Termica_1 = (Temp_in_T - Temp_out_T) * Caud_H;  //recordar caudales estan cruzados
-    //Ef_Termica_2 = (Temp_in_T - Temp_out_T) * Caud_T;
+    // Ef_Termica_1 = (Temp_in_T - Temp_out_T) * Caud_H;  //recordar caudales estan cruzados
+    // Ef_Termica_2 = (Temp_in_T - Temp_out_T) * Caud_T;
 
-    //Cálculo de la Corriente AC
+    // Cálculo de la Corriente AC
 
-    //Voltage = getVPP();                       //La llamada a la función getVPP devuelve el valor pico a pico de la tensión muestreada
-    //V_RMS = (Voltage / 2.0) * 0.707;          //Ese valor pico a pico se divide por 2 y se multiplica por 0.707 para obtener el valor eficaz (aproximado)
-    //A_RMS = (V_RMS * 1000) / mVperAmp;        //En función del valor eficaz y del módulo empleado, se usa la constante de equivalencia correspondiente y se obtiene el valor de la corriente
+    // Voltage = getVPP();                       //La llamada a la función getVPP devuelve el valor pico a pico de la tensión muestreada
+    // V_RMS = (Voltage / 2.0) * 0.707;          //Ese valor pico a pico se divide por 2 y se multiplica por 0.707 para obtener el valor eficaz (aproximado)
+    // A_RMS = (V_RMS * 1000) / mVperAmp;        //En función del valor eficaz y del módulo empleado, se usa la constante de equivalencia correspondiente y se obtiene el valor de la corriente
 
-    //Cálculo de la Potecia
+    // Cálculo de la Potecia
 
-    Potencia = 220 * TI * CosFI; //Valor estimativo
+    Potencia = 220 * TI * CosFI; // Valor estimativo
 
-    Error_Wifi = 0;
-    if ((millis() - Periodo_Refresco_Wifi) > 10 * 60 * 1000) //Envio de datos a ThingSpeak: Refresco cada 10 minutos
+    if ((millis() - RefrescoWifi) > 30000) // Verificacion de conexion a Wifi
+    {
+      checkESP();
+      checkWifi();
+      RefrescoWifi = millis();
+    }
+
+    if ((millis() - Periodo_Refresco_Wifi) > 10 * 60 * 1000) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
     {
       wdt_reset();
       ThingSUpdate();
       delay(1000);
-      //Serial.println("ThingSUpdate ejecutada");
+      // Serial.println("ThingSUpdate ejecutada");
       Periodo_Refresco_Wifi = millis();
     }
 
-    //INFORMACIÓN A REFRESCAR (depende del menú en el que nos encontremos)
-
     wdt_reset();
 
+    // INFORMACIÓN A REFRESCAR (depende del menú en el que nos encontremos)
     if (millis() - Periodo_Refresco > 1000) // Refresco de valores
     {
 
@@ -327,106 +304,112 @@ void loop()
 
       lcdRefreshValues();
 
-      Periodo_Refresco = millis(); //El período de refresco es a los fines de que la información mostrada no esté constanmente cambiando y la visualización sea más adecuada
+      Periodo_Refresco = millis(); // El período de refresco es a los fines de que la información mostrada no esté constanmente cambiando y la visualización sea más adecuada
     }
 
-    //COMPROBACIONES DE SEGURIDAD (Aquí se determinan las posibles causas de alarmas
+    //***************************
+    // COMPROBACIONES DE SEGURIDAD (Aquí se determinan las posibles causas de alarmas
+    //***************************
 
-    //Control de Caudales
-
-    if ((Caud_Tacu < 100.0) && (digitalRead(DI_Marcha_on) == HIGH) && (Flag_Alarma_EN == true) && (Estado_Maquina == 3 || (Estado_Maquina == 7 && Flag_retardo_e7 == true))) //Se comprueba que el caudal no sea inferior a un cierto valor, para evitar daños a las bombas
+    // Control de Caudales
     {
-
-      Flag_CaudT = true;
-    }
-    if (Caud_Tacu > 100.0)
-      Flag_CaudT = false;
-
-    if (Caud_Hacu < 100.0 && (digitalRead(DI_Marcha_on) == HIGH) && (Flag_Alarma_EN == true) && (Estado_Maquina == 3 || (Estado_Maquina == 7 && Flag_retardo_e7 == true))) //Se comprueba que el caudal no sea inferior a un cierto valor, para evitar daños a las bombas
-    {
-
-      Flag_CaudH = true;
-    }
-    if (Caud_Hacu > 100.0)
-      Flag_CaudH = false;
-
-    if (Temp_comp_acu > 80.0) //Si la temperatura de operación del compresor es muy elevada o muy baja, se lo detiene para evitar daños
-    {
-      Cont_Temp_Comp_01++;
-      if (Cont_Temp_Comp_01 > 3)
+      if ((Caud_Tacu < 100.0) && (digitalRead(DI_Marcha_on) == HIGH) && (Flag_Alarma_EN == true) && (Estado_Maquina == 3 || (Estado_Maquina == 7 && Flag_retardo_e7 == true))) // Se comprueba que el caudal no sea inferior a un cierto valor, para evitar daños a las bombas
       {
-        Flag_TempComp01 = true;
+        Flag_CaudT = true;
+      }
+
+      if (Caud_Tacu > 100.0)
+        Flag_CaudT = false;
+
+      if (Caud_Hacu < 100.0 && (digitalRead(DI_Marcha_on) == HIGH) && (Flag_Alarma_EN == true) && (Estado_Maquina == 3 || (Estado_Maquina == 7 && Flag_retardo_e7 == true))) // Se comprueba que el caudal no sea inferior a un cierto valor, para evitar daños a las bombas
+      {
+        Flag_CaudH = true;
+      }
+
+      if (Caud_Hacu > 100.0)
+        Flag_CaudH = false;
+    }
+
+    // Control de Temperaturas
+    {
+      if (Temp_comp_acu > 80.0) // Si la temperatura de operación del compresor es muy elevada o muy baja, se lo detiene para evitar daños
+      {
+        Cont_Temp_Comp_01++;
+        if (Cont_Temp_Comp_01 > 3)
+        {
+          Flag_TempComp01 = true;
+        }
+      }
+      else
+        Cont_Temp_Comp_01 = 0;
+
+      if (Temp_Descargaacu > 85.0)
+      {
+        Cont_Temp_Descarga++;
+        if (Cont_Temp_Descarga > 3)
+        {
+          Flag_Temp_Descarga = true;
+        }
+      }
+      else
+        Cont_Temp_Descarga = 0;
+
+      if (Temp_Admision < -4)
+      {
+        Flag_Temp_Adm = true;
       }
     }
-    else
-      Cont_Temp_Comp_01 = 0;
 
-    if (Temp_Descargaacu > 85.0)
+    // Comprobación de Presiones
     {
-      Cont_Temp_Descarga++;
-      if (Cont_Temp_Descarga > 3)
+      if (digitalRead(DI_Pres_HI) == LOW) // Si la presion de operación del compresor es muy elevada, se lo detiene para evitar daños
       {
-        Flag_Temp_Descarga = true;
+        Cont_Press_HI++;
+        if (Cont_Press_HI > 3)
+        {
+          Flag_PresHI = true;
+        }
       }
-    }
-    else
-      Cont_Temp_Descarga = 0;
-
-    if (Temp_Admision < -4)
-    {
-      Flag_Temp_Adm = true;
-    }
-
-    //Control de Temperaturas
-
-    //Comprobación de Presiones
-
-    if (digitalRead(DI_Pres_HI) == LOW) //Si la presion de operación del compresor es muy elevada, se lo detiene para evitar daños
-    {
-      Cont_Press_HI++;
-      if (Cont_Press_HI > 3)
+      else
       {
-        Flag_PresHI = true;
+        Cont_Press_HI = 0;
+        Flag_PresHI = false;
       }
-    }
-    else
-    {
-      Cont_Press_HI = 0;
-      Flag_PresHI = false;
-    }
 
-    if (digitalRead(DI_Pres_LOW) == LOW) //Si la presion de operación del compresor es muy elevada, se lo detiene para evitar daños
-    {
-      Cont_Press_LOW++;
-      if (Cont_Press_LOW > 3)
+      if (digitalRead(DI_Pres_LOW) == LOW) // Si la presion de operación del compresor es muy elevada, se lo detiene para evitar daños
       {
-        Flag_PresLOW = true;
+        Cont_Press_LOW++;
+        if (Cont_Press_LOW > 3)
+        {
+          Flag_PresLOW = true;
+        }
       }
-    }
-    else
-    {
-      Cont_Press_LOW = 0;
-      Flag_PresLOW = false;
+      else
+      {
+        Cont_Press_LOW = 0;
+        Flag_PresLOW = false;
+      }
+
+      if (Flag_PresHI == true || Flag_PresLOW == true)
+      {
+        PressOK = false;
+      }
+      else
+        PressOK = true;
     }
 
-    if (Flag_PresHI == true || Flag_PresLOW == true)
+    // Control de calentamiento auxiliar con cartucho electrico.
     {
-      PressOK = false;
-    }
-    else
-      PressOK = true;
-
-    { //Control de calentamiento auxiliar con cartucho electrico.
-      if (((Temp_ACSacu >= (SetP_ACS + 7)) && Flag_ACS_EN ) //Si la temp ACS alcanza el objetivo, apagamos el calentador
-          || ((Temp_ACSacu < SetP_ACS) && Flag_ACS_EN ) // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
-          || !Flag_ACS_EN )  // si apago generac ACS no hay delta t final.
+      if (((Temp_ACSacu >= (SetP_ACS + 7)) && Flag_ACS_EN) // Si la temp ACS alcanza el objetivo, apagamos el calentador
+          || ((Temp_ACSacu < SetP_ACS) && Flag_ACS_EN)     // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
+          || !Flag_ACS_EN)                                 // si apago generac ACS no hay delta t final.
       {
         flag_dtElectrico_final = false;
       }
 
-      //Si la temperatura es 2 grados menor al objetivo, volvemos a prender el calendador
-      // pero solo si es mayor a la seteada, de manera tal que usamos el cartucho solo en el
-      //ultimo tramo de ACS.
+      // Si la temperatura es 2 grados menor al objetivo, volvemos a prender el calendador
+      //  pero solo si es mayor a la seteada, de manera tal que usamos el cartucho solo en el
+      // ultimo tramo de ACS.
       if (Temp_ACSacu < (SetP_ACS + 5) && (Temp_ACSacu > SetP_ACS) && Flag_ACS_EN)
       {
         flag_dtElectrico_final = true;
@@ -444,12 +427,11 @@ void loop()
       }
     }
 
-    //TRANSICIÓN DE ESTADOS  //Definición del funcionamiento del equipo
-
-    if (Estado_Maquina == 0) //Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
+    // TRANSICIÓN DE ESTADOS  //Definición del funcionamiento del equipo
+    if (Estado_Maquina == 0) // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
     {
       descanso = 0;
-      //if(Modo_Funcionamiento == false)  //false es modo Automatico
+      // if(Modo_Funcionamiento == false)  //false es modo Automatico
       //{
       Flag_Marcha_ON = false;
       Valor_DO_Comp_01 = LOW;
@@ -469,18 +451,18 @@ void loop()
       //    }
     }
 
-    if (Estado_Maquina == 1) //Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
-    { //Espera de Marcha_ON
+    if (Estado_Maquina == 1) // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
+    {                        // Espera de Marcha_ON
 
       if (ModoFrioCalor == true)
-        Valor_DO_V4V = LOW; //modo frio
+        Valor_DO_V4V = LOW; // modo frio
       if (ModoFrioCalor == false)
-        Valor_DO_V4V = HIGH; //modo calor
+        Valor_DO_V4V = HIGH; // modo calor
 
-      if ((millis() - Periodo_Bombas) > 86400000) //rutina para activar las bombas una vez por dia durante 10 segundos, para evitar daños por inactividad (86400000)
+      if ((millis() - Periodo_Bombas) > 86400000) // rutina para activar las bombas una vez por dia durante 10 segundos, para evitar daños por inactividad (86400000)
       {
         Valor_DO_Bombas = HIGH;
-        //Valor_DO_Bomba_H = HIGH;
+        // Valor_DO_Bomba_H = HIGH;
         digitalWrite(DO_Buzzer, HIGH);
         Periodo_Bombas = millis();
         Activacion_Bombas = millis();
@@ -488,36 +470,36 @@ void loop()
       if ((millis() - Activacion_Bombas) > 10000)
       {
         Valor_DO_Bombas = LOW;
-        //Valor_DO_Bomba_H = LOW;
+        // Valor_DO_Bomba_H = LOW;
         digitalWrite(DO_Buzzer, LOW);
       }
 
-      if (Estado_Comp == 0 && Flag_ACS_EN == false) //Activacion de valvula de 4 vias
+      if (Estado_Comp == 0 && Flag_ACS_EN == false) // Activacion de valvula de 4 vias
       {
-        if (ModoFrioCalor == true) //Si estamos en modo FRIO, desactiva la valvula de 4 vias
+        if (ModoFrioCalor == true) // Si estamos en modo FRIO, desactiva la valvula de 4 vias
         {
           Valor_DO_VACS = LOW;
         }
         else
-          Valor_DO_VACS = HIGH; //si no, la valvula de 4v debe estar activa
+          Valor_DO_VACS = HIGH; // si no, la valvula de 4v debe estar activa
       }
 
       if ((millis() - EsperaValv) > 15000)
       {
-        if (Temp_ACS < (SetP_ACS - 2) && Flag_ACS_EN == true) //Control de ACS, modo calor && Cal == true
+        if (Temp_ACS < (SetP_ACS - 2) && Flag_ACS_EN == true) // Control de ACS, modo calor && Cal == true
         {
-          Valor_DO_V4V = HIGH; //si la temp ACS es baja, abre la valvula de 3v para calentar el agua
-          //Cal_ACS = true;
-          //Cal = false;
+          Valor_DO_V4V = HIGH; // si la temp ACS es baja, abre la valvula de 3v para calentar el agua
+          // Cal_ACS = true;
+          // Cal = false;
           Valor_DO_Bombas = HIGH;
-          Valor_DO_VACS = HIGH; //la generacion de ACS requiere que la valv 4v este activa
+          Valor_DO_VACS = HIGH; // la generacion de ACS requiere que la valv 4v este activa
           Nro_Alarma = 0;
-          Estado_Maquina = 7; //Generacion ACS
+          Estado_Maquina = 7; // Generacion ACS
           Ingreso_E7 = millis();
         }
       }
 
-      if (Flag_ACS_EN == false) //si el ACS no esta habilitado, se debe abrir la valvula que deja pasar a loza
+      if (Flag_ACS_EN == false) // si el ACS no esta habilitado, se debe abrir la valvula que deja pasar a loza
       {
         Valor_DO_VACS = LOW;
       }
@@ -529,17 +511,17 @@ void loop()
       }
 
       if ((digitalRead(DI_Marcha_on) == LOW && Flag_Marcha_ON == true)) //
-      { //Estado_Maquina = 0;
+      {                                                                 // Estado_Maquina = 0;
         Flag_Marcha_ON = false;
       }
 
-      if ((millis() - Salto_E1 > E1_a_E2) && Modo_Funcionamiento == false && digitalRead(DI_Marcha_on) == HIGH) //Se espera un tiempo (2 min) para que abran las electrovalvulas de la loza radiante
+      if ((millis() - Salto_E1 > E1_a_E2) && Modo_Funcionamiento == false && digitalRead(DI_Marcha_on) == HIGH) // Se espera un tiempo (2 min) para que abran las electrovalvulas de la loza radiante
       {
         Estado_Maquina = 2;
       }
     }
 
-    if (Estado_Maquina == 2) //Arranque Compresor y Bombas
+    if (Estado_Maquina == 2) // Arranque Compresor y Bombas
     {
 
       /*if (Flag_TempComp01 == true)      //Si la temperatura del compresor no fuera correcta, se produce una alarma y se detiene el proceso
@@ -549,16 +531,16 @@ void loop()
         MenuActual = 40;
         }*/
 
-      //Valor_DO_Bomba_T = HIGH;
-      //Valor_DO_Bomba_H = HIGH;
+      // Valor_DO_Bomba_T = HIGH;
+      // Valor_DO_Bomba_H = HIGH;
       Valor_DO_Bombas = HIGH;
-      //Valor_DO_Aux = HIGH;
+      // Valor_DO_Aux = HIGH;
       Nro_Alarma = 0;
       if (Estado_Comp == 0)
       {
         Valor_DO_Comp_01 = HIGH;
         Estado_Comp = 1;
-        //Valor_DO_Aux = LOW;   //apago calentador
+        // Valor_DO_Aux = LOW;   //apago calentador
         Activacion_Comp = millis();
       }
 
@@ -568,7 +550,7 @@ void loop()
         Flag_Marcha_ON = false;
       }
 
-      if (millis() - Activacion_Comp > 10000) //Transcurrido un cierto tiempo (30 seg), se avanza al siguiente estado
+      if (millis() - Activacion_Comp > 10000) // Transcurrido un cierto tiempo (30 seg), se avanza al siguiente estado
       {
         Estado_Maquina = 3;
         Ingreso_E3 = millis();
@@ -604,17 +586,17 @@ void loop()
       }
     }
 
-    if (Estado_Maquina == 3) //Este es el estado final del sistema, donde se controlan las condiciones de alarma
+    if (Estado_Maquina == 3) // Este es el estado final del sistema, donde se controlan las condiciones de alarma
     {
 
-      if (Temp_ACS < (SetP_ACS - 2) && Flag_ACS_EN) //Si estamos en el estado 3 y hay que generar ACS, por razones de seguridad pasamos siempre por es estado 0
+      if (Temp_ACS < (SetP_ACS - 2) && Flag_ACS_EN) // Si estamos en el estado 3 y hay que generar ACS, por razones de seguridad pasamos siempre por es estado 0
       {
         Estado_Maquina = 0;
       }
 
-      //Valor_DO_Bomba_T = HIGH;
-      //Valor_DO_Bomba_H = HIGH;
-      //Valor_DO_V4V = LOW;
+      // Valor_DO_Bomba_T = HIGH;
+      // Valor_DO_Bomba_H = HIGH;
+      // Valor_DO_V4V = LOW;
       Valor_DO_VACS = LOW;
 
       if (digitalRead(DI_Marcha_on) == LOW || Flag_Caldera)
@@ -623,7 +605,7 @@ void loop()
         Flag_Marcha_ON = false;
       }
 
-      //Condiciones de Apagado del Compresor
+      // Condiciones de Apagado del Compresor
       if ((millis() - Ingreso_E3) > 1000)
       {
         if (Flag_TempComp01 || PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) //|| Flag_Aporte_E == true || Flag_Temp_Des == true
@@ -636,27 +618,27 @@ void loop()
 
       //   ##########################################################################    Condiciones de descanso generales      #####################################
 
-      if (Temp_out_H > 45.0) //Condicion para ir a Descanso
+      if (Temp_out_H > 45.0) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
       }
-      if (Temp_out_H < 10.0) //Condicion para ir a Descanso
+      if (Temp_out_H < 10.0) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
       }
-      if (Temp_out_T > 40.0) //Condicion para ir a Descanso
+      if (Temp_out_T > 40.0) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
       }
-      if (Temp_out_T < 0) //Condicion para ir a Descanso
+      if (Temp_out_T < 0) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
       }
-      if (Temp_Admision < -4) //Condicion para ir a Descanso
+      if (Temp_Admision < -4) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
@@ -714,18 +696,18 @@ void loop()
       wdt_reset();
     }
 
-    if (Estado_Maquina == 6) //Estado de descanso
+    if (Estado_Maquina == 6) // Estado de descanso
     {
       Valor_DO_Comp_01 = LOW;
       Valor_DO_Bombas = LOW;
       Estado_Comp = 0;
-      if ((millis() - Ingreso_Descanso > 400000)) //6 min //una vez en el descanso, se espera una hora antes de enviar el sistema al estado inicial
+      if ((millis() - Ingreso_Descanso > 400000)) // 6 min //una vez en el descanso, se espera una hora antes de enviar el sistema al estado inicial
       {
         Estado_Maquina = 0;
       }
-    } //Fin Estado 6
+    } // Fin Estado 6
 
-    if (Estado_Maquina == 7) //Generacion ACS
+    if (Estado_Maquina == 7) // Generacion ACS
     {
       if (millis() - Ingreso_E7 > 5000)
       {
@@ -740,7 +722,7 @@ void loop()
         if (Temp_ACSacu > SetP_ACS)
         {
           flag_dtElectrico_final = true;
-          Valor_DO_V4V = LOW; //si se alcanzan los 45 grados se deja de calentar
+          Valor_DO_V4V = LOW; // si se alcanzan los 45 grados se deja de calentar
           Valor_DO_VACS = HIGH;
           Cal_ACS = false;
           Cal = true;
@@ -761,7 +743,7 @@ void loop()
 
         /**/
       }
-      if (Temp_out_H > 50.0 || Temp_Descarga > 80.0) //se le da energia al ACS de a saltos para evitar pasar de presion y temperatura el circuito de gas
+      if (Temp_out_H > 50.0 || Temp_Descarga > 80.0) // se le da energia al ACS de a saltos para evitar pasar de presion y temperatura el circuito de gas
       {
         Estado_Maquina = 71;
         Ingreso_E71 = millis();
@@ -789,54 +771,32 @@ void loop()
       Valor_DO_Comp_01 = LOW;
       Estado_Comp = 0;
       Valor_DO_Bombas = HIGH;
-      if ((millis() - Ingreso_E71) > 90000) //espero 0.5 minuto antes de volver al estado 7
+      if ((millis() - Ingreso_E71) > 90000) // espero 0.5 minuto antes de volver al estado 7
       {
-        Valor_DO_Bombas = HIGH; //las bombas arrancan enseguida, el compresor enciende 1 minuto despues
+        Valor_DO_Bombas = HIGH; // las bombas arrancan enseguida, el compresor enciende 1 minuto despues
         Estado_Maquina = 7;
         Ingreso_E7 = millis();
       }
-    } //FIn Estado 71
+    } // FIn Estado 71
 
-    if (Estado_Maquina == 8) //Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
+    if (Estado_Maquina == 8) // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
     {
       if ((millis() - Periodo_Fin_ACS) > 30000)
       {
         Estado_Maquina = 0;
       }
-    } //Fin Estado 8
+    } // Fin Estado 8
 
-    //IMAGEN DE SALIDAS
+    // IMAGEN DE SALIDAS
     digitalWrite(DO_Bombas, Valor_DO_Bombas);
     digitalWrite(DO_Calentador, Valor_DO_Calentador);
     digitalWrite(DO_Val2, Valor_DO_V4V);
     digitalWrite(DO_Comp_01, Valor_DO_Comp_01);
     digitalWrite(DO_Val1, Valor_DO_VACS);
 
-    if ((millis() - RefrescoWifi) > 30000)
-    {
-      Serial3.println("AT");
-      if (Serial3.find("OK"))
-      {
-        Flag_ESP = true;
-      }
-      else
-        Flag_ESP = false;
-      Serial3.println("AT+CWJAP?");
-      if (Serial3.find(":"))
-      {
-        //Serial.print("Conectado a red");
-        Flag_Wifi = true;
-      }
-      else
-      {
-        //Serial.print("No Conectado a red");
-        Flag_Wifi = false;
-      }
-      RefrescoWifi = millis();
-    }
     wdt_reset();
   }
-  else if (Estado_ConfigWIFI == 1)//Esto se ejecuta cuando se activa la configuracion WIFI, el resto del codigo no se ejecuta hasta que se sale de este modo
+  else if (Estado_ConfigWIFI == 1) // Esto se ejecuta cuando se activa la configuracion WIFI, el resto del codigo no se ejecuta hasta que se sale de este modo
   {
 
     wdt_disable();
@@ -859,43 +819,39 @@ void loop()
       {
         Serial3.println("AT+CWSTOPSMART");
         delay(500);
-        Serial3.println("AT+CWJAP?");
-        if (Serial3.find(":"))
-          ;
-        {
-          Flag_Wifi = true;
-          Serial.println("Conexion exitosa");
-          Estado_ConfigWIFI = 0;
-        }
+
+        checkWifi(); // cambia el Flag_Wifi
+
+        Estado_ConfigWIFI = Flag_Wifi ? 0 : 1; // Si el WIFI esta conectado, se sale del modo de configuracion WIFI
       }
 
       W = "";
       w = ' ';
-    } //reseteamos la variable para permitir que el resto del codigo se ejecute, y reseteamos las variables auxiliares
-    Flag_Start = false;
+    } // reseteamos la variable para permitir que el resto del codigo se ejecute, y reseteamos las variables auxiliares
+
     wdt_enable(WDTO_8S);
-  } //Fin del estado config WIFI
+  } // Fin del estado config WIFI
 
-} //Fin del loop
+} // Fin del loop
 
-void Caudal1() //Función de Cuenta de Pulsos de Caudalímetro
+void Caudal1() // Función de Cuenta de Pulsos de Caudalímetro
 {
   Pulsos_Caud_T++;
 }
 
-void Caudal2() //Función de Cuenta de Pulsos de Caudalímetro
+void Caudal2() // Función de Cuenta de Pulsos de Caudalímetro
 {
   Pulsos_Caud_H++;
 }
 
-float getVPP() //Función Auxiliar para determinación del valor de Tensión
+float getVPP() // Función Auxiliar para determinación del valor de Tensión
 {
   float VPP;
   int readValue;       // value read from the sensor
   int maxValue = 0;    // store max value here
   int minValue = 1024; // store min value here
   uint32_t start_time = millis();
-  while ((millis() - start_time) < 1000) //sample for 1 Sec
+  while ((millis() - start_time) < 1000) // sample for 1 Sec
   {
     readValue = analogRead(AI_TI);
     // see if you have a new maxValue

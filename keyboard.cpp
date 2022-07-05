@@ -8,47 +8,16 @@ volatile bool BotonArriba = false; //Variables auxiliares para el funcionamiento
 volatile bool BotonAtras = false;
 volatile bool BotonAbajo = false;
 volatile bool BotonEnter = false;
-volatile int BotonArribaT = false;
-volatile int BotonAtrasT = false;
-volatile int BotonAbajoT = false;
-volatile int BotonEnterT = false;
+
 
 
 
 void AtencionTeclado() //Función de Navegación entre Menús y Modificación de Parámetros
 {
-  BotonArribaT = digitalRead(DI_Teclado_Arriba);
-  BotonAbajoT = digitalRead(DI_Teclado_Abajo);
-  BotonEnterT = digitalRead(DI_Teclado_Enter);
-  BotonAtrasT = digitalRead(DI_Teclado_Atras);
-
-  if (BotonArribaT == LOW)
-  {
-    BotonArriba = true;
-  }
-  else
-    BotonArriba = false;
-
-  if (BotonAbajoT == LOW)
-  {
-    BotonAbajo = true;
-  }
-  else
-    BotonAbajo = false;
-
-  if (BotonEnterT == LOW)
-  {
-    BotonEnter = true;
-  }
-  else
-    BotonEnter = false;
-
-  if (BotonAtrasT == LOW)
-  {
-    BotonAtras = true;
-  }
-  else
-    BotonAtras = false;
+  BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
+  BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
+  BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
+  BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
 
   for (int j = 0; j < 100; j++) //Debuoncing
   {
