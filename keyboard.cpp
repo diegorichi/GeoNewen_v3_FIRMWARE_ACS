@@ -4,32 +4,29 @@ const int DI_Teclado_Arriba = 7; //BOTONES DE TECLADO (no se pueden modificar)
 const int DI_Teclado_Abajo = 5;
 const int DI_Teclado_Enter = 6;
 const int DI_Teclado_Atras = 4;
-volatile bool BotonArriba = false; //Variables auxiliares para el funcionamiento del teclado, usadas en la rutina de atencion de teclado
-volatile bool BotonAtras = false;
-volatile bool BotonAbajo = false;
-volatile bool BotonEnter = false;
 
+const int InterruptPin = 3;      //Pin de interrupcion para funcionamiento del teclado
 
-
+void keyboardSetup(){
+  pinMode(DI_Teclado_Arriba, INPUT); // Definición de entradas y salidas
+  pinMode(DI_Teclado_Abajo, INPUT);
+  pinMode(DI_Teclado_Enter, INPUT);
+  pinMode(DI_Teclado_Atras, INPUT);
+  pinMode(InterruptPin, INPUT);
+}
 
 void AtencionTeclado() //Función de Navegación entre Menús y Modificación de Parámetros
 {
-  BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
-  BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
-  BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
-  BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
+  volatile bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
+  volatile bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
+  volatile bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
+  volatile bool BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
 
   for (int j = 0; j < 100; j++) //Debuoncing
   {
   }
 
-  /*if(BotonArriba || BotonAbajo || BotonEnter || BotonAtras)
-    {
-     while( digitalRead(DI_Teclado_Arriba) || digitalRead(DI_Teclado_Abajo) || digitalRead(DI_Teclado_Enter) || digitalRead(DI_Teclado_Atras));
-     delay(200);
-    }*/
-
-  if (BotonEnter == true)
+  if (BotonEnter)
   {
     digitalWrite(DO_Buzzer, HIGH);
     delay(300);
@@ -142,7 +139,7 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
     break;
     case 25:
     {
-      if (Modo_Funcionamiento == true && Estado_Maquina == 0)
+      if (Modo_Funcionamiento && Estado_Maquina == 0)
       {
         SenalComp = !SenalComp;
       }
@@ -233,7 +230,7 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
     }
   }
 
-  if (BotonAbajo == true)
+  if (BotonAbajo)
   {
     digitalWrite(DO_Buzzer, HIGH);
     delay(300);
@@ -363,7 +360,7 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
     }
   }
 
-  if (BotonArriba == true)
+  if (BotonArriba)
   {
     digitalWrite(DO_Buzzer, HIGH);
     delay(300);
@@ -487,7 +484,7 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
     }
   }
 
-  if (BotonAtras == true)
+  if (BotonAtras)
   {
     digitalWrite(DO_Buzzer, HIGH);
     delay(300);

@@ -15,7 +15,6 @@ String local_ip = "0.0.0.0";
 /**************************/
 
 //PINES DIGITALES
-const int InterruptPin = 3;      //Pin de interrupcion para funcionamiento del teclado
 
 const int ACS_EN_Address = 21;
 const int ACS_EN_ELECT_Address = 23;

@@ -23,7 +23,6 @@ extern String local_ip;
 /**************************/
 
 //PINES DIGITALES
-extern const int InterruptPin;// = 3;      //Pin de interrupcion para funcionamiento del teclado
 
 extern const int ACS_EN_Address ; // 21;
 extern const int ACS_EN_ELECT_Address ; // 23;

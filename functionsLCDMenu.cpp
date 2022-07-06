@@ -1,10 +1,9 @@
 #include "functionsLCDMenu.h"
-LiquidCrystal lcd(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); //Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
+LiquidCrystal lcd(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); // Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
 
 #define byte uint8_t
 
-
-//DEFINICIÓN DE CARACTERES (símbolos especiales a mostrar)
+// DEFINICIÓN DE CARACTERES (símbolos especiales a mostrar)
 byte FlechaAbajo[8] = {
     B00000,
     B00000,
@@ -49,52 +48,45 @@ byte FlechaArriba[8] = {
 
 void lcdCreateSpecialChars()
 {
-  lcd.createChar(1, FlechaAbajo); //Se crean los caracteres definidos anteriormente
+  lcd.createChar(1, FlechaAbajo); // Se crean los caracteres definidos anteriormente
   lcd.createChar(2, FlechaArriba);
-  //lcd.createChar(3, Enter);
-  //lcd.createChar(4, GradoC);
+  // lcd.createChar(3, Enter);
+  // lcd.createChar(4, GradoC);
 }
 
 void lcdRefreshValues()
 {
 
-  if (MenuActual == 0) //Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
-    {
-      lcd.setCursor(19, 2);
-      lcd.print(Estado_Maquina);
-      lcd.setCursor(19, 1);
-      if (digitalRead(DI_Marcha_on) == HIGH)
-      {
-        lcd.print("H");
-      }
-      else if (digitalRead(DI_Marcha_on) == LOW)
-      {
-        lcd.print("L");
-      }
-      lcd.setCursor(0, 1);
-      if (Flag_Wifi == true)
-      {
-        lcd.print("W");
-      }
-      else if (Flag_Wifi == false)
-      {
-        lcd.print("NW");
-      }
-      lcd.setCursor(0, 2);
-      if (Flag_ESP == true)
-      {
-        lcd.print("E");
-      }
-      else if (Flag_ESP == false)
-      {
-        lcd.print("NE");
-      }
-    }
+  if (MenuActual == 0) // Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
+  {
+    lcd.setCursor(19, 2);
+    lcd.print(Estado_Maquina);
 
-  if (MenuActual == 10) //Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
+    lcd.setCursor(19, 1);
+    if (digitalRead(DI_Marcha_on) == HIGH)
+      lcd.print("H");
+    else
+      lcd.print("L");
+
+
+    lcd.setCursor(0, 1);
+    if (Flag_Wifi)
+      lcd.print("W");
+    else
+      lcd.print("NW");
+
+
+    lcd.setCursor(0, 2);
+    if (Flag_ESP)
+      lcd.print("E");
+    else
+      lcd.print("NE");
+  }
+
+  if (MenuActual == 10) // Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
   {
     lcd.setCursor(5, 0);
-    if (ModoFrioCalor == true)
+    if (ModoFrioCalor)
     {
       lcd.print("FRIO ");
     }
@@ -103,9 +95,9 @@ void lcdRefreshValues()
       lcd.print("CALOR");
     }
     lcd.setCursor(5, 1);
-    //lcd.print(Temp_intX_T, 1);
+    // lcd.print(Temp_intX_T, 1);
     lcd.setCursor(15, 1);
-    //lcd.print(Temp_intX_H, 1);
+    // lcd.print(Temp_intX_H, 1);
     lcd.setCursor(5, 2);
     lcd.print(Temp_comp_acu, 1);
     lcd.setCursor(15, 2);
@@ -114,13 +106,13 @@ void lcdRefreshValues()
     lcd.print(Temp_Descargaacu, 1);
     lcd.setCursor(15, 3);
     lcd.print(Temp_ACSacu, 1);
-    //lcd.setCursor(16,3);
-    //lcd.print(Temp_PCB, 1);
+    // lcd.setCursor(16,3);
+    // lcd.print(Temp_PCB, 1);
   }
 
-  if (MenuActual == 11) //La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
+  if (MenuActual == 11) // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
   {
-    if (ModoFrioCalor == true)
+    if (ModoFrioCalor)
     {
       lcd.setCursor(5, 0);
       lcd.print("FRIO ");
@@ -164,7 +156,7 @@ void lcdRefreshValues()
     }
   }
 
-  if (MenuActual == 12) //La tercera ventana muestra la eficiencia térmica
+  if (MenuActual == 12) // La tercera ventana muestra la eficiencia térmica
   {
     lcd.setCursor(3, 1);
     lcd.print("    ");
@@ -188,10 +180,10 @@ void lcdRefreshValues()
     lcd.print(Potencia, 0);
     }*/
 
-  if (MenuActual == 20)  // Modo Frio / Calor
+  if (MenuActual == 20) // Modo Frio / Calor
   {
     lcd.setCursor(12, 3);
-    if (ModoFrioCalor == true)
+    if (ModoFrioCalor)
     {
       lcd.print("FRIO ");
     }
@@ -201,7 +193,7 @@ void lcdRefreshValues()
     }
   }
 
-  if (MenuActual == 210)  // Editar valor ACS
+  if (MenuActual == 210) // Editar valor ACS
   {
     lcd.setCursor(14, 1);
     lcd.print(SetP_ACS);
@@ -209,10 +201,10 @@ void lcdRefreshValues()
     lcd.print(SetP_ACS_Edit);
   }
 
-  if (MenuActual == 23)  // Alarmas
+  if (MenuActual == 23) // Alarmas
   {
     lcd.setCursor(8, 2);
-    if (Flag_Alarma_EN == true)
+    if (Flag_Alarma_EN)
     {
       lcd.print("ON ");
     }
@@ -231,30 +223,31 @@ void lcdRefreshValues()
       lcd.print("MANUAL");
   }
 
-  if (MenuActual == 260)  // Pos_Valv 
+  if (MenuActual == 260) // Pos_Valv
   {
     lcd.setCursor(11, 2);
     lcd.print(Pos_Valv);
   }
 
-  if (MenuActual == 27)  // Conexion de WIFI (Conectado/No Conectado)
+  if (MenuActual == 27) // Conexion de WIFI (Conectado/No Conectado)
   {
     lcd.setCursor(8, 2);
-    if (Flag_Wifi == true)
+    if (Flag_Wifi)
     {
       lcd.print("Conectado:  ");
     }
-    else{
+    else
+    {
       lcd.print("No Conectado");
     }
     lcd.setCursor(8, 4);
     lcd.print(local_ip);
   }
 
-  if (MenuActual == 28) //Activacion/desactivacion de ACS
+  if (MenuActual == 28) // Activacion/desactivacion de ACS
   {
     lcd.setCursor(15, 1);
-    if (Flag_ACS_EN == true)
+    if (Flag_ACS_EN)
     {
       lcd.print("ON ");
     }
@@ -262,10 +255,10 @@ void lcdRefreshValues()
       lcd.print("OFF");
   }
 
-  if (MenuActual == 29) //Activacion/desactivacion de ACS electrico
+  if (MenuActual == 29) // Activacion/desactivacion de ACS electrico
   {
     lcd.setCursor(15, 1);
-    if (Flag_ACS_EN_ELECT == true)
+    if (Flag_ACS_EN_ELECT)
     {
       lcd.print("ON ");
     }
@@ -273,10 +266,10 @@ void lcdRefreshValues()
       lcd.print("OFF");
   }
 
-  if (MenuActual == 30) //Estado caldera (ENCENDIDA/APAGADA)
+  if (MenuActual == 30) // Estado caldera (ENCENDIDA/APAGADA)
   {
     lcd.setCursor(8, 3);
-    if (Flag_Caldera == true)
+    if (Flag_Caldera)
     {
       lcd.print("ENCENDIDA");
     }
@@ -284,7 +277,7 @@ void lcdRefreshValues()
       lcd.print("APAGADA  ");
   }
 
-  if (MenuActual == 40) //En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+  if (MenuActual == 40) // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
   {
     lcd.setCursor(0, 1);
     switch (Nro_Alarma)
@@ -411,7 +404,7 @@ void lcdRefreshValues()
     }
   }
 
-  if (MenuActual == 50) //En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+  if (MenuActual == 50) // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
   {
     lcd.setCursor(0, 1);
     Alarma_Eeprom = EEPROM.read(Alarma_Address);
@@ -542,12 +535,11 @@ void lcdRefreshValues()
   }
 }
 
-
 /****************/
 /*FUNCIONES*/
 /****************/
 
-void MenuCero() //Pantalla de Inicio/Bienvenida
+void MenuCero() // Pantalla de Inicio/Bienvenida
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -561,7 +553,7 @@ void MenuCero() //Pantalla de Inicio/Bienvenida
   lcd.print("   Presione ENTER   ");
 }
 
-void MenuUno() //Menú de Monitor de Temps y Consumo de Energía
+void MenuUno() // Menú de Monitor de Temps y Consumo de Energía
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -569,12 +561,12 @@ void MenuUno() //Menú de Monitor de Temps y Consumo de Energía
   lcd.setCursor(0, 1);
   lcd.print("Y CONSUMO DE ENERGIA");
   lcd.setCursor(0, 3);
-  //lcd.print("ENTER para ver...");
+  // lcd.print("ENTER para ver...");
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
 
-void MenuUnoCero() //1º Ventana de Monitor
+void MenuUnoCero() // 1º Ventana de Monitor
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -591,13 +583,13 @@ void MenuUnoCero() //1º Ventana de Monitor
   lcd.print("Des:");
   lcd.setCursor(10, 3);
   lcd.print("ACS:");
-  //lcd.setCursor(10, 3);
-  //lcd.print("Evap:");
+  // lcd.setCursor(10, 3);
+  // lcd.print("Evap:");
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
 
-void MenuUnoUno() //2º Ventana de Monitor
+void MenuUnoUno() // 2º Ventana de Monitor
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -620,7 +612,7 @@ void MenuUnoUno() //2º Ventana de Monitor
   lcd.write(1);
 }
 
-void MenuUnoDos() //3º Ventana de Monitor
+void MenuUnoDos() // 3º Ventana de Monitor
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -641,7 +633,7 @@ void MenuUnoDos() //3º Ventana de Monitor
   lcd.write(1);
 }
 
-void MenuDos() //Menu de Configuración del Sistema
+void MenuDos() // Menu de Configuración del Sistema
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -649,22 +641,22 @@ void MenuDos() //Menu de Configuración del Sistema
   lcd.setCursor(0, 1);
   lcd.print("     SISTEMA        ");
   lcd.setCursor(0, 3);
-  //lcd.print("ENTER para ver...");
+  // lcd.print("ENTER para ver...");
   lcd.setCursor(19, 0);
   lcd.write(2);
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
 
-void MenuDosCero() //Menú de Cambio de Modo de Funcionamiento
+void MenuDosCero() // Menú de Cambio de Modo de Funcionamiento
 {
   lcd.begin(20, 4);
   lcd.clear();
   lcd.print("MODO FRIO/CALOR     ");
   lcd.setCursor(0, 2);
-  lcd.print("Modo Activo:");  
+  lcd.print("Modo Activo:");
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");  
+  lcd.print("ENTER para modificar");
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
@@ -680,7 +672,7 @@ void MenuDosCero() //Menú de Cambio de Modo de Funcionamiento
   lcd.print("Modo Act:");
 }*/
 
-void MenuDosUno()  // Configuracion de temp de ACS
+void MenuDosUno() // Configuracion de temp de ACS
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -695,7 +687,7 @@ void MenuDosUno()  // Configuracion de temp de ACS
   lcd.write(1);
 }
 
-void MenuDosUnoCero()  //Seteo de temp de ACS
+void MenuDosUnoCero() // Seteo de temp de ACS
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -736,7 +728,7 @@ void MenuDosDosCero()
   lcd.print("CONFIRME CON ENTER  ");
 }
 */
-void MenuDosTres()   // Habilitacion alarmas de caudal
+void MenuDosTres() // Habilitacion alarmas de caudal
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -794,7 +786,7 @@ void MenuDosCuatro() // Cambio a modo manual o automatico
   lcd.write(1);
 }*/
 
-void MenuDosSeis()  // Control manual de valvula
+void MenuDosSeis() // Control manual de valvula
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -822,13 +814,13 @@ void MenuDosSeisCero()
   lcd.print("ATRAS para salir");
 }
 
-void MenuDosSiete() //configuracion de WIFI
+void MenuDosSiete() // configuracion de WIFI
 {
   lcd.begin(20, 4);
   lcd.clear();
   lcd.print("CONFIGURACION WIFI");
   lcd.setCursor(0, 1);
-  lcd.print("ip:"+local_ip);
+  lcd.print("ip:" + local_ip);
   lcd.setCursor(0, 2);
   lcd.print("ESTADO: ");
   lcd.setCursor(0, 3);
@@ -848,7 +840,7 @@ void MenuDosSiete() //configuracion de WIFI
   lcd.print("ESTADO: ");
 }*/
 
-void MenuDosOcho() // Habilitacion de Generacion de ACS 
+void MenuDosOcho() // Habilitacion de Generacion de ACS
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -872,7 +864,7 @@ void MenuDosOcho() // Habilitacion de Generacion de ACS
   lcd.print("MODIFIQUE CON ENTER ");
 }
 */
-void MenuDosNueve()  // ACS electrico
+void MenuDosNueve() // ACS electrico
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -896,20 +888,20 @@ void MenuDosNueveCero()
   lcd.print("MODIFIQUE CON ENTER ");
 }*/
 
-void MenuTres() //Menú de Configuración de Caldera Eléctrica
+void MenuTres() // Menú de Configuración de Caldera Eléctrica
 {
   lcd.begin(20, 4);
   lcd.clear();
   lcd.print("CALDERA AUXILIAR");
   lcd.setCursor(0, 3);
-  //lcd.print("ENTER para ver...");
+  // lcd.print("ENTER para ver...");
   lcd.setCursor(19, 0);
   lcd.write(2);
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
 
-void MenuTresCero() //Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
+void MenuTresCero() // Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -920,20 +912,20 @@ void MenuTresCero() //Ventana de Variación del Ciclo de Trabajo de la Caldera E
   lcd.print("ESTADO:             ");
 }
 
-void MenuCuatro() //Menú de Visualización de Alarmas
+void MenuCuatro() // Menú de Visualización de Alarmas
 {
   lcd.begin(20, 4);
   lcd.clear();
   lcd.print("MONITOR DE ALARMAS");
   lcd.setCursor(0, 3);
-  //lcd.print("ENTER para ver...");
+  // lcd.print("ENTER para ver...");
   lcd.setCursor(19, 0);
   lcd.write(2);
   lcd.setCursor(19, 3);
   lcd.write(1);
 }
 
-void MenuCuatroCero() //Visualización de Alarmas Activas
+void MenuCuatroCero() // Visualización de Alarmas Activas
 {
   lcd.begin(20, 4);
   lcd.clear();
@@ -948,7 +940,7 @@ void MenuCinco() // REGISTRO DE ALARMAS
   lcd.clear();
   lcd.print("REGISTRO DE ALARMAS");
   lcd.setCursor(0, 3);
-  //lcd.print("ENTER para ver...");
+  // lcd.print("ENTER para ver...");
   lcd.setCursor(19, 0);
   lcd.write(2);
 }

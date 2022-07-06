@@ -18,41 +18,13 @@ void setup()
 
   wdt_disable();
 
-  pinMode(DI_Teclado_Arriba, INPUT); // Definición de entradas y salidas
-  pinMode(DI_Teclado_Abajo, INPUT);
-  pinMode(DI_Teclado_Enter, INPUT);
-  pinMode(DI_Teclado_Atras, INPUT);
-  pinMode(InterruptPin, INPUT);
+  keyboardSetup(); // setup de pin modes y demas
 
-  pinMode(DI_Marcha_on, INPUT);
-  pinMode(DI_Pres_HI, INPUT);
-  pinMode(DI_Pres_LOW, INPUT);
-  pinMode(DI_Caud_T, INPUT);
-  pinMode(DI_Caud_H, INPUT);
+  setupDigitalInputs(); // setup de los pines de entrada
 
-  pinMode(DO_Comp_01, OUTPUT);
-  pinMode(DO_Val1, OUTPUT);
-  pinMode(DO_Bombas, OUTPUT);
-  pinMode(DO_Calentador, OUTPUT);
-  pinMode(DO_Val2, OUTPUT);
+  setupDigitalOuputs(); // setup de los pines de salida
 
-  pinMode(DO_Triac_01, OUTPUT);
-  pinMode(DO_Buzzer, OUTPUT);
-  // pinMode(DO_Contraste, OUTPUT);
-
-  pinMode(DIR, OUTPUT);
-  pinMode(STEP, OUTPUT);
-  pinMode(ED_ENABLE, OUTPUT);
-
-  digitalWrite(ED_ENABLE, LOW); // Inicialización de salidas
-  digitalWrite(DO_Comp_01, LOW);
-  digitalWrite(DO_Val1, LOW); // Inicia con la valvula de loza encendida
-  digitalWrite(DO_Val2, LOW);
-  digitalWrite(DO_Bombas, LOW);
-  digitalWrite(DO_Calentador, LOW);
-  // digitalWrite(DO_Aux, LOW);
-  digitalWrite(DO_Triac_01, LOW);
-  digitalWrite(DO_Buzzer, LOW);
+  initializeDigitalOuputs();
 
   attachInterrupt(1, AtencionTeclado, FALLING); // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
   attachInterrupt(4, Caudal1, FALLING);         // Pin 19
@@ -111,9 +83,6 @@ void setup()
 
   Timer1.initialize(100000);
 
-  delay(50); // Delay para que se establezca el display
-  lcd.begin(20, 4);
-
   Serial.begin(115200);
   Serial3.begin(115200);
 
@@ -135,7 +104,6 @@ void setup()
   }
   else
   {
-    Flag_Wifi = false;
     Serial.println("Fallo en inicializacion de ESP");
   }
 
@@ -150,6 +118,7 @@ void setup()
     SetP_ACS = 48;
   }
   SetP_ACS_Edit = SetP_ACS;
+
   MenuActual = 0;
   MenuCero();
 
@@ -250,7 +219,8 @@ void loop()
       RefrescoWifi = millis();
     }
 
-    if ((millis() - Periodo_Refresco_Wifi) > 10 * 60 * 1000) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
+    if (((millis() - Periodo_Refresco_Wifi) > 10 * 60 * 1000)
+            && Flag_Wifi) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
     {
       wdt_reset();
       ThingSUpdate();
@@ -871,3 +841,4 @@ float getVPP() // Función Auxiliar para determinación del valor de Tensión
 
   return VPP;
 }
+

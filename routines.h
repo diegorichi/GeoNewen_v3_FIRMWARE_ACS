@@ -16,4 +16,11 @@ void checkWifi(); //Función de chequeo de conexión a internet
 
 void checkESP(); //Función de chequeo de inicializacion de ESP8266
 
+void setupDigitalInputs();
+
+void setupDigitalOuputs();
+
+void initializeDigitalOuputs();
+
+
 #endif

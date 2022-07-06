@@ -41,98 +41,81 @@ void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: mod
 
 int Alarmas() // Función de identificación de Alarma Activa
 {
-  if (Flag_TempIntXT_Baja == true)
+  Flag_Alarma_General = false;
+  Nro_Alarma = 0;
+  if (Flag_TempIntXT_Baja)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 1;
   }
-  else if (Flag_TempIntXT_Alta == true)
+  else if (Flag_TempIntXT_Alta)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 2;
   }
-  else if (Flag_TempIntXH_Baja == true)
+  else if (Flag_TempIntXH_Baja)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 3;
   }
-  else if (Flag_TempIntXH_Alta == true)
+  else if (Flag_TempIntXH_Alta)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 4;
   }
-  else if (Flag_TempTriacs == true)
+  else if (Flag_TempTriacs)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 5;
   }
-  else if (Flag_TempComp01 == true)
+  else if (Flag_TempComp01)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 6;
   }
-  else if (Flag_CaudT == true)
+  else if (Flag_CaudT)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 7;
   }
-  else if (Flag_CaudH == true)
+  else if (Flag_CaudH)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 8;
   }
-  else if (Flag_PresHI == true)
+  else if (Flag_PresHI)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 9;
   }
-  else if (Flag_PresLOW == true)
+  else if (Flag_PresLOW)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 10;
   }
-  else if (Flag_Corriente == true)
+  else if (Flag_Corriente)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 12;
   }
-  else if (Flag_Temp_Caldera == true)
+  else if (Flag_Temp_Caldera)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 13;
   }
-  else if (Flag_Alarma_Trif == true)
+  else if (Flag_Alarma_Trif)
   {
-    Flag_Alarma_General = true;
     // Nro_Alarma = 14;
   }
-  else if (Flag_Temp_Adm == true)
+  else if (Flag_Temp_Adm)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 15;
   }
-  else if (Flag_Aporte_E == true)
+  else if (Flag_Aporte_E)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 16;
   }
-  else if (Flag_RetornoLiq == true)
+  else if (Flag_RetornoLiq)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 17;
   }
-  else if (Flag_Temp_Descarga == true)
+  else if (Flag_Temp_Descarga)
   {
-    Flag_Alarma_General = true;
     Nro_Alarma = 18;
   }
-  else
-    Nro_Alarma = 0;
-
+    
   if (Nro_Alarma != 0)
   {
-    Alarma_Eeprom = Nro_Alarma;
-    EEPROM.write(Alarma_Address, Alarma_Eeprom);
+    Flag_Alarma_General = true;
+    EEPROM.write(Alarma_Address, Nro_Alarma);
   }
   return Nro_Alarma;
 }
@@ -201,9 +184,46 @@ void checkWifi()
   }
 }
 
-
 void checkESP(){
   Serial3.println("AT");
   delay(100);
   Flag_ESP = Serial3.find("OK");
+}
+
+void setupDigitalInputs(){
+  pinMode(DI_Marcha_on, INPUT);
+  pinMode(DI_Pres_HI, INPUT);
+  pinMode(DI_Pres_LOW, INPUT);
+  pinMode(DI_Caud_T, INPUT);
+  pinMode(DI_Caud_H, INPUT);
+} 
+
+void setupDigitalOuputs(){
+
+  pinMode(DO_Comp_01, OUTPUT);
+  pinMode(DO_Val1, OUTPUT);
+  pinMode(DO_Bombas, OUTPUT);
+  pinMode(DO_Calentador, OUTPUT);
+  pinMode(DO_Val2, OUTPUT);
+
+  pinMode(DO_Triac_01, OUTPUT);
+  pinMode(DO_Buzzer, OUTPUT);
+  // pinMode(DO_Contraste, OUTPUT);
+
+  pinMode(DIR, OUTPUT);
+  pinMode(STEP, OUTPUT);
+  pinMode(ED_ENABLE, OUTPUT);
+}
+
+
+void initializeDigitalOuputs(){
+  digitalWrite(ED_ENABLE, LOW); // Inicialización de salidas
+  digitalWrite(DO_Comp_01, LOW);
+  digitalWrite(DO_Val1, LOW); // Inicia con la valvula de loza encendida
+  digitalWrite(DO_Val2, LOW);
+  digitalWrite(DO_Bombas, LOW);
+  digitalWrite(DO_Calentador, LOW);
+  // digitalWrite(DO_Aux, LOW);
+  digitalWrite(DO_Triac_01, LOW);
+  digitalWrite(DO_Buzzer, LOW);
 }
