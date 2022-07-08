@@ -219,7 +219,7 @@ void loop()
       RefrescoWifi = millis();
     }
 
-    if (((millis() - Periodo_Refresco_Wifi) > 10 * 60 * 1000)
+    if (((millis() - Periodo_Refresco_Wifi) > 60000)
             && Flag_Wifi) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
     {
       wdt_reset();

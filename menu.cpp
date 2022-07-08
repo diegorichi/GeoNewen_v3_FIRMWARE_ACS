@@ -5,7 +5,7 @@ Menu::Menu(String aName, void (*showMenu)(),void (*refreshMenu)(), int _menuActu
 {
   _name = aName;
   _showMenu = showMenu;
-  refresh = refreshMenu;
+  _refresh = refreshMenu;
   menuActual = _menuActual;
 }
 

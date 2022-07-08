@@ -4,8 +4,7 @@
 #include "vars.h"
 #include "kume_eeprom.h"
 
-
-extern LiquidCrystal lcd;//(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); //Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
+extern LiquidCrystal lcd; //(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); //Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
 /****************/
 /*FUNCIONES*/
 /****************/
@@ -14,92 +13,51 @@ void lcdCreateSpecialChars();
 
 void lcdRefreshValues();
 
-void MenuCero(); //Pantalla de Inicio/Bienvenida
+void MenuCero(); // Pantalla de Inicio/Bienvenida
 
-void MenuUno(); //Menú de Monitor de Temps y Consumo de Energía
+void MenuUno(); // Menú de Monitor de Temps y Consumo de Energía
 
+void MenuUnoCero(); // 1º Ventana de Monitor
 
-void MenuUnoCero(); //1º Ventana de Monitor
+void MenuUnoUno(); // 2º Ventana de Monitor
 
+void MenuUnoDos(); // 3º Ventana de Monitor
 
-void MenuUnoUno(); //2º Ventana de Monitor
+void MenuDos(); // Menu de Configuración del Sistema
 
+void MenuDosCero(); // Menú de Cambio de Modo de Funcionamiento
 
-void MenuUnoDos(); //3º Ventana de Monitor
+void MenuDosUno(); // Configuracion de temp de ACS
 
+void MenuDosUnoCero(); // Seteo de temp de ACS
 
-void MenuDos(); //Menu de Configuración del Sistema
-
-
-void MenuDosCero(); //Menú de Cambio de Modo de Funcionamiento
-
-
-//void MenuDosCeroCero(); //Ventana de Cambio de Modo de Funcionamiento
-
-
-void MenuDosUno();  // Configuracion de temp de ACS
-
-
-void MenuDosUnoCero();  //Seteo de temp de ACS
-
-
-//void MenuDosDos();
-
-
-//void MenuDosDosCero();
-
-
-void MenuDosTres();   // Habilitacion alarmas de caudal
-
+void MenuDosTres(); // Habilitacion alarmas de caudal
 
 void MenuDosTresCero();
 
-
 void MenuDosCuatro(); // Cambio a modo manual o automatico
-
-
-//void MenuDosCinco();
-
 
 void MenuDosSeis();
 
-
 void MenuDosSeisCero();
 
+void MenuDosSiete(); // confiuracion de WIFI
 
-void MenuDosSiete(); //confiuracion de WIFI
+void MenuTres(); // Menú de Configuración de Caldera Eléctrica
 
+void MenuTresCero(); // Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
 
-//void MenuDosSieteCero();
+void MenuCuatro(); // Menú de Visualización de Alarmas
 
-
-void MenuTres(); //Menú de Configuración de Caldera Eléctrica
-
-
-void MenuTresCero(); //Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
-
-
-void MenuCuatro(); //Menú de Visualización de Alarmas
-
-
-void MenuCuatroCero(); //Visualización de Alarmas Activas
-
+void MenuCuatroCero(); // Visualización de Alarmas Activas
 
 void MenuCinco();
 
-
 void MenuCincoCero();
 
+void MenuDosOcho(); // Habilitacion de Generacion de ACS
 
-void MenuDosOcho(); // Habilitacion de Generacion de ACS 
+void MenuDosNueve(); // ACS electrico
 
-
-//void MenuDosOchoCero();
-
-
-void MenuDosNueve();  // ACS electrico
-
-
-//void MenuDosNueveCero();
 
 #endif

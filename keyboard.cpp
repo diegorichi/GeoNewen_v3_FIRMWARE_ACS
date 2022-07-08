@@ -1,13 +1,14 @@
 #include "keyboard.h"
 
-const int DI_Teclado_Arriba = 7; //BOTONES DE TECLADO (no se pueden modificar)
+const int DI_Teclado_Arriba = 7; // BOTONES DE TECLADO (no se pueden modificar)
 const int DI_Teclado_Abajo = 5;
 const int DI_Teclado_Enter = 6;
 const int DI_Teclado_Atras = 4;
 
-const int InterruptPin = 3;      //Pin de interrupcion para funcionamiento del teclado
+const int InterruptPin = 3; // Pin de interrupcion para funcionamiento del teclado
 
-void keyboardSetup(){
+void keyboardSetup()
+{
   pinMode(DI_Teclado_Arriba, INPUT); // Definición de entradas y salidas
   pinMode(DI_Teclado_Abajo, INPUT);
   pinMode(DI_Teclado_Enter, INPUT);
@@ -15,22 +16,31 @@ void keyboardSetup(){
   pinMode(InterruptPin, INPUT);
 }
 
-void AtencionTeclado() //Función de Navegación entre Menús y Modificación de Parámetros
+void buzzerBeep()
+{
+  digitalWrite(DO_Buzzer, HIGH);
+  delay(300);
+  digitalWrite(DO_Buzzer, LOW);
+}
+
+void AtencionTeclado() // Función de Navegación entre Menús y Modificación de Parámetros
 {
   volatile bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
   volatile bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
   volatile bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
   volatile bool BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
 
-  for (int j = 0; j < 100; j++) //Debuoncing
+  for (int j = 0; j < 100; j++) // Debuoncing
   {
+  }
+
+  if (BotonEnter || BotonAbajo || BotonArriba || BotonAtras)
+  {
+    buzzerBeep();
   }
 
   if (BotonEnter)
   {
-    digitalWrite(DO_Buzzer, HIGH);
-    delay(300);
-    digitalWrite(DO_Buzzer, LOW);
     switch (MenuActual)
     {
     case 0:
@@ -75,21 +85,9 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       {
         FrioCalor();
         EEPROMUpdate();
-      }      
-      //MenuActual = 200;
-      //MenuDosCeroCero();
-    }
-    break;
-    /*case 200:
-    {
-      if (Estado_Maquina == 1) //|| Estado_Maquina == 3
-      {
-        FrioCalor();
-        EEPROMUpdate();
       }
     }
     break;
-    */
     case 21:
     {
       MenuActual = 210;
@@ -102,35 +100,12 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       EEPROMUpdate();
     }
     break;
-    /*case 22:
-    {
-      MenuActual = 220;
-      MenuDosDosCero();
-    }
-    break;
-    */
-    /*case 220:
-    {
-      SetP_ACS = SetP_ACS_Edit;
-      EEPROMUpdate();
-    }
-    break;
-    */
     case 23:
     {
       Flag_Alarma_EN = !Flag_Alarma_EN;
       EEPROMUpdate();
-      //MenuActual = 230;
-      //MenuDosTresCero();
     }
     break;
-    /*case 230:
-    {
-      Flag_Alarma_EN = !Flag_Alarma_EN;
-      EEPROMUpdate();
-    }
-    break;
-    */
     case 24:
     {
       Modo_Funcionamiento = !Modo_Funcionamiento;
@@ -163,54 +138,26 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       Estado_ConfigWIFI = 1;
       EntradaConfigWifi = millis();
       Serial3.println("AT+CWSTARTSMART");
-      //MenuActual = 270;
-      //MenuDosSieteCero();
     }
     break;
-    /*case 270:
-    {
-      Estado_ConfigWIFI = 1;
-      EntradaConfigWifi = millis();
-      Serial3.println("AT+CWSTARTSMART");
-    }
-    break;
-    */
     case 28:
     {
       Flag_ACS_EN = !Flag_ACS_EN;
       EEPROMUpdate();
-      //MenuActual = 280;
-      //MenuDosOchoCero();
     }
     break;
-    /*case 280:
-    {
-      Flag_ACS_EN = !Flag_ACS_EN;
-      EEPROMUpdate();
-    }
-    break;
-    */
     case 29:
     {
       Flag_ACS_EN_ELECT = !Flag_ACS_EN_ELECT;
       EEPROMUpdate();
-      //MenuActual = 290;
-      //MenuDosNueveCero();
     }
     break;
-    /*case 290:
-    {
-      Flag_ACS_EN_ELECT = !Flag_ACS_EN_ELECT;
-      EEPROMUpdate();
-    }
-    break;
-    */
     case 30:
     {
       Estado_Maquina = Flag_Caldera ? 0 : 5;
       Flag_Caldera = !Flag_Caldera;
     }
-    break; //Ciclo_Trabajo = Ciclo_Trabajoedit; EEPROMUpdate();
+    break; // Ciclo_Trabajo = Ciclo_Trabajoedit; EEPROMUpdate();
     case 40:
     {
       Flag_Alarma_General = false;
@@ -232,9 +179,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
 
   if (BotonAbajo)
   {
-    digitalWrite(DO_Buzzer, HIGH);
-    delay(300);
-    digitalWrite(DO_Buzzer, LOW);
     switch (MenuActual)
     {
     case 1:
@@ -294,23 +238,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       }
     }
     break;
-    /*case 22:
-    {
-      MenuActual = 23;
-      MenuDosTres();
-    }
-    break;
-    */
-    /*case 220:
-    {
-      SetP_ACS_Edit = SetP_ACS_Edit - 1;
-      if (SetP_ACS_Edit < 30)
-      {
-        SetP_ACS_Edit = 30;
-      }
-    }
-    break;
-    */
     case 23:
     {
       MenuActual = 24;
@@ -319,12 +246,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
     break;
     case 24:
     {
-      /*MenuActual = 25;
-      MenuDosCinco();
-    }
-    break;
-    case 25:
-    {*/
       MenuActual = 26;
       MenuDosSeis();
     }
@@ -362,9 +283,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
 
   if (BotonArriba)
   {
-    digitalWrite(DO_Buzzer, HIGH);
-    delay(300);
-    digitalWrite(DO_Buzzer, LOW);
     switch (MenuActual)
     {
     case 5:
@@ -428,12 +346,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
     break;
     case 26:
     {
-      /*MenuActual = 25;
-      MenuDosCinco();
-    }
-    break;
-    case 25:
-    {*/
       MenuActual = 24;
       MenuDosCuatro();
     }
@@ -450,7 +362,7 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       MenuDosUno();
     }
     break;
-    //case 22: {MenuActual=21; MenuDosUno();}break;
+    // case 22: {MenuActual=21; MenuDosUno();}break;
     case 21:
     {
       MenuActual = 20;
@@ -466,16 +378,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       }
     }
     break;
-    /*case 220:
-    {
-      SetP_ACS_Edit = SetP_ACS_Edit + 1;
-      if (SetP_ACS_Edit > 48)
-      {
-        SetP_ACS_Edit = 48;
-      }
-    }
-    break;
-    */
     case 40:
     {
       digitalWrite(DO_Buzzer, LOW);
@@ -486,9 +388,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
 
   if (BotonAtras)
   {
-    digitalWrite(DO_Buzzer, HIGH);
-    delay(300);
-    digitalWrite(DO_Buzzer, LOW);
     switch (MenuActual)
     {
     case 0:
@@ -525,26 +424,12 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       MenuDos();
     }
     break;
-    /*case 200:
-    {
-      MenuActual = 20;
-      MenuDosCero();
-    }
-    break;
-    */
     case 21:
     {
       MenuActual = 2;
       MenuDos();
     }
     break;
-    /*case 22:
-    {
-      MenuActual = 2;
-      MenuDos();
-    }
-    break;
-    */
     case 23:
     {
       MenuActual = 2;
@@ -587,20 +472,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       MenuDos();
     }
     break;
-    /*case 220:
-    {
-      MenuActual = 22;
-      MenuDosDos();
-    }
-    break;
-    */
-    /*case 230:
-    {
-      MenuActual = 23;
-      MenuDosTres();
-    }
-    break;
-    */
     case 260:
     {
       MenuActual = 26;
@@ -616,19 +487,6 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
       MenuDosSiete();
     }
     break;
-    /*case 280:
-    {
-      MenuActual = 28;
-      MenuDosOcho();
-    }
-    break;
-    case 290:
-    {
-      MenuActual = 29;
-      MenuDosNueve();
-    }
-    break;
-    */
     case 30:
     {
       MenuActual = 3;
@@ -657,45 +515,30 @@ void AtencionTeclado() //Función de Navegación entre Menús y Modificación de
     {
       MenuActual = 0;
       MenuCero();
-      digitalWrite(DO_Buzzer, HIGH);
-      delay(500);
-      digitalWrite(DO_Buzzer, LOW);
     }
     break;
     case 4:
     {
       MenuActual = 0;
       MenuCero();
-      digitalWrite(DO_Buzzer, HIGH);
-      delay(500);
-      digitalWrite(DO_Buzzer, LOW);
     }
     break;
     case 3:
     {
       MenuActual = 0;
       MenuCero();
-      digitalWrite(DO_Buzzer, HIGH);
-      delay(500);
-      digitalWrite(DO_Buzzer, LOW);
     }
     break;
     case 2:
     {
       MenuActual = 0;
       MenuCero();
-      digitalWrite(DO_Buzzer, HIGH);
-      delay(500);
-      digitalWrite(DO_Buzzer, LOW);
     }
     break;
     case 1:
     {
       MenuActual = 0;
       MenuCero();
-      digitalWrite(DO_Buzzer, HIGH);
-      delay(500);
-      digitalWrite(DO_Buzzer, LOW);
     }
     break;
     }
