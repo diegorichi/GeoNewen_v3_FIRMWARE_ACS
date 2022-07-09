@@ -163,11 +163,11 @@ void checkWifi()
     if (Serial3.find(":")) // Si lo está, detiene el modo Smart y queda listo para funcionar
     {
       Serial.print("Conectado a red");
-      Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
+      //Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
 
       local_ip = "";
       // Loop through all the data returned
-      while (Serial3.available())
+      /*while (Serial3.available())
       {
         delay(200); // wait for all characters arrive
 
@@ -175,6 +175,7 @@ void checkWifi()
         local_ip.concat(c);
       }
       Serial.print("ip is:" + local_ip);
+      */
       Flag_Wifi = true;
     }
     else

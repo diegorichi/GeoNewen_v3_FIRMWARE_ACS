@@ -182,7 +182,7 @@ void lcdRefreshValues()
 
   if (MenuActual == 20) // Modo Frio / Calor
   {
-    lcd.setCursor(12, 3);
+    lcd.setCursor(12, 2);
     if (ModoFrioCalor)
     {
       lcd.print("FRIO ");
@@ -234,13 +234,13 @@ void lcdRefreshValues()
     lcd.setCursor(8, 2);
     if (Flag_Wifi)
     {
-      lcd.print("Conectado:  ");
+      lcd.print("Conectado   ");
     }
     else
     {
       lcd.print("No Conectado");
     }
-    lcd.setCursor(8, 4);
+    lcd.setCursor(8, 1);
     lcd.print(local_ip);
   }
 
@@ -820,7 +820,7 @@ void MenuDosSiete() // configuracion de WIFI
   lcd.clear();
   lcd.print("CONFIGURACION WIFI");
   lcd.setCursor(0, 1);
-  lcd.print("ip:" + local_ip);
+  lcd.print("ip:");
   lcd.setCursor(0, 2);
   lcd.print("ESTADO: ");
   lcd.setCursor(0, 3);
