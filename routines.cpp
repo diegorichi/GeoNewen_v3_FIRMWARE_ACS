@@ -20,8 +20,7 @@ void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: mod
     Valor_DO_V4V = HIGH;
     ModoFrioCalor = false;
   }
-  else
-  {
+  else {
     Valor_DO_V4V = LOW;
     ModoFrioCalor = true;
   }
@@ -30,8 +29,7 @@ void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: mod
   lcd.write("POR FAVOR, ESPERE   ");
   lcd.setCursor(0, 2);
   lcd.write("CAMBIANDO MODO...   ");
-  for (unsigned long i = 0; i < 200000; i++)
-  {
+  for (unsigned long i = 0; i < 200000; i++) {
     wdt_reset();
   }
   MenuActual = 20;
@@ -43,77 +41,59 @@ int Alarmas() // Función de identificación de Alarma Activa
 {
   Flag_Alarma_General = false;
   Nro_Alarma = 0;
-  if (Flag_TempIntXT_Baja)
-  {
+  if (Flag_TempIntXT_Baja) {
     Nro_Alarma = 1;
   }
-  else if (Flag_TempIntXT_Alta)
-  {
+  else if (Flag_TempIntXT_Alta) {
     Nro_Alarma = 2;
   }
-  else if (Flag_TempIntXH_Baja)
-  {
+  else if (Flag_TempIntXH_Baja) {
     Nro_Alarma = 3;
   }
-  else if (Flag_TempIntXH_Alta)
-  {
+  else if (Flag_TempIntXH_Alta) {
     Nro_Alarma = 4;
   }
-  else if (Flag_TempTriacs)
-  {
+  else if (Flag_TempTriacs) {
     Nro_Alarma = 5;
   }
-  else if (Flag_TempComp01)
-  {
+  else if (Flag_TempComp01) {
     Nro_Alarma = 6;
   }
-  else if (Flag_CaudT)
-  {
+  else if (Flag_CaudT) {
     Nro_Alarma = 7;
   }
-  else if (Flag_CaudH)
-  {
+  else if (Flag_CaudH) {
     Nro_Alarma = 8;
   }
-  else if (Flag_PresHI)
-  {
+  else if (Flag_PresHI) {
     Nro_Alarma = 9;
   }
-  else if (Flag_PresLOW)
-  {
+  else if (Flag_PresLOW) {
     Nro_Alarma = 10;
   }
-  else if (Flag_Corriente)
-  {
+  else if (Flag_Corriente) {
     Nro_Alarma = 12;
   }
-  else if (Flag_Temp_Caldera)
-  {
+  else if (Flag_Temp_Caldera) {
     Nro_Alarma = 13;
   }
-  else if (Flag_Alarma_Trif)
-  {
+  else if (Flag_Alarma_Trif) {
     // Nro_Alarma = 14;
   }
-  else if (Flag_Temp_Adm)
-  {
+  else if (Flag_Temp_Adm) {
     Nro_Alarma = 15;
   }
-  else if (Flag_Aporte_E)
-  {
+  else if (Flag_Aporte_E) {
     Nro_Alarma = 16;
   }
-  else if (Flag_RetornoLiq)
-  {
+  else if (Flag_RetornoLiq) {
     Nro_Alarma = 17;
   }
-  else if (Flag_Temp_Descarga)
-  {
+  else if (Flag_Temp_Descarga) {
     Nro_Alarma = 18;
   }
-    
-  if (Nro_Alarma != 0)
-  {
+
+  if (Nro_Alarma != 0) {
     Flag_Alarma_General = true;
     EEPROM.write(Alarma_Address, Nro_Alarma);
   }
@@ -154,10 +134,9 @@ void ResetFlags() // Luego de ocurrida una alarma y revisada por parte del usuar
   Cont_Temp_Des = 0;
 }
 
-void checkWifi()
-{
+void checkWifi() {
   Flag_Wifi = false;
-  if (Flag_ESP){
+  if (Flag_ESP) {
     Serial3.println("AT+CWJAP?"); // Consulta el estado del ESP8266, si está conectado a una red o no
     delay(100);
     if (Serial3.find(":")) // Si lo está, detiene el modo Smart y queda listo para funcionar
@@ -167,8 +146,7 @@ void checkWifi()
 
       local_ip = "";
       // Loop through all the data returned
-      while (Serial3.available())
-      {
+      while (Serial3.available()) {
         delay(200); // wait for all characters arrive
 
         char c = Serial3.read(); // read the next character.
@@ -177,28 +155,27 @@ void checkWifi()
       Serial.print("ip is:" + local_ip);
       Flag_Wifi = true;
     }
-    else
-    {
+    else {
       Serial.print("No Conectado a red");
     }
   }
 }
 
-void checkESP(){
+void checkESP() {
   Serial3.println("AT");
   delay(100);
   Flag_ESP = Serial3.find("OK");
 }
 
-void setupDigitalInputs(){
+void setupDigitalInputs() {
   pinMode(DI_Marcha_on, INPUT);
   pinMode(DI_Pres_HI, INPUT);
   pinMode(DI_Pres_LOW, INPUT);
   pinMode(DI_Caud_T, INPUT);
   pinMode(DI_Caud_H, INPUT);
-} 
+}
 
-void setupDigitalOuputs(){
+void setupDigitalOuputs() {
 
   pinMode(DO_Comp_01, OUTPUT);
   pinMode(DO_Val1, OUTPUT);
@@ -216,7 +193,7 @@ void setupDigitalOuputs(){
 }
 
 
-void initializeDigitalOuputs(){
+void initializeDigitalOuputs() {
   digitalWrite(ED_ENABLE, LOW); // Inicialización de salidas
   digitalWrite(DO_Comp_01, LOW);
   digitalWrite(DO_Val1, LOW); // Inicia con la valvula de loza encendida

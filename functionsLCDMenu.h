@@ -13,6 +13,55 @@ void lcdCreateSpecialChars();
 
 void lcdRefreshValues();
 
+// Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
+void RefreshMenuCero();
+
+// Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
+void RefreshMenuUnoCero();
+
+// La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
+void RefreshMenuUnoUno();
+
+// La tercera ventana muestra la eficiencia térmica
+void RefreshMenuUnoDos();
+
+// Modo Frio / Calor
+void RefreshMenuDosCero();
+
+// Editar valor ACS
+void RefreshMenuDosUnoCero();
+
+// Alarmas
+void RefreshMenuDosTres();
+
+// Funcionamiento Auto/Manual
+void RefreshMenuDosCuatro();
+
+// Pos_Valv
+//void RefreshMenuDosSeisCero();
+
+// Conexion de WIFI (Conectado/No Conectado)
+void RefreshMenuDosSiete();
+
+// Activacion/desactivacion de ACS
+void RefreshMenuDosOcho();
+
+// Activacion/desactivacion de ACS electrico
+void RefreshMenuDosNueve();
+
+// Estado caldera (ENCENDIDA/APAGADA)
+void RefreshMenuTresCero();
+
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshAlarma(volatile byte _nro_Alarma);
+
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshMenuCuatroCero();
+
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshMenuCincoCero();
+
+
 void MenuCero(); // Pantalla de Inicio/Bienvenida
 
 void MenuUno(); // Menú de Monitor de Temps y Consumo de Energía
@@ -33,13 +82,11 @@ void MenuDosUnoCero(); // Seteo de temp de ACS
 
 void MenuDosTres(); // Habilitacion alarmas de caudal
 
-void MenuDosTresCero();
-
 void MenuDosCuatro(); // Cambio a modo manual o automatico
 
 void MenuDosSeis();
 
-void MenuDosSeisCero();
+//void MenuDosSeisCero();
 
 void MenuDosSiete(); // confiuracion de WIFI
 
