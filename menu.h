@@ -5,8 +5,6 @@
 #include "routines.h"
 
 
-extern Menu* menuActivo;
-
 void initializeAndSetupMenu();
 
 class Menu {
@@ -49,4 +47,8 @@ public:
   void show();
   void refresh();
 };
+
+
+extern Menu* menuActivo;
+
 #endif

@@ -35,6 +35,7 @@ Menu menuMonitorSistema(
   "MonitorSistema", &MenuUno, [ ] () {}, 1);
 
 Menu menuInicial("MenuInicial", &MenuCero, &RefreshMenuCero, 0);
+
 Menu* menuActivo;
 
 void initializeAndSetupMenu() {

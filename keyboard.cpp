@@ -36,16 +36,16 @@ void AtencionTecladoNew() // Función de Navegación entre Menús y Modificació
     buzzerBeep();
   }
   if (BotonEnter) {
-    menuActivo = menuActivo.enter();
+    menuActivo = &(menuActivo->enter());
   }
   if (BotonAbajo) {
-    menuActivo = menuActivo.down();
+    menuActivo = &(menuActivo->down());
   }
   if (BotonArriba) {
-    menuActivo = menuActivo.up();
+    menuActivo = &(menuActivo->up());
   }
   if (BotonAtras) {
-    menuActivo = menuActivo.escape();
+    menuActivo = &(menuActivo->escape());
   }
   menuActivo->refresh();
 }
