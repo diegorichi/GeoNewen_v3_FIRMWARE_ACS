@@ -13,8 +13,7 @@ DallasTemperature sensors(&oneWire);
 /*SETUP*/
 /*******/
 
-void setup()
-{ // Inicializacion de I/O y variables generales
+void setup() { // Inicializacion de I/O y variables generales
 
   wdt_disable();
 
@@ -88,8 +87,7 @@ void setup()
 
   checkESP();
 
-  if (Flag_ESP)
-  {
+  if (Flag_ESP) {
     Serial3.println("AT+CWMODE=1"); // 1:Mode station 2:Mode AP 3:Mode BOTH
     delay(100);
     Serial3.println("AT+CWSTOPSMART");
@@ -102,19 +100,16 @@ void setup()
     // delay(10000);
     checkWifi();
   }
-  else
-  {
+  else {
     Serial.println("Fallo en inicializacion de ESP");
   }
 
   EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
 
-  if (SetP_ACS < 30)
-  {
+  if (SetP_ACS < 30) {
     SetP_ACS = 30;
   }
-  if (SetP_ACS > 48)
-  {
+  if (SetP_ACS > 48) {
     SetP_ACS = 48;
   }
   SetP_ACS_Edit = SetP_ACS;
@@ -129,11 +124,9 @@ void setup()
 /*LAZO INFINITO*/
 /***************/
 
-void loop()
-{
+void loop() {
 
-  if (Estado_ConfigWIFI == 0)
-  {
+  if (Estado_ConfigWIFI == 0) {
 
     // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
     if ((millis() - LecturaDSB) > 5000) // Se toma una lectura de los sensores DS18B20 cada 5 segundos, demoran aproximadamente 200ms en entregar un resultado, 750ms máx
@@ -186,8 +179,7 @@ void loop()
         attachInterrupt(4, Caudal1, FALLING); // Las interrupciones se deshabilitan al principio del cálculo para no contabilizar pulsos de más, luego se reestablecen
       }
       Pulsos_Caud_T_Bis = Pulsos_Caud_T;
-      if ((millis() - Ventana_Caudal2) > 1000)
-      {
+      if ((millis() - Ventana_Caudal2) > 1000) {
         detachInterrupt(5);
         Caud_T = ((60000.0 / (millis() - Ventana_Caudal2)) * Pulsos_Caud_T) * FCal;
         // Caud_T = Caud_T;
@@ -220,7 +212,7 @@ void loop()
     }
 
     if (((millis() - Periodo_Refresco_Wifi) > 600000)
-            && Flag_Wifi) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
+      && Flag_Wifi) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
     {
       wdt_reset();
       //ThingSUpdate();
@@ -305,27 +297,23 @@ void loop()
       if (Temp_comp_acu > 80.0) // Si la temperatura de operación del compresor es muy elevada o muy baja, se lo detiene para evitar daños
       {
         Cont_Temp_Comp_01++;
-        if (Cont_Temp_Comp_01 > 3)
-        {
+        if (Cont_Temp_Comp_01 > 3) {
           Flag_TempComp01 = true;
         }
       }
       else
         Cont_Temp_Comp_01 = 0;
 
-      if (Temp_Descargaacu > 85.0)
-      {
+      if (Temp_Descargaacu > 85.0) {
         Cont_Temp_Descarga++;
-        if (Cont_Temp_Descarga > 3)
-        {
+        if (Cont_Temp_Descarga > 3) {
           Flag_Temp_Descarga = true;
         }
       }
       else
         Cont_Temp_Descarga = 0;
 
-      if (Temp_Admision < -4)
-      {
+      if (Temp_Admision < -4) {
         Flag_Temp_Adm = true;
       }
     }
@@ -335,13 +323,11 @@ void loop()
       if (digitalRead(DI_Pres_HI) == LOW) // Si la presion de operación del compresor es muy elevada, se lo detiene para evitar daños
       {
         Cont_Press_HI++;
-        if (Cont_Press_HI > 3)
-        {
+        if (Cont_Press_HI > 3) {
           Flag_PresHI = true;
         }
       }
-      else
-      {
+      else {
         Cont_Press_HI = 0;
         Flag_PresHI = false;
       }
@@ -349,19 +335,16 @@ void loop()
       if (digitalRead(DI_Pres_LOW) == LOW) // Si la presion de operación del compresor es muy elevada, se lo detiene para evitar daños
       {
         Cont_Press_LOW++;
-        if (Cont_Press_LOW > 3)
-        {
+        if (Cont_Press_LOW > 3) {
           Flag_PresLOW = true;
         }
       }
-      else
-      {
+      else {
         Cont_Press_LOW = 0;
         Flag_PresLOW = false;
       }
 
-      if (Flag_PresHI == true || Flag_PresLOW == true)
-      {
+      if (Flag_PresHI == true || Flag_PresLOW == true) {
         PressOK = false;
       }
       else
@@ -371,8 +354,8 @@ void loop()
     // Control de calentamiento auxiliar con cartucho electrico.
     {
       if (((Temp_ACSacu >= (SetP_ACS + 7)) && Flag_ACS_EN) // Si la temp ACS alcanza el objetivo, apagamos el calentador
-          || ((Temp_ACSacu < SetP_ACS) && Flag_ACS_EN)     // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
-          || !Flag_ACS_EN)                                 // si apago generac ACS no hay delta t final.
+        || ((Temp_ACSacu < SetP_ACS) && Flag_ACS_EN)     // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
+        || !Flag_ACS_EN)                                 // si apago generac ACS no hay delta t final.
       {
         flag_dtElectrico_final = false;
       }
@@ -380,19 +363,16 @@ void loop()
       // Si la temperatura es 2 grados menor al objetivo, volvemos a prender el calendador
       //  pero solo si es mayor a la seteada, de manera tal que usamos el cartucho solo en el
       // ultimo tramo de ACS.
-      if (Temp_ACSacu < (SetP_ACS + 5) && (Temp_ACSacu > SetP_ACS) && Flag_ACS_EN)
-      {
+      if (Temp_ACSacu < (SetP_ACS + 5) && (Temp_ACSacu > SetP_ACS) && Flag_ACS_EN) {
         flag_dtElectrico_final = true;
       }
 
       // si acs elect apagado -> lo apagamos
       // si acs apagado -> lo apagamos
-      if (Flag_ACS_EN_ELECT || (Flag_ACS_EN && flag_dtElectrico_final))
-      {
+      if (Flag_ACS_EN_ELECT || (Flag_ACS_EN && flag_dtElectrico_final)) {
         Valor_DO_Calentador = HIGH;
       }
-      else
-      {
+      else {
         Valor_DO_Calentador = LOW;
       }
     }
@@ -437,8 +417,7 @@ void loop()
         Periodo_Bombas = millis();
         Activacion_Bombas = millis();
       }
-      if ((millis() - Activacion_Bombas) > 10000)
-      {
+      if ((millis() - Activacion_Bombas) > 10000) {
         Valor_DO_Bombas = LOW;
         // Valor_DO_Bomba_H = LOW;
         digitalWrite(DO_Buzzer, LOW);
@@ -454,8 +433,7 @@ void loop()
           Valor_DO_VACS = HIGH; // si no, la valvula de 4v debe estar activa
       }
 
-      if ((millis() - EsperaValv) > 15000)
-      {
+      if ((millis() - EsperaValv) > 15000) {
         if (Temp_ACS < (SetP_ACS - 2) && Flag_ACS_EN == true) // Control de ACS, modo calor && Cal == true
         {
           Valor_DO_V4V = HIGH; // si la temp ACS es baja, abre la valvula de 3v para calentar el agua
@@ -501,21 +479,19 @@ void loop()
         MenuActual = 40;
         }*/
 
-      // Valor_DO_Bomba_T = HIGH;
-      // Valor_DO_Bomba_H = HIGH;
+        // Valor_DO_Bomba_T = HIGH;
+        // Valor_DO_Bomba_H = HIGH;
       Valor_DO_Bombas = HIGH;
       // Valor_DO_Aux = HIGH;
       Nro_Alarma = 0;
-      if (Estado_Comp == 0)
-      {
+      if (Estado_Comp == 0) {
         Valor_DO_Comp_01 = HIGH;
         Estado_Comp = 1;
         // Valor_DO_Aux = LOW;   //apago calentador
         Activacion_Comp = millis();
       }
 
-      if (digitalRead(DI_Marcha_on) == LOW)
-      {
+      if (digitalRead(DI_Marcha_on) == LOW) {
         Estado_Maquina = 0;
         Flag_Marcha_ON = false;
       }
@@ -535,23 +511,22 @@ void loop()
         }
         }*/
 
-      /*if(digitalRead(DI_Alarma_Trif) == LOW)   //!Solo equipos trifasicos
-        {
-         Estado_Maquina = 4;
-         MenuCuatroCero();
-         MenuActual = 40;
-         Flag_Alarma_Trif = true;
-        }*/
+        /*if(digitalRead(DI_Alarma_Trif) == LOW)   //!Solo equipos trifasicos
+          {
+           Estado_Maquina = 4;
+           MenuCuatroCero();
+           MenuActual = 40;
+           Flag_Alarma_Trif = true;
+          }*/
 
-      /*if (Flag_TempComp01 == true)      //Si la temperatura del compresor no fuera correcta, se produce una alarma y se detiene el proceso
-        {
-        Estado_Maquina = 4;
-        MenuCuatroCero();
-        MenuActual = 40;
-        }*/
+          /*if (Flag_TempComp01 == true)      //Si la temperatura del compresor no fuera correcta, se produce una alarma y se detiene el proceso
+            {
+            Estado_Maquina = 4;
+            MenuCuatroCero();
+            MenuActual = 40;
+            }*/
 
-      if (Modo_Funcionamiento == true)
-      {
+      if (Modo_Funcionamiento == true) {
         Estado_Maquina = 0;
       }
     }
@@ -569,16 +544,14 @@ void loop()
       // Valor_DO_V4V = LOW;
       Valor_DO_VACS = LOW;
 
-      if (digitalRead(DI_Marcha_on) == LOW || Flag_Caldera)
-      {
+      if (digitalRead(DI_Marcha_on) == LOW || Flag_Caldera) {
         Estado_Maquina = 0;
         Flag_Marcha_ON = false;
       }
 
       // Condiciones de Apagado del Compresor
-      if ((millis() - Ingreso_E3) > 1000)
-      {
-        if (Flag_TempComp01 || PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) //|| Flag_Aporte_E == true || Flag_Temp_Des == true
+      if ((millis() - Ingreso_E3) > 1000) {
+        if (Flag_TempComp01 || !PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) //|| Flag_Aporte_E == true || Flag_Temp_Des == true
         {
           Estado_Maquina = 4;
           MenuCuatroCero();
@@ -616,22 +589,19 @@ void loop()
 
       //   #################    FIN Condiciones de descanso generales      #####################################
 
-      if (Temp_out_Hacu > 50.0)
-      {
+      if (Temp_out_Hacu > 50.0) {
         Estado_Maquina = 8;
         Ingreso_Descanso = millis();
       }
 
-      if (Modo_Funcionamiento == true)
-      {
+      if (Modo_Funcionamiento == true) {
         Estado_Maquina = 0;
       }
     }
 
     if (Estado_Maquina == 4) // Estado de Alarma
     {
-      if (Estado_Comp == 1)
-      {
+      if (Estado_Comp == 1) {
         Valor_DO_Comp_01 = LOW;
         Apagado_Comp = millis();
         Estado_Comp = 0;
@@ -646,16 +616,13 @@ void loop()
       Valor_DO_Marcha_Ext = LOW;
       digitalWrite(DO_Triac_01, LOW);
 
-      if (Alarma_Activa == false)
-      {
+      if (Alarma_Activa == false) {
         Alarmas();
         Alarma_Activa = true;
       }
-      if (Nro_Alarma != 0)
-      {
+      if (Nro_Alarma != 0) {
         Flag_Alarma_General = true;
-        if (Flag_Buzzer == false)
-        {
+        if (Flag_Buzzer == false) {
           Timer1.pwm(DO_Buzzer, 100, 1000000);
           Flag_Buzzer = true;
         }
@@ -679,8 +646,7 @@ void loop()
 
     if (Estado_Maquina == 7) // Generacion ACS
     {
-      if (millis() - Ingreso_E7 > 5000)
-      {
+      if (millis() - Ingreso_E7 > 5000) {
         Flag_retardo_e7 = true;
         if (Flag_TempComp01 == true || PressOK == false || Flag_CaudT == true || Flag_CaudH == true || Flag_Temp_Adm == true || Flag_Temp_Descarga == true) //|| Flag_Aporte_E == true || Flag_Temp_Des == true Flag_TempComp01 == true ||
         {
@@ -689,8 +655,7 @@ void loop()
           MenuActual = 40;
         }
 
-        if (Temp_ACSacu > SetP_ACS)
-        {
+        if (Temp_ACSacu > SetP_ACS) {
           flag_dtElectrico_final = true;
           Valor_DO_V4V = LOW; // si se alcanzan los 45 grados se deja de calentar
           Valor_DO_VACS = HIGH;
@@ -706,8 +671,7 @@ void loop()
         //  EEPROM.write(Alarma_Address, Alarma_Eeprom);
         // }
 
-        if ((millis() - Ingreso_E7) > 30000)
-        {
+        if ((millis() - Ingreso_E7) > 30000) {
           Valor_DO_Comp_01 = HIGH;
         }
 
@@ -751,8 +715,7 @@ void loop()
 
     if (Estado_Maquina == 8) // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
     {
-      if ((millis() - Periodo_Fin_ACS) > 30000)
-      {
+      if ((millis() - Periodo_Fin_ACS) > 30000) {
         Estado_Maquina = 0;
       }
     } // Fin Estado 8
@@ -825,13 +788,11 @@ float getVPP() // Función Auxiliar para determinación del valor de Tensión
   {
     readValue = analogRead(AI_TI);
     // see if you have a new maxValue
-    if (readValue > maxValue)
-    {
+    if (readValue > maxValue) {
       /*record the maximum sensor value*/
       maxValue = readValue;
     }
-    if (readValue < minValue)
-    {
+    if (readValue < minValue) {
       /*record the maximum sensor value*/
       minValue = readValue;
     }
