@@ -152,8 +152,9 @@ void lcdRefreshValues() {
 
   if (MenuActual == 20) // Modo Frio / Calor
   {
-    lcd.setCursor(12, 3);
-    if (ModoFrioCalor) {
+    lcd.setCursor(12, 2);
+    if (ModoFrioCalor)
+    {
       lcd.print("FRIO ");
     }
     else {
@@ -1026,7 +1027,7 @@ void MenuDosSiete() // configuracion de WIFI
   lcd.setCursor(0, 1);
   lcd.print("IP:               ");
   lcd.setCursor(0, 2);
-  lcd.print("ESTADO:           ");
+  lcd.print("ESTADO: ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   lcd.setCursor(19, 0);

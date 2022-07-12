@@ -212,11 +212,11 @@ void loop() {
       RefrescoWifi = millis();
     }
 
-    if (((millis() - Periodo_Refresco_Wifi) > 60000)
+    if (((millis() - Periodo_Refresco_Wifi) > 600000)
       && Flag_Wifi) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
     {
       wdt_reset();
-      ThingSUpdate();
+      //ThingSUpdate();
       delay(1000);
       // Serial.println("ThingSUpdate ejecutada");
       Periodo_Refresco_Wifi = millis();
@@ -554,7 +554,7 @@ void loop() {
 
       // Condiciones de Apagado del Compresor
       if ((millis() - Ingreso_E3) > 1000) {
-        if (Flag_TempComp01 || PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) //|| Flag_Aporte_E == true || Flag_Temp_Des == true
+        if (Flag_TempComp01 || !PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) //|| Flag_Aporte_E == true || Flag_Temp_Des == true
         {
           Estado_Maquina = 4;
           MenuCuatroCero();
@@ -805,4 +805,3 @@ float getVPP() // Función Auxiliar para determinación del valor de Tensión
 
   return VPP;
 }
-
