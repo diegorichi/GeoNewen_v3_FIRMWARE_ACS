@@ -50,8 +50,11 @@ void AtencionTecladoNew() // Función de Navegación entre Menús y Modificació
   menuActivo->refresh();
 }
 
+void AtencionTeclado() {
+  AtencionTecladoNew();
+}
 
-void AtencionTeclado() // Función de Navegación entre Menús y Modificación de Parámetros
+void AtencionTecladoOld() // Función de Navegación entre Menús y Modificación de Parámetros
 {
   volatile bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
   volatile bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;

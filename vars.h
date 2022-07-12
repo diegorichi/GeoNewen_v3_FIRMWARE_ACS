@@ -264,7 +264,6 @@ extern volatile int Ciclo_Trabajo;
 extern volatile int Ciclo_Trabajoedit;
 extern volatile int Estado_Comp; // 0;
 extern volatile byte Nro_Alarma; // 0;
-extern volatile byte Nro_Alarma2; // 0;
 extern volatile byte SetP_ACS; // 0;
 extern volatile byte SetP_ACS_Edit; // 0;
 

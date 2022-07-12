@@ -256,7 +256,6 @@ volatile int Ciclo_Trabajo;
 volatile int Ciclo_Trabajoedit;
 volatile int Estado_Comp = 0;
 volatile byte Nro_Alarma = 0;
-volatile byte Nro_Alarma2 = 0;
 volatile byte SetP_ACS = 0;
 volatile byte SetP_ACS_Edit = 0;
 

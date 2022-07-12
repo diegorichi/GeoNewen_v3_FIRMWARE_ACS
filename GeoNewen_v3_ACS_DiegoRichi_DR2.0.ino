@@ -191,7 +191,7 @@ void loop() {
     }
 
     // Cálculo de Eficiencia Térmica
-
+    {
     // Ef_Termica_1 = (Temp_in_T - Temp_out_T) * Caud_H;  //recordar caudales estan cruzados
     // Ef_Termica_2 = (Temp_in_T - Temp_out_T) * Caud_T;
 
@@ -200,9 +200,9 @@ void loop() {
     // Voltage = getVPP();                       //La llamada a la función getVPP devuelve el valor pico a pico de la tensión muestreada
     // V_RMS = (Voltage / 2.0) * 0.707;          //Ese valor pico a pico se divide por 2 y se multiplica por 0.707 para obtener el valor eficaz (aproximado)
     // A_RMS = (V_RMS * 1000) / mVperAmp;        //En función del valor eficaz y del módulo empleado, se usa la constante de equivalencia correspondiente y se obtiene el valor de la corriente
+    }
 
     // Cálculo de la Potecia
-
     Potencia = 220 * TI * CosFI; // Valor estimativo
 
     if ((millis() - RefrescoWifi) > 30000) // Verificacion de conexion a Wifi
@@ -265,9 +265,9 @@ void loop() {
       T1_Des = Temp_Descarga;
       Temp_Descargaacu = (T1_Des + T2_Des + T3_Des) / 3;
 
-      lcdRefreshValues();
+      //lcdRefreshValues();
 
-      //menuActivo->refresh();
+      menuActivo->refresh();
 
       Periodo_Refresco = millis(); // El período de refresco es a los fines de que la información mostrada no esté constanmente cambiando y la visualización sea más adecuada
     }
@@ -474,18 +474,7 @@ void loop() {
 
     if (Estado_Maquina == 2) // Arranque Compresor y Bombas
     {
-
-      /*if (Flag_TempComp01 == true)      //Si la temperatura del compresor no fuera correcta, se produce una alarma y se detiene el proceso
-        {
-        Estado_Maquina = 4;
-        MenuCuatroCero();
-        MenuActual = 40;
-        }*/
-
-        // Valor_DO_Bomba_T = HIGH;
-        // Valor_DO_Bomba_H = HIGH;
       Valor_DO_Bombas = HIGH;
-      // Valor_DO_Aux = HIGH;
       Nro_Alarma = 0;
       if (Estado_Comp == 0) {
         Valor_DO_Comp_01 = HIGH;
@@ -505,30 +494,6 @@ void loop() {
         Ingreso_E3 = millis();
       }
 
-      /*if (millis() - Activacion_Comp > 2500)
-        { if (Flag_Corriente == true )
-        {
-          Estado_Maquina = 4;
-          MenuCuatroCero();
-          MenuActual = 40;
-        }
-        }*/
-
-        /*if(digitalRead(DI_Alarma_Trif) == LOW)   //!Solo equipos trifasicos
-          {
-           Estado_Maquina = 4;
-           MenuCuatroCero();
-           MenuActual = 40;
-           Flag_Alarma_Trif = true;
-          }*/
-
-          /*if (Flag_TempComp01 == true)      //Si la temperatura del compresor no fuera correcta, se produce una alarma y se detiene el proceso
-            {
-            Estado_Maquina = 4;
-            MenuCuatroCero();
-            MenuActual = 40;
-            }*/
-
       if (Modo_Funcionamiento == true) {
         Estado_Maquina = 0;
       }
@@ -542,9 +507,6 @@ void loop() {
         Estado_Maquina = 0;
       }
 
-      // Valor_DO_Bomba_T = HIGH;
-      // Valor_DO_Bomba_H = HIGH;
-      // Valor_DO_V4V = LOW;
       Valor_DO_VACS = LOW;
 
       if (digitalRead(DI_Marcha_on) == LOW || Flag_Caldera) {

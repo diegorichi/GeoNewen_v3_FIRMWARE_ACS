@@ -143,9 +143,9 @@ void initializeAndSetupMenu() {
     Flag_Alarma_General = false;
     Nro_Alarma = 0;
     digitalWrite(DO_Buzzer, LOW);
+    Flag_Buzzer = false;
     Alarma_Activa = false;
     ResetFlags();
-    Flag_Buzzer = false;
     Estado_Maquina = 0; });
 
   // 4

@@ -38,7 +38,7 @@ void RefreshMenuDosTres();
 void RefreshMenuDosCuatro();
 
 // Pos_Valv
-//void RefreshMenuDosSeisCero();
+//void RefreshMenuDosSeis();
 
 // Conexion de WIFI (Conectado/No Conectado)
 void RefreshMenuDosSiete();
