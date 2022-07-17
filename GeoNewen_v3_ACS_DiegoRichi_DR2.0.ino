@@ -354,7 +354,7 @@ void loop() {
     // Control de calentamiento auxiliar con cartucho electrico.
     {
       if (((Temp_ACSacu >= (SetP_ACS + 7)) && Flag_ACS_EN) // Si la temp ACS alcanza el objetivo, apagamos el calentador
-        || ((Temp_ACSacu < SetP_ACS) && Flag_ACS_EN)     // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
+        || ((Temp_ACSacu <= (SetP_ACS - 2)) && Flag_ACS_EN)     // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
         || !Flag_ACS_EN)                                 // si apago generac ACS no hay delta t final.
       {
         flag_dtElectrico_final = false;
@@ -559,7 +559,7 @@ void loop() {
         }
       }
 
-      //   ##########################################################################    Condiciones de descanso generales      #####################################
+      //   ###########    Condiciones de descanso generales      ##############
 
       if (Temp_out_H > 45.0) // Condicion para ir a Descanso
       {
