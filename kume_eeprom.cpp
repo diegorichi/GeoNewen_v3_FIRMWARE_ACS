@@ -24,6 +24,7 @@ void EEPROMUpdate() //Función de guardado de valores en memoria EEPROM
   EEPROM.write(Alarma_EN_Address, Flag_Alarma_EN);
   EEPROM.write(SetP_ACS_Address, SetP_ACS);
   EEPROM.write(ACS_EN_Address, Flag_ACS_EN);
+  EEPROM.write(ACS_DT_EN_Address, Flag_ACS_DT_EN);
   EEPROM.write(ACS_EN_ELECT_Address, Flag_ACS_EN_ELECT);
   EEPROM.write(ModeAddress, ModoFrioCalor); //La variable "ModoFrioCalor es de tipo bool y ocupa solo 8 bits, por lo que no hay que dividirla en 2 partes
   //EEPROM.write(Mode_F_Address, Modo_Funcionamiento);
@@ -54,6 +55,7 @@ void EEPROMLectura() //Función de lectura de valores almacenados en memoria EEP
   Var_Mod_3_Edit = Var_Mod_3;
   Flag_Alarma_EN = EEPROM.read(Alarma_EN_Address);
   Flag_ACS_EN = EEPROM.read(ACS_EN_Address);
+  Flag_ACS_DT_EN = EEPROM.read(ACS_DT_EN_Address);
   Flag_ACS_EN_ELECT = EEPROM.read(ACS_EN_ELECT_Address);
   ModoFrioCalor = EEPROM.read(ModeAddress);
   //Modo_Funcionamiento = EEPROM.read(Mode_F_Address);

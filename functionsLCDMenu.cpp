@@ -78,6 +78,9 @@ void lcdRefreshValues() {
   if (MenuActual == 28) // Activacion/desactivacion de ACS
     RefreshMenuDosOcho();
 
+  if (MenuActual == 281) // Activacion/desactivacion de ACS
+    RefreshMenuDosOchoUno();
+
   if (MenuActual == 29) // Activacion/desactivacion de ACS electrico
     RefreshMenuDosNueve();
 
@@ -252,6 +255,22 @@ void RefreshMenuDosOcho() {
     lcd.print("OFF");
 }
 
+void RefreshMenuDosOchoUno() {
+  lcd.setCursor(12, 1);
+  if (Flag_ACS_DT_EN) {
+    lcd.print("ON ");
+  }
+  else
+    lcd.print("OFF");
+
+  lcd.setCursor(0, 2);
+  if (flag_dtElectrico_final) {
+    lcd.print("ENCENDIDO");
+  }
+  else
+    lcd.print("APAGADO");
+}
+
 // Activacion/desactivacion de ACS electrico
 void RefreshMenuDosNueve() {
   lcd.setCursor(15, 1);
@@ -260,6 +279,13 @@ void RefreshMenuDosNueve() {
   }
   else
     lcd.print("OFF");
+
+  lcd.setCursor(0, 2);
+  if (Valor_DO_Calentador == HIGH) {
+    lcd.print("ENCENDIDO");
+  }
+  else
+    lcd.print("APAADO   ");
 }
 
 // Estado caldera (ENCENDIDA/APAGADA)
@@ -597,7 +623,7 @@ void MenuDosSiete() // configuracion de WIFI
   lcd.setCursor(0, 1);
   lcd.print("IP:               ");
   lcd.setCursor(0, 2);
-  lcd.print("ESTADO: ");
+  lcd.print("ESTADO:           ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   showNavigation();
@@ -609,6 +635,17 @@ void MenuDosOcho() // Habilitacion de Generacion de ACS
   lcd.print("HABILITACION DE     ");
   lcd.setCursor(0, 1);
   lcd.print("GENERACION ACS:     ");
+  lcd.setCursor(0, 3);
+  lcd.print("ENTER para modificar");
+  showNavigation();
+}
+
+void MenuDosOchoUno() // Habilitacion de Delta electrico
+{
+  beginLcd();
+  lcd.print("ACS CON DELTA ELECT ");
+  lcd.setCursor(0, 1);
+  lcd.print("Habilitado:       ");
   lcd.setCursor(0, 3);
   lcd.print("ENTER para modificar");
   showNavigation();

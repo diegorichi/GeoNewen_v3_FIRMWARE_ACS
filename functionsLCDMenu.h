@@ -46,6 +46,9 @@ void RefreshMenuDosSiete();
 // Activacion/desactivacion de ACS
 void RefreshMenuDosOcho();
 
+// Activacion/desactivacion de Delta ACS Electrico
+void RefreshMenuDosOchoUno();
+
 // Activacion/desactivacion de ACS electrico
 void RefreshMenuDosNueve();
 
@@ -103,6 +106,8 @@ void MenuCinco();
 void MenuCincoCero();
 
 void MenuDosOcho(); // Habilitacion de Generacion de ACS
+
+void MenuDosOchoUno(); // Habilitacion de Delta de ACS
 
 void MenuDosNueve(); // ACS electrico
 

@@ -173,6 +173,12 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         EEPROMUpdate();
       }
       break;
+    case 281:
+      {
+        Flag_ACS_DT_EN = !Flag_ACS_DT_EN;
+        EEPROMUpdate();
+      }
+      break;
     case 29:
       {
         Flag_ACS_EN_ELECT = !Flag_ACS_EN_ELECT;
@@ -288,6 +294,12 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       break;
     case 28:
       {
+        MenuActual = 281;
+        MenuDosOchoUno();
+      }
+      break;
+    case 281:
+      {
         MenuActual = 29;
         MenuDosNueve();
       }
@@ -349,6 +361,12 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       }
       break;
     case 29:
+      {
+        MenuActual = 281;
+        MenuDosOchoUno();
+      }
+      break;
+    case 281:
       {
         MenuActual = 28;
         MenuDosOcho();
@@ -480,6 +498,12 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       }
       break;
     case 28:
+      {
+        MenuActual = 2;
+        MenuDos();
+      }
+      break;
+    case 281:
       {
         MenuActual = 2;
         MenuDos();

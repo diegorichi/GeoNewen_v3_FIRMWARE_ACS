@@ -139,7 +139,7 @@ void checkWifi() {
   if (Flag_ESP) {
     Serial3.println("AT+CWJAP?"); // Consulta el estado del ESP8266, si está conectado a una red o no
     delay(100);
-    if (Serial3.find(":")) // Si lo está, detiene el modo Smart y queda listo para funcionar
+    if (Serial3.find(':')) // Si lo está, detiene el modo Smart y queda listo para funcionar
     {
       Serial.print("Conectado a red");
       //Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
@@ -157,8 +157,7 @@ void checkWifi() {
       */
       Flag_Wifi = true;
     }
-    else
-    {
+    else {
       Serial.print("No Conectado a red");
     }
   }
@@ -166,8 +165,8 @@ void checkWifi() {
 
 void checkESP() {
   Serial3.println("AT");
-  delay(100);
-  Flag_ESP = Serial3.find("OK");
+  delay(1000);
+  Flag_ESP = Serial3.find('OK');
 }
 
 void setupDigitalInputs() {

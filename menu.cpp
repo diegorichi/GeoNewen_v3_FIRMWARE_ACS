@@ -10,6 +10,7 @@ Menu menuConfCalderaElectrica("ConfCalderaElectrica", &MenuTresCero, &RefreshMen
 Menu menuConfiguracionEditTemperaturaACS("ConfEditTemperaturaACS", &MenuDosUnoCero, &RefreshMenuDosUnoCero, 210);
 
 Menu menuConfiguracionACSElectrico("ConfACSElectrico", &MenuDosNueve, &RefreshMenuDosNueve, 29);
+Menu menuConfiguracionACSDT("ConfACSDT", &MenuDosOchoUno, &RefreshMenuDosOchoUno, 281);
 Menu menuConfiguracionACS("ConfACS", &MenuDosOcho, &RefreshMenuDosOcho, 28);
 Menu menuConfiguracionWifi("ConfWifi", &MenuDosSiete, &RefreshMenuDosSiete, 27);
 Menu menuConfiguracionModoAutomatico("ConfModoAutomatico", &MenuDosCuatro, &RefreshMenuDosCuatro, 24);
@@ -41,16 +42,24 @@ Menu* menuActivo;
 void initializeAndSetupMenu() {
 
   // 29
-  menuConfiguracionACSElectrico.setUp(&menuConfiguracionACS);
+  menuConfiguracionACSElectrico.setUp(&menuConfiguracionACSDT);
   menuConfiguracionACSElectrico.setDown(&menuConfiguracionModoFrioCalor);
   menuConfiguracionACSElectrico.setEnterAction([ ] () {
     Flag_ACS_EN_ELECT = !Flag_ACS_EN_ELECT;
     EEPROMUpdate(); });
   menuConfiguracionACSElectrico.setEscape(&menuConfiguracionSistema);
 
+  //281
+  menuConfiguracionACSDT.setUp(&menuConfiguracionACSElectrico);
+  menuConfiguracionACSDT.setDown(&menuConfiguracionACS);
+  menuConfiguracionACSDT.setEnterAction([ ] () {
+    Flag_ACS_DT_EN = !Flag_ACS_DT_EN;
+    EEPROMUpdate(); });
+  menuConfiguracionACSDT.setEscape(&menuConfiguracionSistema);
+
   // 28
   menuConfiguracionACS.setUp(&menuConfiguracionWifi);
-  menuConfiguracionACS.setDown(&menuConfiguracionACSElectrico);
+  menuConfiguracionACS.setDown(&menuConfiguracionACSDT);
   menuConfiguracionACS.setEnterAction([ ] () {
     Flag_ACS_EN = !Flag_ACS_EN;
     EEPROMUpdate(); });

@@ -17,6 +17,7 @@ String local_ip = "0.0.0.0";
 //PINES DIGITALES
 
 const int ACS_EN_Address = 21;
+const int ACS_DT_EN_Address = 19;
 const int ACS_EN_ELECT_Address = 23;
 
 uint8_t DI_Temp_in_H[8] = { 0x28, 0xDA, 0xB6, 0xF8, 0x1A, 0x19, 0x01, 0x8B };      //n1    ok
@@ -187,6 +188,7 @@ unsigned long Tpo_Refresco_TS = 600000;   //10 minutos de refresco de TS
 unsigned long Arranque_Frio = 600000;     //Periodo de calentamiento de compresor para arranque en frio
 
 bool Flag_ACS_EN = true;
+bool Flag_ACS_DT_EN = true;
 bool Flag_TempComp01 = false;
 bool Flag_Temp_Descarga = false;
 bool Flag_retardo_e7 = false;

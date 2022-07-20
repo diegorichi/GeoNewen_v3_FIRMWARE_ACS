@@ -7,7 +7,8 @@ void sendToThingSpeak(String api_key) {
   cmd += "\",80";
   Serial3.println(cmd);
   delay(2000);
-  if (Serial3.find("Error")) {
+  const char _error_ = "Error";
+  if (Serial3.find(_error_)) {
     return;
   }
 
@@ -32,7 +33,7 @@ void sendToThingSpeak(String api_key) {
   Serial.println(cmd);
   Serial3.print("AT+CIPSEND=");
   Serial3.println(cmd.length());
-  if (Serial3.find(">")) {
+  if (Serial3.find('>')) {
     Serial3.print(cmd);
   }
   delay(250);
