@@ -4,9 +4,8 @@
 //#define SSID "KumeNewenLLC"     // "SSID-WiFiname"            //los datos de SSID y pass ya no son requeridos, la conexion se realiza mediante la app "ESP8266 SmartConfig"
 //#define PASS "newenkume"        // "password"
 //#define IP "184.106.153.149"                     // thingspeak.com ip                //ip de la pagina web de Thingspeak
-//#define IP "api.thingspeak.com" //"54.158.47.123"  // api.thingspeak.com
-String api_key_kume = "UML8C4KGN6IVTJE7"; //key para enviar datos a Thingspeak, se obtiene de la pagina web
-String api_key_dr = "230X8WDK4WACGI95"; //key para enviar datos a Thingspeak, se obtiene de la pagina web
+
+//#define IP "54.158.47.123"  // api.thingspeak.com
 String local_ip = "0.0.0.0";
 /*-----------------------------------------------------------*/
 
@@ -145,11 +144,11 @@ float Temp_in_T;
 float Temp_Descarga;
 float Temp_Admision;
 float TI;
-float AuxTempH;
-float AuxTempT;
+//float AuxTempH;
+//float AuxTempT;
 
-float DC_V = 0;
-float AC_V = 0;
+//float DC_V = 0;
+//float AC_V = 0;
 float Fesc = 1.982; //Actualizado el 22/01/18 1.982;
 float FCal = 1.055; //1.77;// caudalimetro  sen - hz21wa                    //1.9 caudalimetros  geo v1.0 y 2.0;
 float Ef_Termica_1;

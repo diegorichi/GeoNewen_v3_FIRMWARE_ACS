@@ -13,8 +13,9 @@
 //la conexion se realiza mediante la app "ESP8266 SmartConfig"
 
 #define IP "54.158.47.123" //"api.thingspeak.com"  // thingspeak.com ip de la pagina web de Thingspeak
-extern String api_key_kume;   //key para enviar datos a Thingspeak, se obtiene de la pagina web
-extern String api_key_dr;     //key para enviar datos a Thingspeak, se obtiene de la pagina web
+ 
+//extern String api_key_kume;   //key para enviar datos a Thingspeak, se obtiene de la pagina web
+//#define API_KEY_DR     //key para enviar datos a Thingspeak, se obtiene de la pagina web
 extern String local_ip;
 /*-----------------------------------------------------------*/
 
@@ -153,11 +154,11 @@ extern float Temp_in_T;
 extern float Temp_Descarga;
 extern float Temp_Admision;
 extern float TI;
-extern float AuxTempH;
-extern float AuxTempT;
+//extern float AuxTempH;
+//extern float AuxTempT;
 
-extern float DC_V; // 0;
-extern float AC_V; // 0;
+//extern float DC_V; // 0;
+//extern float AC_V; // 0;
 extern float Fesc; // 1.982; //Actualizado el 22/01/18 1.982;
 extern float FCal; // 1.055; //1.77;// caudalimetro  sen - hz21wa                    //1.9 caudalimetros  geo v1.0 y 2.0;
 extern float Ef_Termica_1;

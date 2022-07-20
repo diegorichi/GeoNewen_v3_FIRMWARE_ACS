@@ -40,4 +40,4 @@
 - test
 - remove old menu references.
 - refactor Estado_Maquina
-- refactor alarm messagesS
+- refactor alarm messages

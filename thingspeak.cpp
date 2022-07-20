@@ -1,5 +1,7 @@
 #include "thingspeak.h"
 
+#define API_KEY_KUME = "UML8C4KGN6IVTJE7" //key para enviar datos a Thingspeak, se obtiene de la pagina web
+#define API_KEY_DR "230X8WDK4WACGI95" //key para enviar datos a Thingspeak, se obtiene de la pagina web
 
 void sendToThingSpeak(String api_key) {
   String cmd = "AT+CIPSTART=\"TCP\",\"";
@@ -7,8 +9,7 @@ void sendToThingSpeak(String api_key) {
   cmd += "\",80";
   Serial3.println(cmd);
   delay(2000);
-  const char _error_ = "Error";
-  if (Serial3.find(_error_)) {
+  if (Serial3.find("Error")) {
     return;
   }
 
@@ -85,6 +86,6 @@ void ThingSUpdate() //Funcion que envia la informacion a Thingspeak
 
 
   //  sendToThingSpeak(api_key_kume);
-  sendToThingSpeak(api_key_dr);
+  sendToThingSpeak(API_KEY_DR);
 
 } //Fin funcion Thingspeak Update

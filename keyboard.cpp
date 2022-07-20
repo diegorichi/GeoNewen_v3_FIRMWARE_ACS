@@ -89,124 +89,125 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuDosCero();
       }
       break;
-    case 3:
-      {
-        MenuActual = 30;
-        MenuTresCero();
-      }
-      break;
-    case 4:
-      {
-        MenuActual = 40;
-        MenuCuatroCero();
-      }
-      break;
-    case 5:
-      {
-        MenuActual = 50;
-        MenuCincoCero();
-      }
-      break;
-    case 20:
-      {
-        if (Estado_Maquina == 1) //|| Estado_Maquina == 3
+      /*    case 3:
+            {
+              MenuActual = 30;
+              MenuTresCero();
+            }
+            break;
+      */    case 4:
         {
-          FrioCalor();
+          MenuActual = 40;
+          MenuCuatroCero();
+        }
+        break;
+      case 5:
+        {
+          MenuActual = 50;
+          MenuCincoCero();
+        }
+        break;
+      case 20:
+        {
+          if (Estado_Maquina == 1) //|| Estado_Maquina == 3
+          {
+            FrioCalor();
+            EEPROMUpdate();
+          }
+        }
+        break;
+      case 21:
+        {
+          MenuActual = 210;
+          MenuDosUnoCero();
+        }
+        break;
+      case 210:
+        {
+          SetP_ACS = SetP_ACS_Edit;
           EEPROMUpdate();
         }
-      }
-      break;
-    case 21:
-      {
-        MenuActual = 210;
-        MenuDosUnoCero();
-      }
-      break;
-    case 210:
-      {
-        SetP_ACS = SetP_ACS_Edit;
-        EEPROMUpdate();
-      }
-      break;
-    case 23:
-      {
-        Flag_Alarma_EN = !Flag_Alarma_EN;
-        EEPROMUpdate();
-      }
-      break;
-    case 24:
-      {
-        Modo_Funcionamiento = !Modo_Funcionamiento;
-        EEPROMUpdate();
-      }
-      break;
-    case 25:
-      {
-        if (Modo_Funcionamiento && Estado_Maquina == 0) {
-          SenalComp = !SenalComp;
+        break;
+      case 23:
+        {
+          Flag_Alarma_EN = !Flag_Alarma_EN;
+          EEPROMUpdate();
         }
-      }
-      break;
-    case 26:
-      {
-        //MenuActual = 260;
-        //MenuDosSeisCero();
-        digitalWrite(ED_ENABLE, LOW);
-        EEPROMLectura();
-      }
-      break;
-    case 260:
-      {
-        //          Referenciar = true;
-      }
-      break;
-    case 27:
-      {
-        Estado_ConfigWIFI = 1;
-        EntradaConfigWifi = millis();
-        Serial3.println("AT+CWSTARTSMART");
-      }
-      break;
-    case 28:
-      {
-        Flag_ACS_EN = !Flag_ACS_EN;
-        EEPROMUpdate();
-      }
-      break;
-    case 281:
-      {
-        Flag_ACS_DT_EN = !Flag_ACS_DT_EN;
-        EEPROMUpdate();
-      }
-      break;
-    case 29:
-      {
-        Flag_ACS_EN_ELECT = !Flag_ACS_EN_ELECT;
-        EEPROMUpdate();
-      }
-      break;
-    case 30:
-      {
-        Estado_Maquina = Flag_Caldera ? 0 : 5;
-        Flag_Caldera = !Flag_Caldera;
-      }
-      break; // Ciclo_Trabajo = Ciclo_Trabajoedit; EEPROMUpdate();
-    case 40:
-      {
-        Flag_Alarma_General = false;
-        Nro_Alarma = 0;
-        digitalWrite(DO_Buzzer, LOW);
-        Alarma_Activa = false;
-        ResetFlags();
-        Flag_Buzzer = false;
-        Estado_Maquina = 0;
-      }
-      break;
-    case 50:
-      {
-        EEPROM.write(Alarma_Address, 0);
-      }
-      break;
+        break;
+      case 24:
+        {
+          Modo_Funcionamiento = !Modo_Funcionamiento;
+          EEPROMUpdate();
+        }
+        break;
+      case 25:
+        {
+          if (Modo_Funcionamiento && Estado_Maquina == 0) {
+            SenalComp = !SenalComp;
+          }
+        }
+        break;
+      case 26:
+        {
+          //MenuActual = 260;
+          //MenuDosSeisCero();
+          digitalWrite(ED_ENABLE, LOW);
+          EEPROMLectura();
+        }
+        break;
+      case 260:
+        {
+          //          Referenciar = true;
+        }
+        break;
+      case 27:
+        {
+          Estado_ConfigWIFI = 1;
+          EntradaConfigWifi = millis();
+          Serial3.println("AT+CWSTARTSMART");
+        }
+        break;
+      case 28:
+        {
+          Flag_ACS_EN = !Flag_ACS_EN;
+          EEPROMUpdate();
+        }
+        break;
+      case 281:
+        {
+          Flag_ACS_DT_EN = !Flag_ACS_DT_EN;
+          EEPROMUpdate();
+        }
+        break;
+      case 29:
+        {
+          Flag_ACS_EN_ELECT = !Flag_ACS_EN_ELECT;
+          EEPROMUpdate();
+        }
+        break;
+        /*    case 30:
+              {
+                Estado_Maquina = Flag_Caldera ? 0 : 5;
+                Flag_Caldera = !Flag_Caldera;
+              }
+              break; // Ciclo_Trabajo = Ciclo_Trabajoedit; EEPROMUpdate();
+        */
+      case 40:
+        {
+          Flag_Alarma_General = false;
+          Nro_Alarma = 0;
+          digitalWrite(DO_Buzzer, LOW);
+          Alarma_Activa = false;
+          ResetFlags();
+          Flag_Buzzer = false;
+          Estado_Maquina = 0;
+        }
+        break;
+      case 50:
+        {
+          EEPROM.write(Alarma_Address, 0);
+        }
+        break;
     }
   }
 
@@ -224,24 +225,18 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuUnoUno();
       }
       break;
-    case 11:
-      {
-        MenuActual = 12;
-        MenuUnoDos();
-      }
-      break;
     case 2:
-      {
-        MenuActual = 3;
-        MenuTres();
-      }
-      break;
-    case 3:
       {
         MenuActual = 4;
         MenuCuatro();
       }
       break;
+      /*    case 3:
+            {
+              MenuActual = 4;
+              MenuCuatro();
+            }
+            break;*/
     case 4:
       {
         MenuActual = 5;
@@ -327,16 +322,16 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       break;
     case 4:
       {
-        MenuActual = 3;
-        MenuTres();
-      }
-      break;
-    case 3:
-      {
         MenuActual = 2;
         MenuDos();
       }
       break;
+      /*case 3:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;*/
     case 2:
       {
         MenuActual = 1;
@@ -530,12 +525,12 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuDosSiete();
       }
       break;
-    case 30:
-      {
-        MenuActual = 3;
-        MenuTres();
-      }
-      break;
+      /*    case 30:
+            {
+              MenuActual = 3;
+              MenuTres();
+            }
+            break;*/
     case 40:
       {
         MenuActual = 4;
@@ -566,12 +561,12 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuCero();
       }
       break;
-    case 3:
-      {
-        MenuActual = 0;
-        MenuCero();
-      }
-      break;
+      /*case 3:
+        {
+          MenuActual = 0;
+          MenuCero();
+        }
+        break;*/
     case 2:
       {
         MenuActual = 0;

@@ -5,7 +5,7 @@ Menu menuMonitorRegistroAlarmas("MonitorRegistroAlarmas", &MenuCincoCero, &Refre
 
 Menu menuMonitorAlarmas("MonitorAlarmas", &MenuCuatroCero, &RefreshMenuCuatroCero, 40);
 
-Menu menuConfCalderaElectrica("ConfCalderaElectrica", &MenuTresCero, &RefreshMenuTresCero, 30);
+//Menu menuConfCalderaElectrica("ConfCalderaElectrica", &MenuTresCero, &RefreshMenuTresCero, 30);
 
 Menu menuConfiguracionEditTemperaturaACS("ConfEditTemperaturaACS", &MenuDosUnoCero, &RefreshMenuDosUnoCero, 210);
 
@@ -20,7 +20,7 @@ Menu menuConfiguracionTemperaturaACS(
   "ConfTemperaturaACS", &MenuDosUno, [ ] () {}, 21);
 Menu menuConfiguracionModoFrioCalor("ConfModoFrioCalor", &MenuDosCero, &RefreshMenuDosCero, 20);
 
-Menu menuMonitorSistemaCompresor("MonitorSistemaCompresor", &MenuUnoDos, &RefreshMenuUnoDos, 12);
+//Menu menuMonitorSistemaCompresor("MonitorSistemaCompresor", &MenuUnoDos, &RefreshMenuUnoDos, 12);
 Menu menuMonitorSistemaCaudalesYTemperaturas("MonitorSistemaCaudalesYTemperaturas", &MenuUnoUno, &RefreshMenuUnoUno, 11);
 Menu menuMonitorSistemaACSADM("MonitorSistemaACSADM", &MenuUnoCero, &RefreshMenuUnoCero, 10);
 
@@ -28,8 +28,8 @@ Menu menuRegistroAlarmas(
   "RegistroAlarmas", &MenuCinco, [ ] () {}, 5);
 Menu menuAlarmas(
   "Alarmas", &MenuCuatro, [ ] () {}, 4);
-Menu menuCalderaElectrica(
-  "ConfCalderaElectrica", &MenuTres, [ ] () {}, 3);
+//Menu menuCalderaElectrica(
+//  "ConfCalderaElectrica", &MenuTres, [ ] () {}, 3);
 Menu menuConfiguracionSistema(
   "ConfigracionSistema", &MenuDos, [ ] () {}, 2);
 Menu menuMonitorSistema(
@@ -125,13 +125,13 @@ void initializeAndSetupMenu() {
   menuConfiguracionModoFrioCalor.setEscape(&menuConfiguracionSistema);
 
   // 12
-  menuMonitorSistemaCompresor.setUp(&menuMonitorSistemaCaudalesYTemperaturas);
-  menuMonitorSistemaCompresor.setDown(&menuMonitorSistemaACSADM);
+  //menuMonitorSistemaCompresor.setUp(&menuMonitorSistemaCaudalesYTemperaturas);
+  //menuMonitorSistemaCompresor.setDown(&menuMonitorSistemaACSADM);
   // 11
   menuMonitorSistemaCaudalesYTemperaturas.setUp(&menuMonitorSistemaACSADM);
-  menuMonitorSistemaCaudalesYTemperaturas.setDown(&menuMonitorSistemaCompresor);
+  menuMonitorSistemaCaudalesYTemperaturas.setDown(&menuMonitorSistemaACSADM);
   // 10
-  menuMonitorSistemaACSADM.setUp(&menuMonitorSistemaCompresor);
+  menuMonitorSistemaACSADM.setUp(&menuMonitorSistemaCaudalesYTemperaturas);
   menuMonitorSistemaACSADM.setDown(&menuMonitorSistemaCaudalesYTemperaturas);
 
   // 50
@@ -158,25 +158,25 @@ void initializeAndSetupMenu() {
     Estado_Maquina = 0; });
 
   // 4
-  menuAlarmas.setUp(&menuCalderaElectrica);
+  menuAlarmas.setUp(&menuConfiguracionSistema);
   menuAlarmas.setDown(&menuRegistroAlarmas);
   menuAlarmas.setEscape(&menuInicial);
   menuAlarmas.setEnter(&menuMonitorAlarmas);
 
   // 30
-  menuConfCalderaElectrica.setEscape(&menuCalderaElectrica);
-  menuConfCalderaElectrica.setEnterAction([ ] () {
-    Estado_Maquina = Flag_Caldera ? 0 : 5;
-    Flag_Caldera = !Flag_Caldera; });
+  //menuConfCalderaElectrica.setEscape(&menuCalderaElectrica);
+  //menuConfCalderaElectrica.setEnterAction([ ] () {
+  //  Estado_Maquina = Flag_Caldera ? 0 : 5;
+  //  Flag_Caldera = !Flag_Caldera; });
 
   // 3
-  menuCalderaElectrica.setUp(&menuConfiguracionSistema);
-  menuCalderaElectrica.setDown(&menuAlarmas);
-  menuCalderaElectrica.setEscape(&menuInicial);
-  menuCalderaElectrica.setEnter(&menuConfCalderaElectrica);
+  //menuCalderaElectrica.setUp(&menuConfiguracionSistema);
+  //menuCalderaElectrica.setDown(&menuAlarmas);
+  //menuCalderaElectrica.setEscape(&menuInicial);
+  //menuCalderaElectrica.setEnter(&menuConfCalderaElectrica);
   // 2
   menuConfiguracionSistema.setUp(&menuMonitorSistema);
-  menuConfiguracionSistema.setDown(&menuCalderaElectrica);
+  menuConfiguracionSistema.setDown(&menuAlarmas);
   menuConfiguracionSistema.setEscape(&menuInicial);
   menuConfiguracionSistema.setEnter(&menuConfiguracionModoFrioCalor);
   // 1

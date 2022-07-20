@@ -94,14 +94,14 @@ void setup() { // Inicializacion de I/O y variables generales
     delay(100);
     Serial3.println("AT+CIPMUX=0"); // 1:multiple connection 0:single connection
     delay(100);
-    Serial.println("ESP Inicializado");
+    Serial.println(F("ESP Inicializado"));
     delay(100);
     // Serial3.println("AT+CWJAP=\"Velazquez-UBNET\",\"hv45av25\"");
     // delay(10000);
     checkWifi();
   }
   else {
-    Serial.println("Fallo en inicializacion de ESP");
+    Serial.println(F("Fallo en inicializacion de ESP"));
   }
 
   EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM

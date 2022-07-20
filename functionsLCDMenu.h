@@ -23,7 +23,7 @@ void RefreshMenuUnoCero();
 void RefreshMenuUnoUno();
 
 // La tercera ventana muestra la eficiencia térmica
-void RefreshMenuUnoDos();
+//void RefreshMenuUnoDos();
 
 // Modo Frio / Calor
 void RefreshMenuDosCero();
@@ -53,7 +53,7 @@ void RefreshMenuDosOchoUno();
 void RefreshMenuDosNueve();
 
 // Estado caldera (ENCENDIDA/APAGADA)
-void RefreshMenuTresCero();
+//void RefreshMenuTresCero();
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
 void RefreshAlarma(volatile byte _nro_Alarma);
@@ -73,7 +73,7 @@ void MenuUnoCero(); // 1º Ventana de Monitor
 
 void MenuUnoUno(); // 2º Ventana de Monitor
 
-void MenuUnoDos(); // 3º Ventana de Monitor
+//void MenuUnoDos(); // 3º Ventana de Monitor
 
 void MenuDos(); // Menu de Configuración del Sistema
 
@@ -93,9 +93,9 @@ void MenuDosSeis();
 
 void MenuDosSiete(); // confiuracion de WIFI
 
-void MenuTres(); // Menú de Configuración de Caldera Eléctrica
+//void MenuTres(); // Menú de Configuración de Caldera Eléctrica
 
-void MenuTresCero(); // Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
+//void MenuTresCero(); // Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
 
 void MenuCuatro(); // Menú de Visualización de Alarmas
 

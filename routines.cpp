@@ -1,5 +1,8 @@
 #include "routines.h"
 
+const char MSG_WAIT[] PROGMEM = "POR FAVOR, ESPERE";
+const char MSG_CHANGING_MODE[] PROGMEM = "CAMBIANDO MODO...";
+
 void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
 
@@ -8,9 +11,9 @@ void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: mod
   Activacion_Comp = 0;
   // Modo_Funcionamiento = true;
   lcd.clear();
-  lcd.write("POR FAVOR, ESPERE   ");
+  lcd.write(MSG_WAIT);
   lcd.setCursor(0, 2);
-  lcd.write("CAMBIANDO MODO...   ");
+  lcd.write(MSG_CHANGING_MODE);
   for (unsigned long i = 0; i < 3000000; i++) // Se espera un cierto tiempo antes de activar la válvula de 4 vías
   {
     wdt_reset();
@@ -25,10 +28,6 @@ void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: mod
     ModoFrioCalor = true;
   }
 
-  lcd.clear(); // Se espera un cierto tiempo antes de reactivar el compresor
-  lcd.write("POR FAVOR, ESPERE   ");
-  lcd.setCursor(0, 2);
-  lcd.write("CAMBIANDO MODO...   ");
   for (unsigned long i = 0; i < 200000; i++) {
     wdt_reset();
   }
@@ -141,7 +140,7 @@ void checkWifi() {
     delay(100);
     if (Serial3.find(':')) // Si lo está, detiene el modo Smart y queda listo para funcionar
     {
-      Serial.print("Conectado a red");
+      Serial.print(F("Conectado a red"));
       //Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
 
       local_ip = "";
@@ -158,7 +157,7 @@ void checkWifi() {
       Flag_Wifi = true;
     }
     else {
-      Serial.print("No Conectado a red");
+      Serial.print(F("No Conectado a red"));
     }
   }
 }
@@ -166,7 +165,7 @@ void checkWifi() {
 void checkESP() {
   Serial3.println("AT");
   delay(1000);
-  Flag_ESP = Serial3.find('OK');
+  Flag_ESP = Serial3.find("OK");
 }
 
 void setupDigitalInputs() {
