@@ -313,7 +313,7 @@ void loop() {
       else
         Cont_Temp_Descarga = 0;
 
-      if (Temp_Admision < -4) {
+      if (Temp_Admision < -7.5) {
         Flag_Temp_Adm = true;
       }
     }
@@ -581,7 +581,7 @@ void loop() {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
       }
-      if (Temp_Admision < -4) // Condicion para ir a Descanso
+      if (Temp_Admision < -7) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
