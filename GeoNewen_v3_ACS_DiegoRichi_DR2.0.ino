@@ -541,7 +541,7 @@ void loop() {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
       }
-      if (Temp_out_T < 0) // Condicion para ir a Descanso
+      if (Temp_out_T < -6) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
