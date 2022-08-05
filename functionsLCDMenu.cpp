@@ -12,7 +12,7 @@ byte FlechaAbajo[8] = {
     B00000,
     B11111,
     B01110,
-    B00100};
+    B00100 };
 
 byte FlechaArriba[8] = {
     B00100,
@@ -22,934 +22,611 @@ byte FlechaArriba[8] = {
     B00000,
     B00000,
     B00000,
-    B00000};
+    B00000 };
 
-/*byte Enter[8] = {
-        B00000,
-        B00101,
-        B01101,
-        B11111,
-        B01100,
-        B00100,
-        B00000,
-        B00000
-  };
-
-  byte GradoC[8] = {
-        B00110,
-        B01001,
-        B01001,
-        B00110,
-        B00000,
-        B00000,
-        B00000,
-        B00000
-  };*/
-
-void lcdCreateSpecialChars()
-{
+void lcdCreateSpecialChars() {
   lcd.createChar(1, FlechaAbajo); // Se crean los caracteres definidos anteriormente
   lcd.createChar(2, FlechaArriba);
   // lcd.createChar(3, Enter);
   // lcd.createChar(4, GradoC);
 }
 
-void lcdRefreshValues()
-{
+void lcdRefreshValues() {
 
   if (MenuActual == 0) // Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
-  {
-    lcd.setCursor(19, 2);
-    lcd.print(Estado_Maquina);
-
-    lcd.setCursor(19, 1);
-    if (digitalRead(DI_Marcha_on) == HIGH)
-      lcd.print("H");
-    else
-      lcd.print("L");
-
-
-    lcd.setCursor(0, 1);
-    if (Flag_Wifi)
-      lcd.print("W");
-    else
-      lcd.print("NW");
-
-
-    lcd.setCursor(0, 2);
-    if (Flag_ESP)
-      lcd.print("E");
-    else
-      lcd.print("NE");
-  }
+    RefreshMenuCero();
 
   if (MenuActual == 10) // Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
-  {
-    lcd.setCursor(5, 0);
-    if (ModoFrioCalor)
-    {
-      lcd.print("FRIO ");
-    }
-    else
-    {
-      lcd.print("CALOR");
-    }
-    lcd.setCursor(5, 1);
-    // lcd.print(Temp_intX_T, 1);
-    lcd.setCursor(15, 1);
-    // lcd.print(Temp_intX_H, 1);
-    lcd.setCursor(5, 2);
-    lcd.print(Temp_comp_acu, 1);
-    lcd.setCursor(15, 2);
-    lcd.print(Temp_Admision, 1);
-    lcd.setCursor(5, 3);
-    lcd.print(Temp_Descargaacu, 1);
-    lcd.setCursor(15, 3);
-    lcd.print(Temp_ACSacu, 1);
-    // lcd.setCursor(16,3);
-    // lcd.print(Temp_PCB, 1);
-  }
+    RefreshMenuUnoCero();
 
   if (MenuActual == 11) // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
-  {
-    if (ModoFrioCalor)
-    {
-      lcd.setCursor(5, 0);
-      lcd.print("FRIO ");
-      lcd.setCursor(5, 1);
-      lcd.print(Temp_in_Hacu, 1);
-      lcd.setCursor(15, 1);
-      lcd.print(Temp_out_Hacu, 1);
-      lcd.setCursor(5, 2);
-      lcd.print(Temp_out_T, 1);
-      lcd.setCursor(15, 2);
-      lcd.print(Temp_in_T, 1);
-      lcd.setCursor(5, 3);
-      lcd.print("    ");
-      lcd.setCursor(5, 3);
-      lcd.print(Caud_H);
-      lcd.setCursor(15, 3);
-      lcd.print("    ");
-      lcd.setCursor(15, 3);
-      lcd.print(Caud_Tacu);
-    }
-    else
-    {
-      lcd.setCursor(5, 0);
-      lcd.print("CALOR");
-      lcd.setCursor(5, 1);
-      lcd.print(Temp_in_Hacu, 1);
-      lcd.setCursor(15, 1);
-      lcd.print(Temp_out_Hacu, 1);
-      lcd.setCursor(5, 2);
-      lcd.print(Temp_out_T, 1);
-      lcd.setCursor(15, 2);
-      lcd.print(Temp_in_T, 1);
-      lcd.setCursor(5, 3);
-      lcd.print("    ");
-      lcd.setCursor(5, 3);
-      lcd.print(Caud_H);
-      lcd.setCursor(15, 3);
-      lcd.print("    ");
-      lcd.setCursor(15, 3);
-      lcd.print(Caud_T);
-    }
-  }
-
-  if (MenuActual == 12) // La tercera ventana muestra la eficiencia térmica
-  {
-    lcd.setCursor(3, 1);
-    lcd.print("    ");
-    lcd.setCursor(3, 1);
-    lcd.print(TI, 1);
-    lcd.setCursor(3, 2);
-    lcd.print("    ");
-    lcd.setCursor(3, 2);
-    lcd.print(Potencia, 0);
-  }
-
-  /*if (MenuActual == 13) //La cuarta ventana muestra los parámetros eléctricos del sistema
-    {
-    lcd.setCursor(3, 1);
-    //lcd.print(AC_V,0);
-    //lcd.setCursor(12,1);
-    lcd.print(A_RMS, 2);
-    lcd.setCursor(3, 2);
-    lcd.print("    ");
-    lcd.setCursor(3, 2);
-    lcd.print(Potencia, 0);
-    }*/
+    RefreshMenuUnoUno();
 
   if (MenuActual == 20) // Modo Frio / Calor
-  {
-    lcd.setCursor(12, 2);
-    if (ModoFrioCalor)
-    {
-      lcd.print("FRIO ");
-    }
-    else
-    {
-      lcd.print("CALOR");
-    }
-  }
+    RefreshMenuDosCero();
 
   if (MenuActual == 210) // Editar valor ACS
-  {
-    lcd.setCursor(14, 1);
-    lcd.print(SetP_ACS);
-    lcd.setCursor(13, 2);
-    lcd.print(SetP_ACS_Edit);
-  }
+    RefreshMenuDosUnoCero();
 
   if (MenuActual == 23) // Alarmas
-  {
-    lcd.setCursor(8, 2);
-    if (Flag_Alarma_EN)
-    {
-      lcd.print("ON ");
-    }
-    else
-      lcd.print("OFF");
-  }
+    RefreshMenuDosTres();
 
   if (MenuActual == 24) // Funcionamiento Auto/Manual
-  {
-    lcd.setCursor(10, 2);
-    if (Modo_Funcionamiento == false)
-    {
-      lcd.print("AUTO  ");
-    }
-    else
-      lcd.print("MANUAL");
-  }
-
-  if (MenuActual == 260) // Pos_Valv
-  {
-    lcd.setCursor(11, 2);
-    lcd.print(Pos_Valv);
-  }
+    RefreshMenuDosCuatro();
 
   if (MenuActual == 27) // Conexion de WIFI (Conectado/No Conectado)
-  {
-    lcd.setCursor(8, 2);
-    if (Flag_Wifi)
-    {
-      lcd.print("Conectado   ");
-    }
-    else
-    {
-      lcd.print("No Conectado");
-    }
-    lcd.setCursor(8, 1);
-    lcd.print(local_ip);
-  }
+    RefreshMenuDosSiete();
 
   if (MenuActual == 28) // Activacion/desactivacion de ACS
-  {
-    lcd.setCursor(15, 1);
-    if (Flag_ACS_EN)
-    {
-      lcd.print("ON ");
-    }
-    else
-      lcd.print("OFF");
-  }
+    RefreshMenuDosOcho();
+
+  if (MenuActual == 281) // Activacion/desactivacion de delta ACS electrico
+    RefreshMenuDosOchoUno();
 
   if (MenuActual == 29) // Activacion/desactivacion de ACS electrico
-  {
-    lcd.setCursor(15, 1);
-    if (Flag_ACS_EN_ELECT)
-    {
-      lcd.print("ON ");
-    }
-    else
-      lcd.print("OFF");
-  }
-
-  if (MenuActual == 30) // Estado caldera (ENCENDIDA/APAGADA)
-  {
-    lcd.setCursor(8, 3);
-    if (Flag_Caldera)
-    {
-      lcd.print("ENCENDIDA");
-    }
-    else
-      lcd.print("APAGADA  ");
-  }
+    RefreshMenuDosNueve();
 
   if (MenuActual == 40) // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
-  {
-    lcd.setCursor(0, 1);
-    switch (Nro_Alarma)
-    {
-    case 0:
-    {
-      lcd.print("No hay alarmas act. ");
-      lcd.setCursor(0, 2);
-      lcd.print("                    ");
-    }
-    break;
-    case 1:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Tierra es BAJA   ");
-    }
-    break;
-    case 2:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Tierra es ALTA   ");
-    }
-    break;
-    case 3:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Hogar es BAJA    ");
-    }
-    break;
-    case 4:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Hogar es ALTA    ");
-    }
-    break;
-    case 5:
-    {
-      lcd.print("Temp Triacs es ALTA ");
-    }
-    break;
-    case 6:
-    {
-      lcd.print("Temp Compresor es   ");
-      lcd.setCursor(0, 2);
-      lcd.print("ALTA                ");
-    }
-    break;
-    case 7:
-    {
-      lcd.print("Caudal de Tierra es ");
-      lcd.setCursor(0, 2);
-      lcd.print("BAJO                ");
-    }
-    break;
-    case 8:
-    {
-      lcd.print("Caudal de Hogar es  ");
-      lcd.setCursor(0, 2);
-      lcd.print("BAJO                ");
-    }
-    break;
-    case 9:
-    {
-      lcd.print("Presion Pres. HI es ");
-      lcd.setCursor(0, 2);
-      lcd.print("ALTA                ");
-    }
-    break;
-    case 10:
-    {
-      lcd.print("Presion Pres. LOW  ");
-      lcd.setCursor(0, 2);
-      lcd.print("BAJA                ");
-    }
-    break;
-    case 11:
-    {
-      lcd.print("Delta T INTX BAJO  ");
-    }
-    break;
-    case 12:
-    {
-      lcd.print("Corriente compresor");
-      lcd.setCursor(0, 2);
-      lcd.print("fuera de rango     ");
-    }
-    break;
-    case 13:
-    {
-      lcd.print("Temp Caldera Aux   ");
-      lcd.setCursor(0, 2);
-      lcd.print("es ALTA             ");
-    }
-    break;
-    case 14:
-    {
-      lcd.print("Alarma Modulo Trif.");
-    }
-    break;
-    case 15:
-    {
-      lcd.print("Temp ADM elevada");
-    }
-    break;
-    case 16:
-    {
-      lcd.print("Bajo aporte de kcal");
-    }
-    break;
-    case 17:
-    {
-      lcd.print("Retorno liquido comp");
-    }
-    break;
-    case 18:
-    {
-      lcd.print("Temp DES elevada");
-    }
-    break;
-    }
-  }
+    RefreshMenuCuatroCero();
 
   if (MenuActual == 50) // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
-  {
-    lcd.setCursor(0, 1);
-    Alarma_Eeprom = EEPROM.read(Alarma_Address);
-    Nro_Alarma2 = Alarma_Eeprom;
-    switch (Nro_Alarma2)
-    {
-    case 0:
-    {
-      lcd.print("No hay alarmas ");
-      lcd.setCursor(0, 2);
-      lcd.print("                    ");
-    }
-    break;
-    case 1:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Tierra es BAJA   ");
-    }
-    break;
-    case 2:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Tierra es ALTA   ");
-    }
-    break;
-    case 3:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Hogar es BAJA    ");
-    }
-    break;
-    case 4:
-    {
-      lcd.print("Temp Intercambiador ");
-      lcd.setCursor(0, 2);
-      lcd.print("de Hogar es ALTA    ");
-    }
-    break;
-    case 5:
-    {
-      lcd.print("Temp Admision Gas   ");
-      lcd.setCursor(0, 2);
-      lcd.print("es ALTA             ");
-    }
-    break;
-    case 6:
-    {
-      lcd.print("Temp Compresor es   ");
-      lcd.setCursor(0, 2);
-      lcd.print("ALTA                ");
-    }
-    break;
-    case 7:
-    {
-      lcd.print("Caudal de Tierra es ");
-      lcd.setCursor(0, 2);
-      lcd.print("BAJO                ");
-    }
-    break;
-    case 8:
-    {
-      lcd.print("Caudal de Hogar es  ");
-      lcd.setCursor(0, 2);
-      lcd.print("BAJO                ");
-    }
-    break;
-    case 9:
-    {
-      lcd.print("Presion Pres. HI es ");
-      lcd.setCursor(0, 2);
-      lcd.print("ALTA                ");
-    }
-    break;
-    case 10:
-    {
-      lcd.print("Presion Pres. LOW  ");
-      lcd.setCursor(0, 2);
-      lcd.print("BAJA                ");
-    }
-    break;
-    case 11:
-    {
-      lcd.print("Delta T INTX BAJO  ");
-    }
-    break;
-    case 12:
-    {
-      lcd.print("Corriente Compresor");
-      lcd.setCursor(0, 2);
-      lcd.print("fuera de rango     ");
-    }
-    case 13:
-    {
-      lcd.print("Temp Caldera Aux   ");
-      lcd.setCursor(0, 2);
-      lcd.print("es ALTA             ");
-    }
-    break;
-    case 14:
-    {
-      lcd.print("Alarma Modulo Trif.");
-    }
-    break;
-    case 15:
-    {
-      lcd.print("Temp ADM elevada");
-    }
-    break;
-    case 16:
-    {
-      lcd.print("Bajo aporte de kcal");
-    }
-    break;
-    case 17:
-    {
-      lcd.print("Retorno liquido comp");
-    }
-    break;
-    case 18:
-    {
-      lcd.print("Temp DES elevada");
-    }
-    break;
-    }
+    RefreshMenuCincoCero();
+}
+
+// Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
+void RefreshMenuCero() {
+
+  lcd.setCursor(19, 2);
+  lcd.print(Estado_Maquina);
+
+  lcd.setCursor(19, 1);
+  if (digitalRead(DI_Marcha_on) == HIGH)
+    lcd.print(F("H"));
+  else
+    lcd.print(F("L"));
+
+  lcd.setCursor(0, 1);
+  if (Flag_Wifi)
+    lcd.print(F("W "));
+  else
+    lcd.print(F("NW"));
+
+  lcd.setCursor(0, 2);
+  if (Flag_ESP)
+    lcd.print(F("E "));
+  else
+    lcd.print(F("NE"));
+}
+
+// Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
+void RefreshMenuUnoCero() {
+  lcd.setCursor(5, 0);
+  if (ModoFrioCalor) {
+    lcd.print(F("FRIO "));
+  }
+  else {
+    lcd.print(F("CALOR"));
+  }
+  // lcd.setCursor(5, 1);
+  //  lcd.print(Temp_intX_T, 1);
+  // lcd.setCursor(15, 1);
+  //  lcd.print(Temp_intX_H, 1);
+  lcd.setCursor(5, 2);
+  lcd.print(Temp_comp_acu, 1);
+  lcd.setCursor(15, 2);
+  lcd.print(Temp_Admision, 1);
+  lcd.setCursor(5, 3);
+  lcd.print(Temp_Descargaacu, 1);
+  lcd.setCursor(15, 3);
+  lcd.print(Temp_ACSacu, 1);
+  // lcd.setCursor(16,3);
+  // lcd.print(Temp_PCB, 1);
+}
+
+// La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
+void RefreshMenuUnoUno() {
+  lcd.setCursor(5, 0);
+  if (ModoFrioCalor) {
+    lcd.print(F("FRIO "));
+    lcd.setCursor(15, 3);
+    lcd.print(F("    "));
+    lcd.setCursor(15, 3);
+    lcd.print(Caud_Tacu);
+  }
+  else {
+    lcd.print(F("CALOR"));
+    lcd.setCursor(15, 3);
+    lcd.print(F("    "));
+    lcd.setCursor(15, 3);
+    lcd.print(Caud_T);
+  }
+  lcd.setCursor(5, 1);
+  lcd.print(Temp_in_Hacu, 1);
+  lcd.setCursor(15, 1);
+  lcd.print(Temp_out_Hacu, 1);
+  lcd.setCursor(5, 2);
+  lcd.print(Temp_out_T, 1);
+  lcd.setCursor(15, 2);
+  lcd.print(Temp_in_T, 1);
+  lcd.setCursor(5, 3);
+  lcd.print(F("    "));
+  lcd.setCursor(5, 3);
+  lcd.print(Caud_H);
+}
+
+// Modo Frio / Calor
+void RefreshMenuDosCero() {
+  lcd.setCursor(12, 2);
+  if (ModoFrioCalor) {
+    lcd.print(F("FRIO "));
+  }
+  else {
+    lcd.print(F("CALOR"));
   }
 }
 
-/****************/
-/*FUNCIONES*/
-/****************/
+// Editar valor ACS
+void RefreshMenuDosUnoCero() {
+  lcd.setCursor(14, 1);
+  lcd.print(SetP_ACS);
+  lcd.setCursor(13, 2);
+  lcd.print(SetP_ACS_Edit);
+}
+
+// Alarmas
+void RefreshMenuDosTres() {
+  lcd.setCursor(8, 2);
+  if (Flag_Alarma_EN) {
+    lcd.print(F("ON "));
+  }
+  else
+    lcd.print(F("OFF"));
+}
+
+// Funcionamiento Auto/Manual
+void RefreshMenuDosCuatro() {
+  lcd.setCursor(10, 2);
+  if (Modo_Funcionamiento == false) {
+    lcd.print(F("AUTO  "));
+  }
+  else
+    lcd.print(F("MANUAL"));
+}
+
+// Conexion de WIFI (Conectado/No Conectado)
+void RefreshMenuDosSiete() {
+  lcd.setCursor(8, 2);
+  if (Flag_Wifi) {
+    lcd.print(F("Conectado   "));
+  }
+  else {
+    lcd.print(F("No Conectado"));
+  }
+  lcd.setCursor(4, 1);
+  lcd.print(local_ip);
+}
+
+// Activacion/desactivacion de ACS
+void RefreshMenuDosOcho() {
+  lcd.setCursor(15, 1);
+  if (Flag_ACS_EN) {
+    lcd.print(F("ON "));
+  }
+  else
+    lcd.print(F("OFF"));
+}
+
+// Activacion/desactivacion de delta de ACS electrico final
+void RefreshMenuDosOchoUno() {
+  lcd.setCursor(12, 1);
+  if (Flag_ACS_DT_EN) {
+    lcd.print(F("ON "));
+  }
+  else
+    lcd.print(F("OFF"));
+
+  lcd.setCursor(0, 2);
+  if (flag_dtElectrico_final) {
+    lcd.print(F("ENCENDIDO"));
+  }
+  else
+    lcd.print(F("APAGADO"));
+}
+
+// Activacion/desactivacion de ACS electrico
+void RefreshMenuDosNueve() {
+  lcd.setCursor(15, 1);
+  if (Flag_ACS_EN_ELECT) {
+    lcd.print(F("ON "));
+  }
+  else
+    lcd.print(F("OFF"));
+
+  lcd.setCursor(0, 2);
+  if (Valor_DO_Calentador == HIGH) {
+    lcd.print(F("ENCENDIDO"));
+  }
+  else
+    lcd.print(F("APAGADO  "));
+}
+
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshAlarma(volatile byte _nro_Alarma) {
+  lcd.setCursor(0, 1);
+  switch (_nro_Alarma) {
+  case 0:
+    {
+      lcd.print(F("No hay alarmas act. "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("                    "));
+    }
+    break;
+  case 1:
+    {
+      lcd.print(F("Temp Intercambiador "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("de Tierra es BAJA   "));
+    }
+    break;
+  case 2:
+    {
+      lcd.print(F("Temp Intercambiador "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("de Tierra es ALTA   "));
+    }
+    break;
+  case 3:
+    {
+      lcd.print(F("Temp Intercambiador "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("de Hogar es BAJA    "));
+    }
+    break;
+  case 4:
+    {
+      lcd.print(F("Temp Intercambiador "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("de Hogar es ALTA    "));
+    }
+    break;
+  case 5:
+    {
+      lcd.print(F("Temp Admision Gas   "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("es ALTA             "));
+    }
+    break;
+  case 6:
+    {
+      lcd.print(F("Temp Compresor es   "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("ALTA                "));
+    }
+    break;
+  case 7:
+    {
+      lcd.print(F("Caudal de Tierra es "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("BAJO                "));
+    }
+    break;
+  case 8:
+    {
+      lcd.print(F("Caudal de Hogar es  "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("BAJO                "));
+    }
+    break;
+  case 9:
+    {
+      lcd.print(F("Presion Pres. HI es "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("ALTA                "));
+    }
+    break;
+  case 10:
+    {
+      lcd.print(F("Presion Pres. LOW  "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("BAJA                "));
+    }
+    break;
+  case 11:
+    {
+      lcd.print(F("Delta T INTX BAJO  "));
+    }
+    break;
+  case 12:
+    {
+      lcd.print(F("Corriente compresor"));
+      lcd.setCursor(0, 2);
+      lcd.print(F("fuera de rango     "));
+    }
+    break;
+  case 13:
+    {
+      lcd.print(F("Temp Caldera Aux   "));
+      lcd.setCursor(0, 2);
+      lcd.print(F("es ALTA             "));
+    }
+    break;
+  case 14:
+    {
+      lcd.print(F("Alarma Modulo Trif."));
+    }
+    break;
+  case 15:
+    {
+      lcd.print(F("Temp ADM elevada"));
+    }
+    break;
+  case 16:
+    {
+      lcd.print(F("Bajo aporte de kcal"));
+    }
+    break;
+  case 17:
+    {
+      lcd.print(F("Retorno liquido comp"));
+    }
+    break;
+  case 18:
+    {
+      lcd.print(F("Temp DES elevada"));
+    }
+    break;
+  }
+}
+
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshMenuCuatroCero() {
+  RefreshAlarma(Nro_Alarma);
+}
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshMenuCincoCero() {
+  Alarma_Eeprom = EEPROM.read(Alarma_Address);
+  RefreshAlarma(Alarma_Eeprom);
+}
+
+/**********************************/
+/*FUNCIONES DE DIBUJO DE PANTALLAS*/
+/**********************************/
+
+void beginLcd() {
+  lcd.begin(20, 4);
+  lcd.clear();
+}
+
+void showNavigation() {
+  lcd.setCursor(19, 0);
+  lcd.write(2);
+  lcd.setCursor(19, 3);
+  lcd.write(1);
+}
 
 void MenuCero() // Pantalla de Inicio/Bienvenida
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("     KUME NEWEN     ");
+  beginLcd();
+  lcd.print(F("     KUME NEWEN     "));
   lcd.setCursor(0, 1);
-  lcd.print("   BOMBA DE CALOR   ");
+  lcd.print(F("   BOMBA DE CALOR   "));
   lcd.setCursor(0, 2);
-  lcd.print("    GeoNewen v3.0   ");
+  lcd.print(F("    GeoNewen v3.0   "));
   lcd.setCursor(0, 3);
-  lcd.print("   Presione ENTER   ");
+  lcd.print(F("   Presione ENTER   "));
 }
 
 void MenuUno() // Menú de Monitor de Temps y Consumo de Energía
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("MONITOR DE TEMPS");
+  beginLcd();
+  lcd.print(F("MONITOR DE TEMPS"));
   lcd.setCursor(0, 1);
-  lcd.print("Y CONSUMO DE ENERGIA");
-  lcd.setCursor(0, 3);
-  // lcd.print("ENTER para ver...");
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  lcd.print(F("Y CONSUMO DE ENERGIA"));
+  showNavigation();
 }
 
 void MenuUnoCero() // 1º Ventana de Monitor
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("MODO:            ");
+  beginLcd();
+  lcd.print(F("MODO:            "));
   lcd.setCursor(0, 1);
-  lcd.print("IxT: n/a");
+  lcd.print(F("IxT: n/a"));
   lcd.setCursor(10, 1);
-  lcd.print("IxH: n/a");
+  lcd.print(F("IxH: n/a"));
   lcd.setCursor(0, 2);
-  lcd.print("Com:");
+  lcd.print(F("Com:"));
   lcd.setCursor(10, 2);
-  lcd.print("Adm:");
+  lcd.print(F("Adm:"));
   lcd.setCursor(0, 3);
-  lcd.print("Des:");
+  lcd.print(F("Des:"));
   lcd.setCursor(10, 3);
-  lcd.print("ACS:");
+  lcd.print(F("ACS:"));
   // lcd.setCursor(10, 3);
-  // lcd.print("Evap:");
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  // lcd.print(F("Evap:"));
+  showNavigation();
 }
 
 void MenuUnoUno() // 2º Ventana de Monitor
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("MODO:            ");
+  beginLcd();
+  lcd.print(F("MODO:            "));
   lcd.setCursor(0, 1);
-  lcd.print("TiH:");
+  lcd.print(F("TiH:"));
   lcd.setCursor(10, 1);
-  lcd.print("ToH:");
+  lcd.print(F("ToH:"));
   lcd.setCursor(0, 2);
-  lcd.print("TiT:");
+  lcd.print(F("TiT:"));
   lcd.setCursor(10, 2);
-  lcd.print("ToT:");
+  lcd.print(F("ToT:"));
   lcd.setCursor(0, 3);
-  lcd.print("CauT:");
+  lcd.print(F("CauT:"));
   lcd.setCursor(10, 3);
-  lcd.print("CauH:");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
-}
-
-void MenuUnoDos() // 3º Ventana de Monitor
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print(" MONITOR COMPRESOR ");
-  lcd.setCursor(0, 1);
-  lcd.print("I=");
-  lcd.setCursor(8, 1);
-  lcd.print("A");
-  lcd.setCursor(0, 2);
-  lcd.print("P=");
-  lcd.setCursor(8, 2);
-  lcd.print("W");
-  lcd.setCursor(0, 3);
-  lcd.print("Pres Evap(PSI):     ");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  lcd.print(F("CauH:"));
+  showNavigation();
 }
 
 void MenuDos() // Menu de Configuración del Sistema
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CONFIGURACION DEL   ");
+  beginLcd();
+  lcd.print(F("CONFIGURACION DEL   "));
   lcd.setCursor(0, 1);
-  lcd.print("     SISTEMA        ");
+  lcd.print(F("     SISTEMA        "));
   lcd.setCursor(0, 3);
-  // lcd.print("ENTER para ver...");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  // lcd.print(F("ENTER para ver..."));
+  showNavigation();
 }
 
 void MenuDosCero() // Menú de Cambio de Modo de Funcionamiento
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("MODO FRIO/CALOR     ");
+  beginLcd();
+  lcd.print(F("MODO FRIO/CALOR     "));
   lcd.setCursor(0, 2);
-  lcd.print("Modo Activo:");
+  lcd.print(F("Modo Activo:"));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 3);
-  lcd.write(1);
-}
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 
-/*void MenuDosCeroCero() //Ventana de Cambio de Modo de Funcionamiento
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("Presione ENTER para  ");
-  lcd.setCursor(0, 1);
-  lcd.print("cambiar modo de func.");
-  lcd.setCursor(0, 3);
-  lcd.print("Modo Act:");
-}*/
+}
 
 void MenuDosUno() // Configuracion de temp de ACS
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CONFIGURACION DE    ");
+  beginLcd();
+  lcd.print(F("CONFIGURACION DE    "));
   lcd.setCursor(0, 1);
-  lcd.print("TEMPERATURA DE ACS  ");
+  lcd.print(F("TEMPERATURA DE ACS  "));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
 
 void MenuDosUnoCero() // Seteo de temp de ACS
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("MODIFIQUE VALOR     ");
+  beginLcd();
+  lcd.print(F("MODIFIQUE VALOR     "));
   lcd.setCursor(0, 1);
-  lcd.print("Valor Actual=");
+  lcd.print(F("Valor Actual="));
   lcd.setCursor(0, 2);
-  lcd.print("Nuevo Valor=");
+  lcd.print(F("Nuevo Valor="));
   lcd.setCursor(0, 3);
-  lcd.print("CONFIRME CON ENTER  ");
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
 
-/*void MenuDosDos()  // var_mod_2
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CONFIGURACION DE    ");
-  lcd.setCursor(0, 1);
-  lcd.print("PARAMETRO: Var_Mod_2");
-  lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
-}
-
-void MenuDosDosCero()
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("MODIFIQUE VALOR     ");
-  lcd.setCursor(0, 1);
-  lcd.print("Valor Actual=");
-  lcd.setCursor(0, 2);
-  lcd.print("Nuevo Valor=");
-  lcd.setCursor(0, 3);
-  lcd.print("CONFIRME CON ENTER  ");
-}
-*/
 void MenuDosTres() // Habilitacion alarmas de caudal
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("HABILITACION DE     ");
+  beginLcd();
+  lcd.print(F("HABILITACION DE     "));
   lcd.setCursor(0, 1);
-  lcd.print("ALARMAS DE CAUDAL   ");
+  lcd.print(F("ALARMAS DE CAUDAL   "));
   lcd.setCursor(0, 2);
-  lcd.print("ALARMAS:   ");
+  lcd.print(F("ALARMAS:   "));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
-}
-
-void MenuDosTresCero()
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("OPCION ACTUAL:");
-  lcd.setCursor(0, 3);
-  lcd.print("MODIFIQUE CON ENTER ");
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
 
 void MenuDosCuatro() // Cambio a modo manual o automatico
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CAMBIO MODO MANUAL ");
+  beginLcd();
+  lcd.print(F("CAMBIO MODO MANUAL "));
   lcd.setCursor(0, 1);
-  lcd.print("O AUTOMATICO        ");
+  lcd.print(F("O AUTOMATICO        "));
   lcd.setCursor(0, 2);
-  lcd.print("MODO ACT:");
+  lcd.print(F("MODO ACT:"));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
-}
-
-/*void MenuDosCinco()  // Control manual de compresor
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CONTROL MANUAL");
-  lcd.setCursor(0, 1);
-  lcd.print("DE COMPRESOR          ");
-  lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
-}*/
-
-void MenuDosSeis() // Control manual de valvula
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CONTROL MANUAL");
-  lcd.setCursor(0, 1);
-  lcd.print("DE VALVULA          ");
-  lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
-}
-
-void MenuDosSeisCero()
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("TECLAS ARRIBA Y");
-  lcd.setCursor(0, 1);
-  lcd.print("ABAJO P/MODIFICAR");
-  lcd.setCursor(0, 2);
-  lcd.print("Pos Actual=");
-  lcd.setCursor(0, 3);
-  lcd.print("ATRAS para salir");
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
 
 void MenuDosSiete() // configuracion de WIFI
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CONFIGURACION WIFI");
+  beginLcd();
+  lcd.print(F("CONFIGURACION WIFI"));
   lcd.setCursor(0, 1);
-  lcd.print("ip:");
+  lcd.print(F("IP:               "));
   lcd.setCursor(0, 2);
-  lcd.print("ESTADO: ");
+  lcd.print(F("ESTADO:           "));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
-
-/*void MenuDosSieteCero()
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("Presione ENTER para");
-  lcd.setCursor(0, 1);
-  lcd.print("iniciar config.          ");
-  lcd.setCursor(0, 3);
-  lcd.print("ESTADO: ");
-}*/
 
 void MenuDosOcho() // Habilitacion de Generacion de ACS
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("HABILITACION DE     ");
+  beginLcd();
+  lcd.print(F("HABILITACION DE     "));
   lcd.setCursor(0, 1);
-  lcd.print("GENERACION ACS:     ");
+  lcd.print(F("GENERACION ACS:     "));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
 
-/*void MenuDosOchoCero()
+void MenuDosOchoUno() // Habilitacion de Delta electrico
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("OPCION ACTUAL:");
+  beginLcd();
+  lcd.print(F("ACS CON DELTA ELECT "));
+  lcd.setCursor(0, 1);
+  lcd.print(F("Habilitado:       "));
   lcd.setCursor(0, 3);
-  lcd.print("MODIFIQUE CON ENTER ");
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
-*/
+
 void MenuDosNueve() // ACS electrico
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("HABILITACION DE     ");
+  beginLcd();
+  lcd.print(F("HABILITACION DE     "));
   lcd.setCursor(0, 1);
-  lcd.print("ACS ELECTRICO:      ");
+  lcd.print(F("ACS ELECTRICO:      "));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para modificar");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  lcd.print(F("Enter modifica"));
+  showNavigation();
 }
-/*
-void MenuDosNueveCero()
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("OPCION ACTUAL:");
-  lcd.setCursor(0, 3);
-  lcd.print("MODIFIQUE CON ENTER ");
-}*/
 
+/*
 void MenuTres() // Menú de Configuración de Caldera Eléctrica
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("CALDERA AUXILIAR");
-  lcd.setCursor(0, 3);
-  // lcd.print("ENTER para ver...");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  beginLcd();
+  lcd.print(F("CALDERA AUXILIAR"));
+  showNavigation();
 }
 
 void MenuTresCero() // Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("Presione ENTER para ");
+  beginLcd();
+  lcd.print(F("Presione ENTER para "));
   lcd.setCursor(0, 2);
-  lcd.print("encender/apagar     ");
+  lcd.print(F("encender/apagar     "));
   lcd.setCursor(0, 3);
-  lcd.print("ESTADO:             ");
+  lcd.print(F("ESTADO:             "));
 }
-
+*/
 void MenuCuatro() // Menú de Visualización de Alarmas
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("MONITOR DE ALARMAS");
-  lcd.setCursor(0, 3);
-  // lcd.print("ENTER para ver...");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
-  lcd.setCursor(19, 3);
-  lcd.write(1);
+  beginLcd();
+  lcd.print(F("MONITOR DE ALARMAS"));
+  showNavigation();
 }
 
 void MenuCuatroCero() // Visualización de Alarmas Activas
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("ALARMA ACTIVA:");
+  beginLcd();
+  lcd.print(F("ALARMA ACTIVA:"));
   lcd.setCursor(0, 3);
-  lcd.print("Resetear Sist=>ENTER");
+  lcd.print(F("Resetear Sist=>ENTER"));
 }
 
 void MenuCinco() // REGISTRO DE ALARMAS
 {
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("REGISTRO DE ALARMAS");
-  lcd.setCursor(0, 3);
-  // lcd.print("ENTER para ver...");
-  lcd.setCursor(19, 0);
-  lcd.write(2);
+  beginLcd();
+  lcd.print(F("REGISTRO DE ALARMAS"));
+  showNavigation();
 }
 
-void MenuCincoCero()
-{
-  lcd.begin(20, 4);
-  lcd.clear();
-  lcd.print("ULTIMA ALARMA ACTIVA");
+void MenuCincoCero() {
+  beginLcd();
+  lcd.print(F("ULTIMA ALARMA ACTIVA"));
   lcd.setCursor(0, 3);
-  lcd.print("ENTER para borrar...");
+  lcd.print(F("ENTER para borrar..."));
 }

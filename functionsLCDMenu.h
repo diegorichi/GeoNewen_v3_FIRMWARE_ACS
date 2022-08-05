@@ -4,8 +4,7 @@
 #include "vars.h"
 #include "kume_eeprom.h"
 
-
-extern LiquidCrystal lcd;//(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); //Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
+extern LiquidCrystal lcd; //(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); //Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
 /****************/
 /*FUNCIONES*/
 /****************/
@@ -14,92 +13,83 @@ void lcdCreateSpecialChars();
 
 void lcdRefreshValues();
 
-void MenuCero(); //Pantalla de Inicio/Bienvenida
+// Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
+void RefreshMenuCero();
 
-void MenuUno(); //Menú de Monitor de Temps y Consumo de Energía
+// Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
+void RefreshMenuUnoCero();
 
+// La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
+void RefreshMenuUnoUno();
 
-void MenuUnoCero(); //1º Ventana de Monitor
+// Modo Frio / Calor
+void RefreshMenuDosCero();
 
+// Editar valor ACS
+void RefreshMenuDosUnoCero();
 
-void MenuUnoUno(); //2º Ventana de Monitor
+// Alarmas
+void RefreshMenuDosTres();
 
+// Funcionamiento Auto/Manual
+void RefreshMenuDosCuatro();
 
-void MenuUnoDos(); //3º Ventana de Monitor
+// Conexion de WIFI (Conectado/No Conectado)
+void RefreshMenuDosSiete();
 
+// Activacion/desactivacion de ACS
+void RefreshMenuDosOcho();
 
-void MenuDos(); //Menu de Configuración del Sistema
+// Activacion/desactivacion de Delta ACS Electrico
+void RefreshMenuDosOchoUno();
 
+// Activacion/desactivacion de ACS electrico
+void RefreshMenuDosNueve();
 
-void MenuDosCero(); //Menú de Cambio de Modo de Funcionamiento
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshAlarma(volatile byte _nro_Alarma);
 
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshMenuCuatroCero();
 
-//void MenuDosCeroCero(); //Ventana de Cambio de Modo de Funcionamiento
+// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
+void RefreshMenuCincoCero();
 
+void MenuCero(); // Pantalla de Inicio/Bienvenida
 
-void MenuDosUno();  // Configuracion de temp de ACS
+void MenuUno(); // Menú de Monitor de Temps y Consumo de Energía
 
+void MenuUnoCero(); // 1º Ventana de Monitor
 
-void MenuDosUnoCero();  //Seteo de temp de ACS
+void MenuUnoUno(); // 2º Ventana de Monitor
 
+void MenuDos(); // Menu de Configuración del Sistema
 
-//void MenuDosDos();
+void MenuDosCero(); // Menú de Cambio de Modo de Funcionamiento
 
+void MenuDosUno(); // Configuracion de temp de ACS
 
-//void MenuDosDosCero();
+void MenuDosUnoCero(); // Seteo de temp de ACS
 
-
-void MenuDosTres();   // Habilitacion alarmas de caudal
-
-
-void MenuDosTresCero();
-
+void MenuDosTres(); // Habilitacion alarmas de caudal
 
 void MenuDosCuatro(); // Cambio a modo manual o automatico
 
+void MenuDosSiete(); // confiuracion de WIFI
 
-//void MenuDosCinco();
+void MenuCuatro(); // Menú de Visualización de Alarmas
 
+void MenuCuatroCero(); // Visualización de Alarmas Activas
 
-void MenuDosSeis();
+void MenuCinco(); // Registro de alarmas
 
+void MenuCincoCero(); // Registro de alarmas
 
-void MenuDosSeisCero();
+void MenuDosOcho(); // Habilitacion de Generacion de ACS
 
+void MenuDosOchoUno(); // Habilitacion de Delta de ACS
 
-void MenuDosSiete(); //confiuracion de WIFI
+void MenuDosNueve(); // ACS electrico
 
-
-//void MenuDosSieteCero();
-
-
-void MenuTres(); //Menú de Configuración de Caldera Eléctrica
-
-
-void MenuTresCero(); //Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
-
-
-void MenuCuatro(); //Menú de Visualización de Alarmas
-
-
-void MenuCuatroCero(); //Visualización de Alarmas Activas
-
-
-void MenuCinco();
-
-
-void MenuCincoCero();
-
-
-void MenuDosOcho(); // Habilitacion de Generacion de ACS 
-
-
-//void MenuDosOchoCero();
-
-
-void MenuDosNueve();  // ACS electrico
-
-
-//void MenuDosNueveCero();
 
 #endif

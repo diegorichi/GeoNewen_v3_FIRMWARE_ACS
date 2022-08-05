@@ -94,14 +94,14 @@ void setup() { // Inicializacion de I/O y variables generales
     delay(100);
     Serial3.println("AT+CIPMUX=0"); // 1:multiple connection 0:single connection
     delay(100);
-    Serial.println("ESP Inicializado");
+    Serial.println(F("ESP Inicializado"));
     delay(100);
     // Serial3.println("AT+CWJAP=\"Velazquez-UBNET\",\"hv45av25\"");
     // delay(10000);
     checkWifi();
   }
   else {
-    Serial.println("Fallo en inicializacion de ESP");
+    Serial.println(F("Fallo en inicializacion de ESP"));
   }
 
   EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
@@ -167,7 +167,8 @@ void loop() {
         Temp_ACS = Temp_ACSaux;
     }
 
-    {                                          // Determinación de Caudal
+    // Determinación de Caudal
+    {
       Pulsos_Caud_H_Bis = Pulsos_Caud_H;       // Variable auxiliar para visualizar los pulsos contados directamente
       if ((millis() - Ventana_Caudal1) > 1000) // Se contabilizan los pulsos de los caudalímetros durante un segundo, y se calcula el caudal
       {
@@ -190,18 +191,18 @@ void loop() {
     }
 
     // Cálculo de Eficiencia Térmica
+    {
+      // Ef_Termica_1 = (Temp_in_T - Temp_out_T) * Caud_H;  //recordar caudales estan cruzados
+      // Ef_Termica_2 = (Temp_in_T - Temp_out_T) * Caud_T;
 
-    // Ef_Termica_1 = (Temp_in_T - Temp_out_T) * Caud_H;  //recordar caudales estan cruzados
-    // Ef_Termica_2 = (Temp_in_T - Temp_out_T) * Caud_T;
+      // Cálculo de la Corriente AC
 
-    // Cálculo de la Corriente AC
-
-    // Voltage = getVPP();                       //La llamada a la función getVPP devuelve el valor pico a pico de la tensión muestreada
-    // V_RMS = (Voltage / 2.0) * 0.707;          //Ese valor pico a pico se divide por 2 y se multiplica por 0.707 para obtener el valor eficaz (aproximado)
-    // A_RMS = (V_RMS * 1000) / mVperAmp;        //En función del valor eficaz y del módulo empleado, se usa la constante de equivalencia correspondiente y se obtiene el valor de la corriente
+      // Voltage = getVPP();                       //La llamada a la función getVPP devuelve el valor pico a pico de la tensión muestreada
+      // V_RMS = (Voltage / 2.0) * 0.707;          //Ese valor pico a pico se divide por 2 y se multiplica por 0.707 para obtener el valor eficaz (aproximado)
+      // A_RMS = (V_RMS * 1000) / mVperAmp;        //En función del valor eficaz y del módulo empleado, se usa la constante de equivalencia correspondiente y se obtiene el valor de la corriente
+    }
 
     // Cálculo de la Potecia
-
     Potencia = 220 * TI * CosFI; // Valor estimativo
 
     if ((millis() - RefrescoWifi) > 30000) // Verificacion de conexion a Wifi
@@ -265,6 +266,8 @@ void loop() {
       Temp_Descargaacu = (T1_Des + T2_Des + T3_Des) / 3;
 
       lcdRefreshValues();
+
+      //menuActivo->refresh();
 
       Periodo_Refresco = millis(); // El período de refresco es a los fines de que la información mostrada no esté constanmente cambiando y la visualización sea más adecuada
     }
@@ -355,7 +358,7 @@ void loop() {
     {
       if (((Temp_ACSacu >= (SetP_ACS + 7)) && Flag_ACS_EN) // Si la temp ACS alcanza el objetivo, apagamos el calentador
         || ((Temp_ACSacu <= (SetP_ACS - 2)) && Flag_ACS_EN)     // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
-        || !Flag_ACS_EN)                                 // si apago generac ACS no hay delta t final.
+        || !Flag_ACS_EN || !Flag_ACS_DT_EN)                                 // si apago generac ACS no hay delta t final.
       {
         flag_dtElectrico_final = false;
       }
@@ -363,13 +366,13 @@ void loop() {
       // Si la temperatura es 2 grados menor al objetivo, volvemos a prender el calendador
       //  pero solo si es mayor a la seteada, de manera tal que usamos el cartucho solo en el
       // ultimo tramo de ACS.
-      if (Temp_ACSacu < (SetP_ACS + 5) && (Temp_ACSacu > SetP_ACS) && Flag_ACS_EN) {
+      if (Temp_ACSacu < (SetP_ACS + 5) && (Temp_ACSacu > SetP_ACS) && Flag_ACS_EN && Flag_ACS_DT_EN) {
         flag_dtElectrico_final = true;
       }
 
       // si acs elect apagado -> lo apagamos
       // si acs apagado -> lo apagamos
-      if (Flag_ACS_EN_ELECT || (Flag_ACS_EN && flag_dtElectrico_final)) {
+      if (Flag_ACS_EN_ELECT || (Flag_ACS_EN && Flag_ACS_DT_EN && flag_dtElectrico_final)) {
         Valor_DO_Calentador = HIGH;
       }
       else {
@@ -471,18 +474,7 @@ void loop() {
 
     if (Estado_Maquina == 2) // Arranque Compresor y Bombas
     {
-
-      /*if (Flag_TempComp01 == true)      //Si la temperatura del compresor no fuera correcta, se produce una alarma y se detiene el proceso
-        {
-        Estado_Maquina = 4;
-        MenuCuatroCero();
-        MenuActual = 40;
-        }*/
-
-        // Valor_DO_Bomba_T = HIGH;
-        // Valor_DO_Bomba_H = HIGH;
       Valor_DO_Bombas = HIGH;
-      // Valor_DO_Aux = HIGH;
       Nro_Alarma = 0;
       if (Estado_Comp == 0) {
         Valor_DO_Comp_01 = HIGH;
@@ -502,30 +494,6 @@ void loop() {
         Ingreso_E3 = millis();
       }
 
-      /*if (millis() - Activacion_Comp > 2500)
-        { if (Flag_Corriente == true )
-        {
-          Estado_Maquina = 4;
-          MenuCuatroCero();
-          MenuActual = 40;
-        }
-        }*/
-
-        /*if(digitalRead(DI_Alarma_Trif) == LOW)   //!Solo equipos trifasicos
-          {
-           Estado_Maquina = 4;
-           MenuCuatroCero();
-           MenuActual = 40;
-           Flag_Alarma_Trif = true;
-          }*/
-
-          /*if (Flag_TempComp01 == true)      //Si la temperatura del compresor no fuera correcta, se produce una alarma y se detiene el proceso
-            {
-            Estado_Maquina = 4;
-            MenuCuatroCero();
-            MenuActual = 40;
-            }*/
-
       if (Modo_Funcionamiento == true) {
         Estado_Maquina = 0;
       }
@@ -539,9 +507,6 @@ void loop() {
         Estado_Maquina = 0;
       }
 
-      // Valor_DO_Bomba_T = HIGH;
-      // Valor_DO_Bomba_H = HIGH;
-      // Valor_DO_V4V = LOW;
       Valor_DO_VACS = LOW;
 
       if (digitalRead(DI_Marcha_on) == LOW || Flag_Caldera) {
@@ -656,7 +621,7 @@ void loop() {
         }
 
         if (Temp_ACSacu > SetP_ACS) {
-          flag_dtElectrico_final = true;
+          flag_dtElectrico_final = Flag_ACS_DT_EN;
           Valor_DO_V4V = LOW; // si se alcanzan los 45 grados se deja de calentar
           Valor_DO_VACS = HIGH;
           Cal_ACS = false;

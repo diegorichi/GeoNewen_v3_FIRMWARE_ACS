@@ -5,6 +5,7 @@
 #include "functionsLCDMenu.h"
 #include "routines.h"
 #include "kume_eeprom.h"
+#include "menu.h"
 
 void keyboardSetup(); // setup de pin modes y demas
 

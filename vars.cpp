@@ -4,9 +4,8 @@
 //#define SSID "KumeNewenLLC"     // "SSID-WiFiname"            //los datos de SSID y pass ya no son requeridos, la conexion se realiza mediante la app "ESP8266 SmartConfig"
 //#define PASS "newenkume"        // "password"
 //#define IP "184.106.153.149"                     // thingspeak.com ip                //ip de la pagina web de Thingspeak
-//#define IP "api.thingspeak.com" //"54.158.47.123"  // api.thingspeak.com
-String api_key_kume = "UML8C4KGN6IVTJE7"; //key para enviar datos a Thingspeak, se obtiene de la pagina web
-String api_key_dr = "230X8WDK4WACGI95"; //key para enviar datos a Thingspeak, se obtiene de la pagina web
+
+//#define IP "54.158.47.123"  // api.thingspeak.com
 String local_ip = "0.0.0.0";
 /*-----------------------------------------------------------*/
 
@@ -16,18 +15,15 @@ String local_ip = "0.0.0.0";
 
 //PINES DIGITALES
 
-const int ACS_EN_Address = 21;
-const int ACS_EN_ELECT_Address = 23;
+uint8_t DI_Temp_in_H[8] = { 0x28, 0xDA, 0xB6, 0xF8, 0x1A, 0x19, 0x01, 0x8B };      //n1    ok
+uint8_t DI_Temp_Compresor[8] = { 0x28, 0xE5, 0xAC, 0x26, 0x1B, 0x19, 0x01, 0x3C }; //n2    ok
+uint8_t DI_Temp_Admision[8] = { 0x28, 0x34, 0x76, 0x57, 0x1A, 0x19, 0x01, 0xA0 };  //n10   ok
+uint8_t DI_Temp_out_T[8] = { 0x28, 0xD6, 0x3C, 0xE0, 0x1B, 0x19, 0x01, 0x0F };     //n7   ok
 
-uint8_t DI_Temp_in_H[8] = {0x28, 0xDA, 0xB6, 0xF8, 0x1A, 0x19, 0x01, 0x8B};      //n1    ok
-uint8_t DI_Temp_Compresor[8] = {0x28, 0xE5, 0xAC, 0x26, 0x1B, 0x19, 0x01, 0x3C}; //n2    ok
-uint8_t DI_Temp_Admision[8] = {0x28, 0x34, 0x76, 0x57, 0x1A, 0x19, 0x01, 0xA0};  //n10   ok
-uint8_t DI_Temp_out_T[8] = {0x28, 0xD6, 0x3C, 0xE0, 0x1B, 0x19, 0x01, 0x0F};     //n7   ok
-
-uint8_t DI_Temp_Descarga[8] = {0x28, 0x49, 0x4B, 0x01, 0x1C, 0x19, 0x01, 0x1A}; //n11
-uint8_t DI_Temp_ACS[8] = {0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1};      //n12
-uint8_t DI_Temp_out_H[8] = {0x28, 0x87, 0x9F, 0xE9, 0x1B, 0x19, 0x01, 0xF8};    //n13
-uint8_t DI_Temp_in_T[8] = {0x28, 0x83, 0x69, 0x3D, 0x1B, 0x19, 0x01, 0x11};     //n14
+uint8_t DI_Temp_Descarga[8] = { 0x28, 0x49, 0x4B, 0x01, 0x1C, 0x19, 0x01, 0x1A }; //n11
+uint8_t DI_Temp_ACS[8] = { 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 };      //n12
+uint8_t DI_Temp_out_H[8] = { 0x28, 0x87, 0x9F, 0xE9, 0x1B, 0x19, 0x01, 0xF8 };    //n13
+uint8_t DI_Temp_in_T[8] = { 0x28, 0x83, 0x69, 0x3D, 0x1B, 0x19, 0x01, 0x11 };     //n14
 
 // 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 }; //n5
 
@@ -144,11 +140,11 @@ float Temp_in_T;
 float Temp_Descarga;
 float Temp_Admision;
 float TI;
-float AuxTempH;
-float AuxTempT;
+//float AuxTempH;
+//float AuxTempT;
 
-float DC_V = 0;
-float AC_V = 0;
+//float DC_V = 0;
+//float AC_V = 0;
 float Fesc = 1.982; //Actualizado el 22/01/18 1.982;
 float FCal = 1.055; //1.77;// caudalimetro  sen - hz21wa                    //1.9 caudalimetros  geo v1.0 y 2.0;
 float Ef_Termica_1;
@@ -187,6 +183,7 @@ unsigned long Tpo_Refresco_TS = 600000;   //10 minutos de refresco de TS
 unsigned long Arranque_Frio = 600000;     //Periodo de calentamiento de compresor para arranque en frio
 
 bool Flag_ACS_EN = true;
+bool Flag_ACS_DT_EN = true;
 bool Flag_TempComp01 = false;
 bool Flag_Temp_Descarga = false;
 bool Flag_retardo_e7 = false;
@@ -256,9 +253,10 @@ volatile int Ciclo_Trabajo;
 volatile int Ciclo_Trabajoedit;
 volatile int Estado_Comp = 0;
 volatile byte Nro_Alarma = 0;
-volatile byte Nro_Alarma2 = 0;
 volatile byte SetP_ACS = 0;
 volatile byte SetP_ACS_Edit = 0;
+//volatile byte SetP_Temp_Admision = 0;
+//volatile byte SetP_Temp_Admision_Edit = 0;
 
 volatile int Per_Esp_C; //Variables modificables por teclado
 volatile int Var_Mod_2;
@@ -275,12 +273,18 @@ byte L;
 const int DutyCAddress = 0; //Direcciones de memoria EEPROM
 const int ModeAddress = 3;
 const int Mode_F_Address = 4;
-const int SetP_ACS_Address = 5;
+const int SetP_ACS_Address = 5; // address 5 y 6 tomadas por ACS
 const int Var_2_Address = 7;
 const int Var_3_Address = 9;
 const int Alarma_Address = 11;
 const int Pos_Valv_Address = 13;
 const int Alarma_EN_Address = 15;
+const int ACS_DT_EN_Address = 19;
+const int ACS_EN_Address = 21;
+const int ACS_EN_ELECT_Address = 23;
+//const int SetP_Temp_Amision_Address = 25; // address 25 y 26 tomadas por ACS
+
+
 volatile byte Alarma_Eeprom;
 
 
