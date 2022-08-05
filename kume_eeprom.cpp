@@ -58,9 +58,11 @@ void EEPROMLectura() //Función de lectura de valores almacenados en memoria EEP
   Flag_ACS_DT_EN = EEPROM.read(ACS_DT_EN_Address);
   Flag_ACS_EN_ELECT = EEPROM.read(ACS_EN_ELECT_Address);
   ModoFrioCalor = EEPROM.read(ModeAddress);
-  //Modo_Funcionamiento = EEPROM.read(Mode_F_Address);
-  //lowByte = EEPROM.read(Pos_Valv_Address+1);
-  //highByte = EEPROM.read(Pos_Valv_Address);
-  //Pos_Valv = ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
-  //Pos_Valv_Edit = Pos_Valv;
+  lowByte = EEPROM.read(SetP_Temp_Admision_Address + 1);
+  highByte = EEPROM.read(SetP_Temp_Admision_Address);
+  SetP_Temp_Admision = ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
+  SetP_Temp_Admision = EEPROM.read(SetP_Temp_Amision_Address);
+  SetP_Temp_Admision_Edit = SetP_Temp_Admision;
+
+
 }

@@ -15,10 +15,6 @@ String local_ip = "0.0.0.0";
 
 //PINES DIGITALES
 
-const int ACS_EN_Address = 21;
-const int ACS_DT_EN_Address = 19;
-const int ACS_EN_ELECT_Address = 23;
-
 uint8_t DI_Temp_in_H[8] = { 0x28, 0xDA, 0xB6, 0xF8, 0x1A, 0x19, 0x01, 0x8B };      //n1    ok
 uint8_t DI_Temp_Compresor[8] = { 0x28, 0xE5, 0xAC, 0x26, 0x1B, 0x19, 0x01, 0x3C }; //n2    ok
 uint8_t DI_Temp_Admision[8] = { 0x28, 0x34, 0x76, 0x57, 0x1A, 0x19, 0x01, 0xA0 };  //n10   ok
@@ -259,6 +255,8 @@ volatile int Estado_Comp = 0;
 volatile byte Nro_Alarma = 0;
 volatile byte SetP_ACS = 0;
 volatile byte SetP_ACS_Edit = 0;
+volatile byte SetP_Temp_Admision = 0;
+volatile byte SetP_Temp_Admision_Edit = 0;
 
 volatile int Per_Esp_C; //Variables modificables por teclado
 volatile int Var_Mod_2;
@@ -275,12 +273,18 @@ byte L;
 const int DutyCAddress = 0; //Direcciones de memoria EEPROM
 const int ModeAddress = 3;
 const int Mode_F_Address = 4;
-const int SetP_ACS_Address = 5;
+const int SetP_ACS_Address = 5; // address 5 y 6 tomadas por ACS
 const int Var_2_Address = 7;
 const int Var_3_Address = 9;
 const int Alarma_Address = 11;
 const int Pos_Valv_Address = 13;
 const int Alarma_EN_Address = 15;
+const int ACS_DT_EN_Address = 19;
+const int ACS_EN_Address = 21;
+const int ACS_EN_ELECT_Address = 23;
+const int SetP_Temp_Amision_Address = 25; // address 25 y 26 tomadas por ACS
+
+
 volatile byte Alarma_Eeprom;
 
 

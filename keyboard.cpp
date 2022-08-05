@@ -50,10 +50,6 @@ void AtencionTecladoNew() // Función de Navegación entre Menús y Modificació
   menuActivo->refresh();
 }
 
-void AtencionTeclado() {
-  AtencionTecladoNew();
-}
-
 void AtencionTecladoOld() // Función de Navegación entre Menús y Modificación de Parámetros
 {
   volatile bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
@@ -145,19 +141,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
           if (Modo_Funcionamiento && Estado_Maquina == 0) {
             SenalComp = !SenalComp;
           }
-        }
-        break;
-      case 26:
-        {
-          //MenuActual = 260;
-          //MenuDosSeisCero();
-          digitalWrite(ED_ENABLE, LOW);
-          EEPROMLectura();
-        }
-        break;
-      case 260:
-        {
-          //          Referenciar = true;
         }
         break;
       case 27:
@@ -271,12 +254,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       break;
     case 24:
       {
-        MenuActual = 26;
-        MenuDosSeis();
-      }
-      break;
-    case 26:
-      {
         MenuActual = 27;
         MenuDosSiete();
       }
@@ -297,11 +274,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       {
         MenuActual = 29;
         MenuDosNueve();
-      }
-      break;
-    case 260:
-      {
-        //    Paso_Abrir = true;
       }
       break;
     case 40:
@@ -350,11 +322,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuUnoUno();
       }
       break;
-    case 260:
-      {
-        //          Paso_Cerrar = true;
-      }
-      break;
     case 29:
       {
         MenuActual = 281;
@@ -374,12 +341,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       }
       break;
     case 27:
-      {
-        MenuActual = 26;
-        MenuDosSeis();
-      }
-      break;
-    case 26:
       {
         MenuActual = 24;
         MenuDosCuatro();
@@ -480,12 +441,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuDos();
       }
       break;
-    case 26:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
     case 27:
       {
         MenuActual = 2;
@@ -508,14 +463,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       {
         MenuActual = 2;
         MenuDos();
-      }
-      break;
-    case 260:
-      {
-        MenuActual = 26;
-        MenuDosSeis();
-        digitalWrite(ED_ENABLE, HIGH);
-        EEPROMUpdate();
       }
       break;
     case 270:
@@ -581,4 +528,8 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       break;
     }
   }
+}
+
+void AtencionTeclado() {
+  AtencionTecladoOld();
 }

@@ -13,7 +13,7 @@
 //la conexion se realiza mediante la app "ESP8266 SmartConfig"
 
 #define IP "54.158.47.123" //"api.thingspeak.com"  // thingspeak.com ip de la pagina web de Thingspeak
- 
+
 //extern String api_key_kume;   //key para enviar datos a Thingspeak, se obtiene de la pagina web
 //#define API_KEY_DR     //key para enviar datos a Thingspeak, se obtiene de la pagina web
 extern String local_ip;
@@ -25,9 +25,6 @@ extern String local_ip;
 
 //PINES DIGITALES
 
-extern const int ACS_EN_Address; // 21;
-extern const int ACS_DT_EN_Address; // 19;
-extern const int ACS_EN_ELECT_Address; // 23;
 
 extern uint8_t DI_Temp_in_H[8]; // {0x28, 0xDA, 0xB6, 0xF8, 0x1A, 0x19, 0x01, 0x8B};      //n1    ok
 extern uint8_t DI_Temp_Compresor[8]; // {0x28, 0xE5, 0xAC, 0x26, 0x1B, 0x19, 0x01, 0x3C}; //n2    ok
@@ -269,6 +266,8 @@ extern volatile int Estado_Comp; // 0;
 extern volatile byte Nro_Alarma; // 0;
 extern volatile byte SetP_ACS; // 0;
 extern volatile byte SetP_ACS_Edit; // 0;
+extern volatile byte SetP_Temp_Admision; // 0;
+extern volatile byte SetP_Temp_Admision_Edit; // 0;
 
 extern volatile int Per_Esp_C; //Variables modificables por teclado
 extern volatile int Var_Mod_2;
@@ -291,6 +290,10 @@ extern const int Var_3_Address; // 9;
 extern const int Alarma_Address; // 11;
 extern const int Pos_Valv_Address; // 13;
 extern const int Alarma_EN_Address; // 15;
+extern const int ACS_DT_EN_Address; // 19;
+extern const int ACS_EN_Address; // 21;
+extern const int ACS_EN_ELECT_Address; // 23;
+extern const int SetP_Temp_Amision_Address; // 25;
 extern volatile byte Alarma_Eeprom;
 
 

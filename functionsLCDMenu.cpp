@@ -3,14 +3,6 @@ LiquidCrystal lcd(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); // Se definen los pin
 
 #define byte uint8_t
 
-const char MSG_ENTER_ACTION[] PROGMEM = "Enter modifica";
-const char MSG_CALOR[] PROGMEM = "CALOR";
-const char MSG_FRIO[] PROGMEM = "FRIO ";
-const char MSG_ON[] PROGMEM = "ON ";
-const char MSG_OFF[] PROGMEM = "OFF";
-
-//#define MSG_ENTER_ACTION F("Enter modifica")
-
 // DEFINICIÓN DE CARACTERES (símbolos especiales a mostrar)
 byte FlechaAbajo[8] = {
     B00000,
@@ -50,21 +42,6 @@ void lcdRefreshValues() {
   if (MenuActual == 11) // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
     RefreshMenuUnoUno();
 
-  //if (MenuActual == 12) // La tercera ventana muestra la eficiencia térmica
-    //RefreshMenuUnoDos();
-
-  /*if (MenuActual == 13) //La cuarta ventana muestra los parámetros eléctricos del sistema
-    {
-    lcd.setCursor(3, 1);
-    //lcd.print(AC_V,0);
-    //lcd.setCursor(12,1);
-    lcd.print(A_RMS, 2);
-    lcd.setCursor(3, 2);
-    lcd.print(F("    "));
-    lcd.setCursor(3, 2);
-    lcd.print(Potencia, 0);
-    }*/
-
   if (MenuActual == 20) // Modo Frio / Calor
     RefreshMenuDosCero();
 
@@ -77,23 +54,17 @@ void lcdRefreshValues() {
   if (MenuActual == 24) // Funcionamiento Auto/Manual
     RefreshMenuDosCuatro();
 
-  //if (MenuActual == 26) // Pos_Valv
-  //  RefreshMenuDosSeis();
-
   if (MenuActual == 27) // Conexion de WIFI (Conectado/No Conectado)
     RefreshMenuDosSiete();
 
   if (MenuActual == 28) // Activacion/desactivacion de ACS
     RefreshMenuDosOcho();
 
-  if (MenuActual == 281) // Activacion/desactivacion de ACS
+  if (MenuActual == 281) // Activacion/desactivacion de delta ACS electrico
     RefreshMenuDosOchoUno();
 
   if (MenuActual == 29) // Activacion/desactivacion de ACS electrico
     RefreshMenuDosNueve();
-
-  //if (MenuActual == 30) // Estado caldera (ENCENDIDA/APAGADA)
-    //RefreshMenuTresCero();
 
   if (MenuActual == 40) // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
     RefreshMenuCuatroCero();
@@ -131,10 +102,10 @@ void RefreshMenuCero() {
 void RefreshMenuUnoCero() {
   lcd.setCursor(5, 0);
   if (ModoFrioCalor) {
-    lcd.print(MSG_FRIO);
+    lcd.print(F("FRIO "));
   }
   else {
-    lcd.print(MSG_CALOR);
+    lcd.print(F("CALOR"));
   }
   // lcd.setCursor(5, 1);
   //  lcd.print(Temp_intX_T, 1);
@@ -156,14 +127,14 @@ void RefreshMenuUnoCero() {
 void RefreshMenuUnoUno() {
   lcd.setCursor(5, 0);
   if (ModoFrioCalor) {
-    lcd.print(MSG_FRIO);
+    lcd.print(F("FRIO "));
     lcd.setCursor(15, 3);
     lcd.print(F("    "));
     lcd.setCursor(15, 3);
     lcd.print(Caud_Tacu);
   }
   else {
-    lcd.print(MSG_CALOR);
+    lcd.print(F("CALOR"));
     lcd.setCursor(15, 3);
     lcd.print(F("    "));
     lcd.setCursor(15, 3);
@@ -183,26 +154,14 @@ void RefreshMenuUnoUno() {
   lcd.print(Caud_H);
 }
 
-// La tercera ventana muestra la eficiencia térmica
-/*void RefreshMenuUnoDos() {
-  lcd.setCursor(3, 1);
-  lcd.print(F("    "));
-  lcd.setCursor(3, 1);
-  lcd.print(TI, 1);
-  lcd.setCursor(3, 2);
-  lcd.print(F("    "));
-  lcd.setCursor(3, 2);
-  lcd.print(Potencia, 0);
-}
-*/
 // Modo Frio / Calor
 void RefreshMenuDosCero() {
   lcd.setCursor(12, 2);
   if (ModoFrioCalor) {
-    lcd.print(MSG_FRIO);
+    lcd.print(F("FRIO "));
   }
   else {
-    lcd.print(MSG_CALOR);
+    lcd.print(F("CALOR"));
   }
 }
 
@@ -218,10 +177,10 @@ void RefreshMenuDosUnoCero() {
 void RefreshMenuDosTres() {
   lcd.setCursor(8, 2);
   if (Flag_Alarma_EN) {
-    lcd.print(MSG_ON);
+    lcd.print(F("ON "));
   }
   else
-    lcd.print(MSG_OFF);
+    lcd.print(F("OFF"));
 }
 
 // Funcionamiento Auto/Manual
@@ -233,12 +192,6 @@ void RefreshMenuDosCuatro() {
   else
     lcd.print(F("MANUAL"));
 }
-
-// Pos_Valv
-//void RefreshMenuDosSeis() {
-//  lcd.setCursor(12, 2);
-//  lcd.print(Pos_Valv);
-//}
 
 // Conexion de WIFI (Conectado/No Conectado)
 void RefreshMenuDosSiete() {
@@ -257,19 +210,20 @@ void RefreshMenuDosSiete() {
 void RefreshMenuDosOcho() {
   lcd.setCursor(15, 1);
   if (Flag_ACS_EN) {
-    lcd.print(MSG_ON);
+    lcd.print(F("ON "));
   }
   else
-    lcd.print(MSG_OFF);
+    lcd.print(F("OFF"));
 }
 
+// Activacion/desactivacion de delta de ACS electrico final
 void RefreshMenuDosOchoUno() {
   lcd.setCursor(12, 1);
   if (Flag_ACS_DT_EN) {
-    lcd.print(MSG_ON);
+    lcd.print(F("ON "));
   }
   else
-    lcd.print(MSG_OFF);
+    lcd.print(F("OFF"));
 
   lcd.setCursor(0, 2);
   if (flag_dtElectrico_final) {
@@ -283,10 +237,10 @@ void RefreshMenuDosOchoUno() {
 void RefreshMenuDosNueve() {
   lcd.setCursor(15, 1);
   if (Flag_ACS_EN_ELECT) {
-    lcd.print(MSG_ON);
+    lcd.print(F("ON "));
   }
   else
-    lcd.print(MSG_OFF);
+    lcd.print(F("OFF"));
 
   lcd.setCursor(0, 2);
   if (Valor_DO_Calentador == HIGH) {
@@ -295,16 +249,6 @@ void RefreshMenuDosNueve() {
   else
     lcd.print(F("APAGADO  "));
 }
-
-// Estado caldera (ENCENDIDA/APAGADA)
-/*void RefreshMenuTresCero() {
-  lcd.setCursor(8, 3);
-  if (Flag_Caldera) {
-    lcd.print(F("ENCENDIDA"));
-  }
-  else
-    lcd.print(F("APAGADA  "));
-}*/
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
 void RefreshAlarma(volatile byte _nro_Alarma) {
@@ -521,24 +465,6 @@ void MenuUnoUno() // 2º Ventana de Monitor
   showNavigation();
 }
 
-/*
-void MenuUnoDos() // 3º Ventana de Monitor
-{
-  beginLcd();
-  lcd.print(F(" MONITOR COMPRESOR "));
-  lcd.setCursor(0, 1);
-  lcd.print(F("I="));
-  lcd.setCursor(8, 1);
-  lcd.print(F("A"));
-  lcd.setCursor(0, 2);
-  lcd.print(F("P="));
-  lcd.setCursor(8, 2);
-  lcd.print(F("W"));
-  lcd.setCursor(0, 3);
-  lcd.print(F("Pres Evap(PSI):     "));
-  showNavigation();
-}
-*/
 void MenuDos() // Menu de Configuración del Sistema
 {
   beginLcd();
@@ -557,7 +483,7 @@ void MenuDosCero() // Menú de Cambio de Modo de Funcionamiento
   lcd.setCursor(0, 2);
   lcd.print(F("Modo Activo:"));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 
 }
@@ -569,7 +495,7 @@ void MenuDosUno() // Configuracion de temp de ACS
   lcd.setCursor(0, 1);
   lcd.print(F("TEMPERATURA DE ACS  "));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 
@@ -582,7 +508,7 @@ void MenuDosUnoCero() // Seteo de temp de ACS
   lcd.setCursor(0, 2);
   lcd.print(F("Nuevo Valor="));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 
@@ -595,7 +521,7 @@ void MenuDosTres() // Habilitacion alarmas de caudal
   lcd.setCursor(0, 2);
   lcd.print(F("ALARMAS:   "));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 
@@ -608,20 +534,7 @@ void MenuDosCuatro() // Cambio a modo manual o automatico
   lcd.setCursor(0, 2);
   lcd.print(F("MODO ACT:"));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
-  showNavigation();
-}
-
-void MenuDosSeis() // Control manual de valvula
-{
-  beginLcd();
-  lcd.print(F("CONTROL MANUAL"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("DE VALVULA          "));
-  lcd.setCursor(0, 2);
-  lcd.print(F("Pos Actual="));
-  lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 
@@ -634,7 +547,7 @@ void MenuDosSiete() // configuracion de WIFI
   lcd.setCursor(0, 2);
   lcd.print(F("ESTADO:           "));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 
@@ -645,7 +558,7 @@ void MenuDosOcho() // Habilitacion de Generacion de ACS
   lcd.setCursor(0, 1);
   lcd.print(F("GENERACION ACS:     "));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 
@@ -656,7 +569,7 @@ void MenuDosOchoUno() // Habilitacion de Delta electrico
   lcd.setCursor(0, 1);
   lcd.print(F("Habilitado:       "));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 
@@ -667,7 +580,7 @@ void MenuDosNueve() // ACS electrico
   lcd.setCursor(0, 1);
   lcd.print(F("ACS ELECTRICO:      "));
   lcd.setCursor(0, 3);
-  lcd.print(MSG_ENTER_ACTION);
+  lcd.print(F("Enter modifica"));
   showNavigation();
 }
 

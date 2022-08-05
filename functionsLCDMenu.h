@@ -22,9 +22,6 @@ void RefreshMenuUnoCero();
 // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
 void RefreshMenuUnoUno();
 
-// La tercera ventana muestra la eficiencia térmica
-//void RefreshMenuUnoDos();
-
 // Modo Frio / Calor
 void RefreshMenuDosCero();
 
@@ -36,9 +33,6 @@ void RefreshMenuDosTres();
 
 // Funcionamiento Auto/Manual
 void RefreshMenuDosCuatro();
-
-// Pos_Valv
-//void RefreshMenuDosSeis();
 
 // Conexion de WIFI (Conectado/No Conectado)
 void RefreshMenuDosSiete();
@@ -52,9 +46,6 @@ void RefreshMenuDosOchoUno();
 // Activacion/desactivacion de ACS electrico
 void RefreshMenuDosNueve();
 
-// Estado caldera (ENCENDIDA/APAGADA)
-//void RefreshMenuTresCero();
-
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
 void RefreshAlarma(volatile byte _nro_Alarma);
 
@@ -64,7 +55,6 @@ void RefreshMenuCuatroCero();
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
 void RefreshMenuCincoCero();
 
-
 void MenuCero(); // Pantalla de Inicio/Bienvenida
 
 void MenuUno(); // Menú de Monitor de Temps y Consumo de Energía
@@ -72,8 +62,6 @@ void MenuUno(); // Menú de Monitor de Temps y Consumo de Energía
 void MenuUnoCero(); // 1º Ventana de Monitor
 
 void MenuUnoUno(); // 2º Ventana de Monitor
-
-//void MenuUnoDos(); // 3º Ventana de Monitor
 
 void MenuDos(); // Menu de Configuración del Sistema
 
@@ -87,23 +75,15 @@ void MenuDosTres(); // Habilitacion alarmas de caudal
 
 void MenuDosCuatro(); // Cambio a modo manual o automatico
 
-void MenuDosSeis();
-
-//void MenuDosSeisCero();
-
 void MenuDosSiete(); // confiuracion de WIFI
-
-//void MenuTres(); // Menú de Configuración de Caldera Eléctrica
-
-//void MenuTresCero(); // Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
 
 void MenuCuatro(); // Menú de Visualización de Alarmas
 
 void MenuCuatroCero(); // Visualización de Alarmas Activas
 
-void MenuCinco();
+void MenuCinco(); // Registro de alarmas
 
-void MenuCincoCero();
+void MenuCincoCero(); // Registro de alarmas
 
 void MenuDosOcho(); // Habilitacion de Generacion de ACS
 
