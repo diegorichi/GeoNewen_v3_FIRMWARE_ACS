@@ -248,6 +248,7 @@ void RefreshMenuDosSieteUno() {
     lcd.print("                    ");
     lcd.setCursor(0, 1);
     lcd.print("Red:" + W.substring(4));
+    delay(500);
   }
   if (W.indexOf("password") > -1) // Si P13 esta incluido en el string
   {
@@ -628,7 +629,7 @@ void MenuDosSieteUno() // Estado Modo Smart
   lcd.setCursor(0, 0);
   lcd.print(F("Entrada modo SMART  "));
   lcd.setCursor(0, 3);
-  lcd.print(F("Enter camcela"));
+  lcd.print(F("Enter cancela"));
 }
 
 

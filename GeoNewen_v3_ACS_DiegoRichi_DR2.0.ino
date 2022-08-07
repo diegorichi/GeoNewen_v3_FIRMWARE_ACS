@@ -92,13 +92,13 @@ void setup() { // Inicializacion de I/O y variables generales
     delay(100);
     Serial3.println("AT+CWSTOPSMART");
     delay(100);
-    Serial3.println("AT+CIPMUX=0"); // 1:multiple connection 0:single connection
+    Serial3.println("AT+CIPMUX=1"); // 1:multiple connection 0:single connection
     delay(100);
     Serial.println(F("ESP Inicializado"));
     delay(100);
     // Serial3.println("AT+CWJAP=\"Velazquez-UBNET\",\"hv45av25\"");
     // delay(10000);
-    checkWifi();
+    //checkWifi();
   }
   else {
     Serial.println(F("Fallo en inicializacion de ESP"));
@@ -523,7 +523,7 @@ void loop() {
 
       //   ###########    Condiciones de descanso generales      ##############
 
-      if (Temp_out_H > 45.0) // Condicion para ir a Descanso
+      if (Temp_out_H > 49.0) // Condicion para ir a Descanso
       {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();

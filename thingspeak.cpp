@@ -22,12 +22,11 @@ String S_Temp_ACS;
 
 
 void sendToThingSpeak(String api_key) {
-  String cmd = "AT+CIPSTART=\"TCP\",\"";
-  cmd += IP;
-  cmd += "\",80";
+  String cmd = "AT+CIPSTART=0,\"TCP\",\"api.thingspeak.com\",80";
   Serial3.println(cmd);
   delay(2000);
   if (Serial3.find("Error")) {
+    Serial.println(F("No se puede conectar a thingspeak"));
     return;
   }
 
@@ -48,17 +47,22 @@ void sendToThingSpeak(String api_key) {
   cmd += S_Temp_Admision;
   cmd += "&field8=";
   cmd += S_Temp_ACS;
+  cmd += "\r\n\r\n";
   Serial.println(cmd);
-  Serial3.print("AT+CIPSEND=");
-  Serial3.println(cmd.length());
+  Serial3.println("AT+CIPSEND=0," + String(cmd.length()) );
+
   if (Serial3.find('>')) {
-    Serial3.print(cmd);
+    Serial3.println(cmd);
   }
-  delay(1000);
+  delay(2000);
   if (Serial3.find('OK')) {
     Serial.println(F("thingspeak updated"));
   }
-  Serial3.print("AT+CIPCLOSE");
+  if (Serial3.find("Error")) {
+    Serial.println(F("Error al enviar a thingspeak"));
+  }
+
+  Serial3.println("AT+CIPCLOSE=0");
 
 }
 

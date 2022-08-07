@@ -150,7 +150,7 @@ void checkWifi() {
       Flag_Wifi = true;
     }
     else {
-      Serial.print(F("No Conectado a red"));
+      Serial.println(F("No Conectado a red"));
     }
   }
 }
