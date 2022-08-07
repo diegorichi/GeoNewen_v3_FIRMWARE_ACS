@@ -717,9 +717,8 @@ void loop() {
       {
         Serial3.println("AT+CWSTOPSMART");
         delay(500);
-
         checkWifi(); // cambia el Flag_Wifi
-
+    
         Estado_ConfigWIFI = Flag_Wifi ? 0 : 1; // Si el WIFI esta conectado, se sale del modo de configuracion WIFI
       }
 

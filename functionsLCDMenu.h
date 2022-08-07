@@ -38,7 +38,7 @@ void RefreshMenuDosCuatro();
 void RefreshMenuDosSiete();
 
 // Conexion Modo Smart 
-void RefreshMenuDosSieteUno()
+void RefreshMenuDosSieteUno();
 
 // Activacion/desactivacion de ACS
 void RefreshMenuDosOcho();
@@ -80,6 +80,7 @@ void MenuDosCuatro(); // Cambio a modo manual o automatico
 
 void MenuDosSiete(); // confiuracion de WIFI
 
+void MenuDosSieteUno(); // configuracion SMART
 void MenuCuatro(); // Menú de Visualización de Alarmas
 
 void MenuCuatroCero(); // Visualización de Alarmas Activas

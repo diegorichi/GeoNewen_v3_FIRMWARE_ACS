@@ -230,36 +230,52 @@ void RefreshMenuDosSiete() {
 void RefreshMenuDosSieteUno() {
   if (W.indexOf("DISCONNECT") > -1) // Si P13 esta incluido en el string
   {
-    lcd.print(F("Desconectando..."));
+    lcd.setCursor(0, 1);
+    lcd.print("                    ");
+    lcd.setCursor(0, 1);
+    lcd.print("Desconectando...");
   }
   if (W.indexOf("get wifi info") > -1) // Si P13 esta incluido en el string
   {
-    lcd.print(F("Obteniendo info"));
+    lcd.setCursor(0, 1);
+    lcd.print("                    ");
+    lcd.setCursor(0, 1);
+    lcd.print("Obteniendo info");
   }
   if (W.indexOf("ssid:") > -1) // Si P13 esta incluido en el string
   {
-    lcd.print(F("Red" + W.substring(4)));
+    lcd.setCursor(0, 1);
+    lcd.print("                    ");
+    lcd.setCursor(0, 1);
+    lcd.print("Red:" + W.substring(4));
   }
   if (W.indexOf("password") > -1) // Si P13 esta incluido en el string
   {
-    lcd.print(F("Obteniendo Password"));
+    lcd.setCursor(0, 1);
+    lcd.print("                    ");
+    lcd.setCursor(0, 1);
+    lcd.print("Obteniendo Password");
   }
   if (W.indexOf("WIFI CONNECTED") > -1) // Si P13 esta incluido en el string
   {
-    lcd.print(F("Conectado a WIFI"));
+    lcd.setCursor(0, 1);
+    lcd.print("                    ");
+    lcd.setCursor(0, 1);
+    lcd.print("Conectado a WIFI");
   }
   if (W.indexOf("GOT IP") > -1) // Si P13 esta incluido en el string
   {
-    lcd.print(F("IP obtenida"));
+    lcd.setCursor(0, 1);
+    lcd.print("                    ");
+    lcd.setCursor(0, 1);
+    lcd.print("IP obtenida");
   }
   if (W.indexOf("connected") > 0) // Si P13 esta incluido en el string
   {
-    lcd.noAutoscroll();
+    MenuActual = 27;
     MenuDosSiete();
   }
 }
-
-
 
 // Activacion/desactivacion de ACS
 void RefreshMenuDosOcho() {
@@ -608,9 +624,11 @@ void MenuDosSiete() // configuracion de WIFI
 
 void MenuDosSieteUno() // Estado Modo Smart
 {
-  beginLcd();
-  lcd.autoscroll();
-  lcd.print(F("Entrada modo SMART"));
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Entrada modo SMART  "));
+  lcd.setCursor(0, 3);
+  lcd.print(F("Enter camcela"));
 }
 
 

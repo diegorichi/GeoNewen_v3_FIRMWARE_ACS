@@ -147,8 +147,15 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
           Estado_ConfigWIFI = 1;
           EntradaConfigWifi = millis();
           Serial3.println("AT+CWSTARTSMART");
+          MenuActual = 271;
           MenuDosSieteUno();
         }
+        break;
+      case 271:
+          Estado_ConfigWIFI = 0;
+          Serial3.println("AT+CWSTOPSMART");
+          MenuActual = 27;
+          MenuDosSiete();
         break;
       case 28:
         {
@@ -264,6 +271,8 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuDosOcho();
       }
       break;
+    case 271:
+      break;
     case 28:
       {
         MenuActual = 281;
@@ -345,6 +354,8 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuActual = 24;
         MenuDosCuatro();
       }
+      break;
+    case 271:
       break;
     case 24:
       {
@@ -446,6 +457,8 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         MenuActual = 2;
         MenuDos();
       }
+      break;
+    case 271:
       break;
     case 28:
       {
