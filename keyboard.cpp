@@ -105,8 +105,7 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         break;
       case 20:
         {
-          if (Estado_Maquina == 1)
-          {
+          if (Estado_Maquina == 1) {
             FrioCalor();
             EEPROMUpdate();
           }
@@ -148,6 +147,7 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
           Estado_ConfigWIFI = 1;
           EntradaConfigWifi = millis();
           Serial3.println("AT+CWSTARTSMART");
+          MenuDosSieteUno();
         }
         break;
       case 28:

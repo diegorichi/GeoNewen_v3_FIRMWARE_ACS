@@ -138,15 +138,15 @@ void checkWifi() {
     {
       Serial.println(F("Conectado a red"));
       Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
-  
-      if (Serial3.available()){
+
+      if (Serial3.available()) {
         if (Serial3.find("STAIP,\"")) {
           local_ip = Serial3.readString();
-          local_ip = local_ip.substring(0,local_ip.indexOf("\""));
-         }
+          local_ip = local_ip.substring(0, local_ip.indexOf("\""));
+        }
       }
 
-      Serial.println("Ip is:" + local_ip);
+      Serial.println(F("Ip:" + local_ip));
 
       Flag_Wifi = true;
     }

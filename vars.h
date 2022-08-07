@@ -12,8 +12,6 @@
 //los datos de SSID y pass para WIFI ya no son requeridos, 
 //la conexion se realiza mediante la app "ESP8266 SmartConfig"
 
-#define IP "54.158.47.123" //"api.thingspeak.com"  // thingspeak.com ip de la pagina web de Thingspeak
-
 //extern String api_key_kume;   //key para enviar datos a Thingspeak, se obtiene de la pagina web
 //#define API_KEY_DR     //key para enviar datos a Thingspeak, se obtiene de la pagina web
 extern String local_ip;

@@ -2,6 +2,7 @@
 
 #define API_KEY_KUME = "UML8C4KGN6IVTJE7" //key para enviar datos a Thingspeak, se obtiene de la pagina web
 #define API_KEY_DR "230X8WDK4WACGI95" //key para enviar datos a Thingspeak, se obtiene de la pagina web
+#define IP "api.thingspeak.com"  // thingspeak.com ip de la pagina web de Thingspeak
 
 String S_Temp_in_T; //Variables auxiliares para el envío de datos a Thingspeak
 String S_Temp_out_T;
@@ -54,7 +55,10 @@ void sendToThingSpeak(String api_key) {
   if (Serial3.find('>')) {
     Serial3.print(cmd);
   }
-  delay(250);
+  delay(1000);
+  if (Serial3.find('OK')) {
+    Serial.println(F("thingspeak updated"));
+  }
   Serial3.print("AT+CIPCLOSE");
 
 }

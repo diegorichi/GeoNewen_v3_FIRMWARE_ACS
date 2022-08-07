@@ -710,6 +710,9 @@ void loop() {
 
     if (w == '\n') // Sin han pulsado intro
     {
+
+      RefreshMenuDosSieteUno();
+
       if (W.indexOf("connected") > 0) // Si P13 esta incluido en el string
       {
         Serial3.println("AT+CWSTOPSMART");

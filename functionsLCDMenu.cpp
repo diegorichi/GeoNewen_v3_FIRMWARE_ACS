@@ -206,6 +206,61 @@ void RefreshMenuDosSiete() {
   lcd.print(local_ip);
 }
 
+// Conexion Modo Smart 
+      /* implementar protocolo de informacion en Modo Smart
+       *
+        Menu WIFI SMART:
+
+        23:57:17.575 -> AT+CWSTARTSMART
+        23:57:17.575 -> OK
+        23:57:17.575 -> WIFI DISCONNECT
+        23:57:25.588 -> smartconfig type:ESPTOUCH
+        23:57:30.377 -> Smart get wifi info
+        23:57:30.377 -> ssid:Guess
+        23:57:30.377 -> password:atardecer
+        23:57:31.495 -> WIFI CONNECTED
+        23:57:34.485 -> WIFI GOT IP
+        23:57:38.477 -> smartconfig connected wifi
+        23:57:39.082 -> Conectado a red
+        23:57:40.108 -> Ip is:192.168.0.101
+        23:57:42.112 -> Conectado a red
+        -> Menu WiFi
+       */
+
+void RefreshMenuDosSieteUno() {
+  if (W.indexOf("DISCONNECT") > -1) // Si P13 esta incluido en el string
+  {
+    lcd.print(F("Desconectando..."));
+  }
+  if (W.indexOf("get wifi info") > -1) // Si P13 esta incluido en el string
+  {
+    lcd.print(F("Obteniendo info"));
+  }
+  if (W.indexOf("ssid:") > -1) // Si P13 esta incluido en el string
+  {
+    lcd.print(F("Red" + W.substring(4)));
+  }
+  if (W.indexOf("password") > -1) // Si P13 esta incluido en el string
+  {
+    lcd.print(F("Obteniendo Password"));
+  }
+  if (W.indexOf("WIFI CONNECTED") > -1) // Si P13 esta incluido en el string
+  {
+    lcd.print(F("Conectado a WIFI"));
+  }
+  if (W.indexOf("GOT IP") > -1) // Si P13 esta incluido en el string
+  {
+    lcd.print(F("IP obtenida"));
+  }
+  if (W.indexOf("connected") > 0) // Si P13 esta incluido en el string
+  {
+    lcd.noAutoscroll();
+    MenuDosSiete();
+  }
+}
+
+
+
 // Activacion/desactivacion de ACS
 void RefreshMenuDosOcho() {
   lcd.setCursor(15, 1);
@@ -550,6 +605,14 @@ void MenuDosSiete() // configuracion de WIFI
   lcd.print(F("Enter modifica"));
   showNavigation();
 }
+
+void MenuDosSieteUno() // Estado Modo Smart
+{
+  beginLcd();
+  lcd.autoscroll();
+  lcd.print(F("Entrada modo SMART"));
+}
+
 
 void MenuDosOcho() // Habilitacion de Generacion de ACS
 {

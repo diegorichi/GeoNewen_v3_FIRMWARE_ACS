@@ -37,6 +37,9 @@ void RefreshMenuDosCuatro();
 // Conexion de WIFI (Conectado/No Conectado)
 void RefreshMenuDosSiete();
 
+// Conexion Modo Smart 
+void RefreshMenuDosSieteUno()
+
 // Activacion/desactivacion de ACS
 void RefreshMenuDosOcho();
 
