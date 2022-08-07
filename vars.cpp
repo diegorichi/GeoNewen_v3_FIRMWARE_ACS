@@ -188,22 +188,6 @@ bool Flag_TempComp01 = false;
 bool Flag_Temp_Descarga = false;
 bool Flag_retardo_e7 = false;
 
-String S_Temp_in_T; //Variables auxiliares para el envío de datos a Thingspeak
-String S_Temp_out_T;
-String S_Temp_in_H;
-String S_Temp_out_H;
-String S_Temp_Comp_01;
-String S_A_RMS;
-String S_Caud_T;
-String S_Caud_H;
-String S_Temp_Descarga;
-String S_Temp_Admision;
-String S_TI;
-String S_Temp_intX_T;
-String S_Temp_intX_H;
-String S_Sensor_Pres_PSI;
-String S_Temp_ACS;
-
 float V_RMS = 0;
 float A_RMS = 0;
 float Potencia;

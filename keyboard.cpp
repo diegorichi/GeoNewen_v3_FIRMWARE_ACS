@@ -105,7 +105,7 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         break;
       case 20:
         {
-          if (Estado_Maquina == 1) //|| Estado_Maquina == 3
+          if (Estado_Maquina == 1)
           {
             FrioCalor();
             EEPROMUpdate();

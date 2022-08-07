@@ -3,6 +3,23 @@
 #define API_KEY_KUME = "UML8C4KGN6IVTJE7" //key para enviar datos a Thingspeak, se obtiene de la pagina web
 #define API_KEY_DR "230X8WDK4WACGI95" //key para enviar datos a Thingspeak, se obtiene de la pagina web
 
+String S_Temp_in_T; //Variables auxiliares para el envío de datos a Thingspeak
+String S_Temp_out_T;
+String S_Temp_in_H;
+String S_Temp_out_H;
+String S_Temp_Comp_01;
+String S_A_RMS;
+String S_Caud_T;
+String S_Caud_H;
+String S_Temp_Descarga;
+String S_Temp_Admision;
+String S_TI;
+String S_Temp_intX_T;
+String S_Temp_intX_H;
+String S_Sensor_Pres_PSI;
+String S_Temp_ACS;
+
+
 void sendToThingSpeak(String api_key) {
   String cmd = "AT+CIPSTART=\"TCP\",\"";
   cmd += IP;
@@ -40,13 +57,10 @@ void sendToThingSpeak(String api_key) {
   delay(250);
   Serial3.print("AT+CIPCLOSE");
 
-  //delay(1000);
 }
 
-void ThingSUpdate() //Funcion que envia la informacion a Thingspeak
-{
-  wdt_reset();
 
+void convertValues() {
   char buffer[200]; // Funcion para convertir un dato tipo float en un String
   if (Temp_in_T >= 10.0) {
     S_Temp_in_T = dtostrf(Temp_in_T, -4, 1, buffer); //The format is: dtostrf(floatvar, StringLengthIncDecimalPoint, numVarsAfterDecimal, charbuf);
@@ -83,7 +97,11 @@ void ThingSUpdate() //Funcion que envia la informacion a Thingspeak
   }
   else
     S_Temp_ACS = dtostrf(Temp_ACS, -3, 1, buffer);
+}
 
+void ThingSUpdate() //Funcion que envia la informacion a Thingspeak
+{
+  convertValues();
 
   //  sendToThingSpeak(api_key_kume);
   sendToThingSpeak(API_KEY_DR);

@@ -1,19 +1,15 @@
 #include "routines.h"
 
-const char MSG_WAIT[] PROGMEM = "POR FAVOR, ESPERE";
-const char MSG_CHANGING_MODE[] PROGMEM = "CAMBIANDO MODO...";
-
 void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
 
   Valor_DO_Comp_01 = LOW; // Primer paso es apagar el compresor
   Estado_Comp = 0;
   Activacion_Comp = 0;
-  // Modo_Funcionamiento = true;
   lcd.clear();
-  lcd.write(MSG_WAIT);
+  lcd.write(F("POR FAVOR, ESPERE"));
   lcd.setCursor(0, 2);
-  lcd.write(MSG_CHANGING_MODE);
+  lcd.write(F("CAMBIANDO MODO..."));
   for (unsigned long i = 0; i < 3000000; i++) // Se espera un cierto tiempo antes de activar la válvula de 4 vías
   {
     wdt_reset();

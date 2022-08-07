@@ -212,13 +212,10 @@ void loop() {
       RefrescoWifi = millis();
     }
 
-    if (((millis() - Periodo_Refresco_Wifi) > 600000)
-      && Flag_Wifi) // Envio de datos a ThingSpeak: Refresco cada 10 minutos
+    if (((millis() - Periodo_Refresco_Wifi) > 60000) && Flag_Wifi) // Envio de datos a ThingSpeak
     {
       wdt_reset();
-      //ThingSUpdate();
-      delay(1000);
-      // Serial.println("ThingSUpdate ejecutada");
+      ThingSUpdate();
       Periodo_Refresco_Wifi = millis();
     }
 

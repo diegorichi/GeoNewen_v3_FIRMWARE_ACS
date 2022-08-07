@@ -199,22 +199,6 @@ extern bool Flag_TempComp01; // false;
 extern bool Flag_Temp_Descarga; // false;
 extern bool Flag_retardo_e7; // false;
 
-extern String S_Temp_in_T; //Variables auxiliares para el envío de datos a Thingspeak
-extern String S_Temp_out_T;
-extern String S_Temp_in_H;
-extern String S_Temp_out_H;
-extern String S_Temp_Comp_01;
-extern String S_A_RMS;
-extern String S_Caud_T;
-extern String S_Caud_H;
-extern String S_Temp_Descarga;
-extern String S_Temp_Admision;
-extern String S_TI;
-extern String S_Temp_intX_T;
-extern String S_Temp_intX_H;
-extern String S_Sensor_Pres_PSI;
-extern String S_Temp_ACS;
-
 extern float V_RMS; // 0;
 extern float A_RMS; // 0;
 extern float Potencia;
