@@ -136,20 +136,18 @@ void checkWifi() {
     delay(100);
     if (Serial3.find(':')) // Si lo está, detiene el modo Smart y queda listo para funcionar
     {
-      Serial.print(F("Conectado a red"));
-      //Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
-
-      local_ip = "";
-      // Loop through all the data returned
-      /*while (Serial3.available())
-      {
-        delay(200); // wait for all characters arrive
-
-        char c = Serial3.read(); // read the next character.
-        local_ip.concat(c);
+      Serial.println(F("Conectado a red"));
+      Serial3.println("AT+CIFSR");  // Consulta la IP del ESP8266
+  
+      if (Serial3.available()){
+        if (Serial3.find("STAIP,\"")) {
+          local_ip = Serial3.readString();
+          local_ip = local_ip.substring(0,local_ip.indexOf("\""));
+         }
       }
-      Serial.print("ip is:" + local_ip);
-      */
+
+      Serial.println("Ip is:" + local_ip);
+
       Flag_Wifi = true;
     }
     else {

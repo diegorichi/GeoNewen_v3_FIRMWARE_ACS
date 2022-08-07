@@ -6,7 +6,7 @@
 //#define IP "184.106.153.149"                     // thingspeak.com ip                //ip de la pagina web de Thingspeak
 
 //#define IP "54.158.47.123"  // api.thingspeak.com
-String local_ip = "0.0.0.0";
+String local_ip = "";
 /*-----------------------------------------------------------*/
 
 /**************************/
