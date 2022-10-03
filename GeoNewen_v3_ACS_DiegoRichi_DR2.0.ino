@@ -646,7 +646,7 @@ void loop() {
         Flag_retardo_e7 = false;
       }
 
-      if (Temp_ACS >= SetP_ACS && ModoFrioCalor == false) //
+      if (Temp_ACS >= SetP_ACS && ModoFrioCalor == false || !Flag_ACS_EN) //
       {
         Estado_Maquina = 0;
         Flag_retardo_e7 = false; // termino el ciclo en modo calor y vuelve a 0
@@ -673,6 +673,11 @@ void loop() {
         Estado_Maquina = 7;
         Ingreso_E7 = millis();
       }
+      if (!Flag_ACS_EN) //
+      {
+        Estado_Maquina = 0;
+        Flag_retardo_e7 = false; // termino el ciclo en modo calor y vuelve a 0
+      }      
     } // FIn Estado 71
 
     if (Estado_Maquina == 8) // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
