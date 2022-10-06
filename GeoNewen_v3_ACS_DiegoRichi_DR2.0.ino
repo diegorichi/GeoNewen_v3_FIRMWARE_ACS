@@ -667,17 +667,12 @@ void loop() {
       Valor_DO_Comp_01 = LOW;
       Estado_Comp = 0;
       Valor_DO_Bombas = HIGH;
-      if ((millis() - Ingreso_E71) > 90000) // espero 0.5 minuto antes de volver al estado 7
+      if ((millis() - Ingreso_E71) > 90000 || !Flag_ACS_EN) // espero 0.5 minuto antes de volver al estado 7
       {
         Valor_DO_Bombas = HIGH; // las bombas arrancan enseguida, el compresor enciende 1 minuto despues
         Estado_Maquina = 7;
         Ingreso_E7 = millis();
       }
-      if (!Flag_ACS_EN) //
-      {
-        Estado_Maquina = 0;
-        Flag_retardo_e7 = false; // termino el ciclo en modo calor y vuelve a 0
-      }      
     } // FIn Estado 71
 
     if (Estado_Maquina == 8) // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
