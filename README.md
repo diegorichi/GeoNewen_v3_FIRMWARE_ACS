@@ -17,3 +17,12 @@ Si no anda && no ACS && Calor -> VACS = HIGH
 Valor_DO_VACS = LOW -> losa
 Valor_DO_VACS = HIGH -> ACS
 
+machine control ok
+
+measurement and calculation
+
+connectivity ok
+
+stateMachine
+
+alarm ok
