@@ -113,8 +113,6 @@ void ResetFlags() // Luego de ocurrida una alarma y revisada por parte del usuar
   Flag_Temp_Adm = false;
   Flag_Aporte_E = false;
   Flag_RetornoLiq = false;
-  Flag_Temp_Des = false;
-  Flag_TempComp01 = false;
   Flag_Temp_Descarga = false;
 
   Cont_Temp_intX_T = 0;

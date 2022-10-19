@@ -77,8 +77,6 @@ extern const int AI_TI; // A0;
 extern const int AI_Sensor_Tension; // A11;
 
 //VARIABLES DEL PROGRAMA
-extern int Val_Temp_intX_T;
-extern int Val_Temp_intX_H;
 extern int Val_Temp_Comp_01;
 extern int Val_Temp_ACS;
 extern int Val_Temp_out_H;
@@ -87,12 +85,9 @@ extern int Val_Temp_out_T;
 extern int Val_Temp_in_T;
 extern int Val_Temp_Descarga;
 extern int Val_Temp_Admision;
-extern int Valor_ADC; // 0;
-extern int Val_TI;
-extern int Valor_Pico_V; // 0;
-extern int descanso; // 0;
+
 extern int mVperAmp; // 160;
-extern int contador;
+
 extern int Caud_T;
 extern int C1_T; // 0;
 extern int C2_T; // 0;
@@ -127,8 +122,6 @@ extern int Cont_Press_HI; // 0;
 extern int Cont_Press_LOW; // 0;
 extern int Cont_Temp_Descarga; // 0;
 
-extern float Temp_intX_T;
-extern float Temp_intX_H;
 extern float Temp_Comp_01;
 extern float T5_Comp; // 0;
 extern float T4_Comp; // 0;
@@ -149,18 +142,13 @@ extern float Temp_in_T;
 extern float Temp_Descarga;
 extern float Temp_Admision;
 extern float TI;
-//extern float AuxTempH;
-//extern float AuxTempT;
 
-//extern float DC_V; // 0;
-//extern float AC_V; // 0;
 extern float Fesc; // 1.982; //Actualizado el 22/01/18 1.982;
 extern float FCal; // 1.055; //1.77;// caudalimetro  sen - hz21wa                    //1.9 caudalimetros  geo v1.0 y 2.0;
 extern float Ef_Termica_1;
 extern float Ef_Termica_2;
 extern float CosFI; // 0.90;
 extern float FescTI; // (1024 / 8.24); //Factor de escala del TI
-extern float Aporte_E;
 extern float Temp_out_Hacu; // 0;
 extern float T1_OH; // 0;
 extern float T2_OH; // 0;
@@ -182,20 +170,14 @@ extern float Temp_Admisionaux;
 extern float Temp_Descargaaux;
 extern float Temp_ACSaux;
 
-extern unsigned long Equipo_en_regimen; // 230000; //5 minutos para que el equipo este en condiciones nominales
 extern unsigned long E1_a_E2; // 120000;           //2 minutos para pasar de E1 a E2
 extern unsigned long E2_a_E3; // 10000;            //10 segundos para pasar de E2 a E3
-extern unsigned long Tpo_Mod_Rap; // 3000;         //5 segundos para la modulacion rapida de la VE
-extern unsigned long Tpo_Mod_Lento; // 120000;     //2min para la modulacion lenta de la VE
-extern unsigned long Tpo_Mod_Lento2; // 60000;     //60 segundos para la modulacion lenta con SC > 8
-extern unsigned long Tpo_Refresco_TS; // 600000;   //10 minutos de refresco de TS
-extern unsigned long Arranque_Frio; // 600000;     //Periodo de calentamiento de compresor para arranque en frio
 
 extern bool Flag_ACS_EN; // true;
 extern bool Flag_ACS_DT_EN; // true;
 extern bool Flag_TempComp01; // false;
 extern bool Flag_Temp_Descarga; // false;
-extern bool Flag_retardo_e7; // false;
+extern bool Flag_retardo_e7; // flag que indica que ACS esta efectivamente andando (luego de la espera)
 
 extern float V_RMS; // 0;
 extern float A_RMS; // 0;
@@ -207,33 +189,18 @@ extern unsigned long EsperaValv; // 0;
 extern unsigned long Ingreso_E7; // 0;
 extern unsigned long Ingreso_E71; // 0;
 extern unsigned long Ingreso_E9; // 0;
-extern unsigned long Arranque_Equipo; // 0;
 extern unsigned long Periodo_Fin_ACS; // 0;
-extern unsigned long Periodo_Com; // 0;
 
-extern unsigned long Muestras_Tension; // 0; //las variables de tipo unsignedlong se usan para periodos de tiempo
 extern unsigned long Ventana_Caudal1;
 extern unsigned long Ventana_Caudal2;
-extern unsigned long PreviousMillis;
-extern unsigned long CurrentMillis;
 extern unsigned long Periodo_Refresco;
-extern unsigned long Desact_Comp;
 extern unsigned long Activacion_Comp;
-extern unsigned long Apagado_Comp;
-extern unsigned long Periodo_Temps;
-extern unsigned long Refresco_Caudal;
-extern unsigned long Valor_Per_Esp_C;
 extern unsigned long Salto_E1;
-extern unsigned long Ventana_Alarma_CaudalT;
-extern unsigned long Ventana_Alarma_CaudalH;
 extern unsigned long Periodo_Refresco_Wifi;
 extern unsigned long Activacion_Bombas;
 extern unsigned long Periodo_Bombas;
-extern unsigned long PrimerEnvio; // 0;
 extern unsigned long Ingreso_E3;
 extern unsigned long LecturaDSB;
-extern unsigned long PeriodoLeg; // 0;
-extern unsigned long Temp_Leg; // 0;
 
 extern unsigned long Ingreso_Descanso; // 0;
 
@@ -242,8 +209,8 @@ extern volatile byte Pulsos_Caud_T;
 extern volatile byte Pulsos_Caud_H;
 extern volatile byte Pulsos_Caud_T_Bis;
 extern volatile byte Pulsos_Caud_H_Bis;
-extern volatile int Ciclo_Trabajo;
-extern volatile int Ciclo_Trabajoedit;
+extern volatile int Ciclo_Trabajo; // libres
+extern volatile int Ciclo_Trabajoedit;  // libres
 extern volatile int Estado_Comp; // 0;
 extern volatile byte Nro_Alarma; // 0;
 extern volatile byte SetP_ACS; // 0;
@@ -303,33 +270,26 @@ extern bool Flag_Estado_Comp; // false;
 extern bool Flag_Aporte_E; // false;
 extern bool Flag_RetornoLiq; // false;
 extern bool Flag_Temp_Adm; // false;
-extern bool Flag_Temp_Des; // false;
 extern volatile bool ModoFrioCalor; // false; //Frio ; // true , Calor ; // false
 extern bool Alarma_Activa;
-extern bool Flag_Marcha_ON;
+extern bool Flag_Marcha_ON; // control de salto e1
 extern volatile bool Modo_Funcionamiento; // false; //false ; // Automatico, true ; // Manual
 extern volatile bool Flag_Buzzer;
 extern volatile bool Flag_Alarma_Caudal;
 extern bool Flag_Corriente; // false;
 extern bool Flag_Wifi;
 extern bool Flag_ESP;
-extern bool Flag_Caldera;
 extern bool Flag_Temp_Caldera;
 extern bool Flag_Alarma_Trif;
 extern bool Flag_Alarma_EN;
 extern bool Flag_Primer_Envio; // false;
 extern bool Flag_Temp_Leg; // false;
-extern bool Cal_ACS; // true;
-extern bool Cal; // true;
 
 //IMAGENES DE ENTRADAS/SALIDAS
 extern int Valor_DO_Bombas;
 extern int Valor_DO_Calentador;
 extern int Valor_DO_Comp_01;
-extern int Valor_DO_Marcha_Ext;
 extern int Valor_DO_VACS;
 extern int Valor_DO_V4V;
-extern int Valor_DO_Aux;
-extern int SenalComp;
 
 #endif

@@ -163,17 +163,6 @@ void initializeAndSetupMenu() {
   menuAlarmas.setEscape(&menuInicial);
   menuAlarmas.setEnter(&menuMonitorAlarmas);
 
-  // 30
-  //menuConfCalderaElectrica.setEscape(&menuCalderaElectrica);
-  //menuConfCalderaElectrica.setEnterAction([ ] () {
-  //  Estado_Maquina = Flag_Caldera ? 0 : 5;
-  //  Flag_Caldera = !Flag_Caldera; });
-
-  // 3
-  //menuCalderaElectrica.setUp(&menuConfiguracionSistema);
-  //menuCalderaElectrica.setDown(&menuAlarmas);
-  //menuCalderaElectrica.setEscape(&menuInicial);
-  //menuCalderaElectrica.setEnter(&menuConfCalderaElectrica);
   // 2
   menuConfiguracionSistema.setUp(&menuMonitorSistema);
   menuConfiguracionSistema.setDown(&menuAlarmas);

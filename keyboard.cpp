@@ -67,31 +67,25 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
 
   if (BotonEnter) {
     switch (MenuActual) {
-    case 0:
-      {
-        MenuActual = 1;
-        MenuUno();
-      }
-      break;
-    case 1:
-      {
-        MenuActual = 10;
-        MenuUnoCero();
-      }
-      break;
-    case 2:
-      {
-        MenuActual = 20;
-        MenuDosCero();
-      }
-      break;
-      /*    case 3:
-            {
-              MenuActual = 30;
-              MenuTresCero();
-            }
-            break;
-      */    case 4:
+      case 0:
+        {
+          MenuActual = 1;
+          MenuUno();
+        }
+        break;
+      case 1:
+        {
+          MenuActual = 10;
+          MenuUnoCero();
+        }
+        break;
+      case 2:
+        {
+          MenuActual = 20;
+          MenuDosCero();
+        }
+        break;
+      case 4:
         {
           MenuActual = 40;
           MenuCuatroCero();
@@ -135,13 +129,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
           EEPROMUpdate();
         }
         break;
-      case 25:
-        {
-          if (Modo_Funcionamiento && Estado_Maquina == 0) {
-            SenalComp = !SenalComp;
-          }
-        }
-        break;
       case 27:
         {
           Estado_ConfigWIFI = 1;
@@ -175,13 +162,6 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
           EEPROMUpdate();
         }
         break;
-        /*    case 30:
-              {
-                Estado_Maquina = Flag_Caldera ? 0 : 5;
-                Flag_Caldera = !Flag_Caldera;
-              }
-              break; // Ciclo_Trabajo = Ciclo_Trabajoedit; EEPROMUpdate();
-        */
       case 40:
         {
           Flag_Alarma_General = false;
@@ -203,342 +183,317 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
 
   if (BotonAbajo) {
     switch (MenuActual) {
-    case 1:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 10:
-      {
-        MenuActual = 11;
-        MenuUnoUno();
-      }
-      break;
-    case 2:
-      {
-        MenuActual = 4;
-        MenuCuatro();
-      }
-      break;
-      /*    case 3:
-            {
-              MenuActual = 4;
-              MenuCuatro();
-            }
-            break;*/
-    case 4:
-      {
-        MenuActual = 5;
-        MenuCinco();
-      }
-      break;
-    case 20:
-      {
-        MenuActual = 21;
-        MenuDosUno();
-      }
-      break;
-    case 21:
-      {
-        MenuActual = 23;
-        MenuDosTres();
-      }
-      break;
-    case 210:
-      {
-        SetP_ACS_Edit = SetP_ACS_Edit - 1;
-        if (SetP_ACS_Edit < 30) {
-          SetP_ACS_Edit = 30;
+      case 1:
+        {
+          MenuActual = 2;
+          MenuDos();
         }
-      }
-      break;
-    case 23:
-      {
-        MenuActual = 24;
-        MenuDosCuatro();
-      }
-      break;
-    case 24:
-      {
-        MenuActual = 27;
-        MenuDosSiete();
-      }
-      break;
-    case 27:
-      {
-        MenuActual = 28;
-        MenuDosOcho();
-      }
-      break;
-    case 271:
-      break;
-    case 28:
-      {
-        MenuActual = 281;
-        MenuDosOchoUno();
-      }
-      break;
-    case 281:
-      {
-        MenuActual = 29;
-        MenuDosNueve();
-      }
-      break;
-    case 40:
-      {
-        digitalWrite(DO_Buzzer, LOW);
-      }
-      break;
+        break;
+      case 10:
+        {
+          MenuActual = 11;
+          MenuUnoUno();
+        }
+        break;
+      case 2:
+        {
+          MenuActual = 4;
+          MenuCuatro();
+        }
+        break;
+      case 4:
+        {
+          MenuActual = 5;
+          MenuCinco();
+        }
+        break;
+      case 20:
+        {
+          MenuActual = 21;
+          MenuDosUno();
+        }
+        break;
+      case 21:
+        {
+          MenuActual = 23;
+          MenuDosTres();
+        }
+        break;
+      case 210:
+        {
+          SetP_ACS_Edit = SetP_ACS_Edit - 1;
+          if (SetP_ACS_Edit < 30) {
+            SetP_ACS_Edit = 30;
+          }
+        }
+        break;
+      case 23:
+        {
+          MenuActual = 24;
+          MenuDosCuatro();
+        }
+        break;
+      case 24:
+        {
+          MenuActual = 27;
+          MenuDosSiete();
+        }
+        break;
+      case 27:
+        {
+          MenuActual = 28;
+          MenuDosOcho();
+        }
+        break;
+      case 271:
+        break;
+      case 28:
+        {
+          MenuActual = 281;
+          MenuDosOchoUno();
+        }
+        break;
+      case 281:
+        {
+          MenuActual = 29;
+          MenuDosNueve();
+        }
+        break;
+      case 40:
+        {
+          digitalWrite(DO_Buzzer, LOW);
+        }
+        break;
     }
   }
 
   if (BotonArriba) {
     switch (MenuActual) {
-    case 5:
-      {
-        MenuActual = 4;
-        MenuCuatro();
-      }
-      break;
-    case 4:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-      /*case 3:
+      case 5:
+        {
+          MenuActual = 4;
+          MenuCuatro();
+        }
+        break;
+      case 4:
         {
           MenuActual = 2;
           MenuDos();
         }
-        break;*/
-    case 2:
-      {
-        MenuActual = 1;
-        MenuUno();
-      }
-      break;
-    case 11:
-      {
-        MenuActual = 10;
-        MenuUnoCero();
-      }
-      break;
-    case 12:
-      {
-        MenuActual = 11;
-        MenuUnoUno();
-      }
-      break;
-    case 29:
-      {
-        MenuActual = 281;
-        MenuDosOchoUno();
-      }
-      break;
-    case 281:
-      {
-        MenuActual = 28;
-        MenuDosOcho();
-      }
-      break;
-    case 28:
-      {
-        MenuActual = 27;
-        MenuDosSiete();
-      }
-      break;
-    case 27:
-      {
-        MenuActual = 24;
-        MenuDosCuatro();
-      }
-      break;
-    case 271:
-      break;
-    case 24:
-      {
-        MenuActual = 23;
-        MenuDosTres();
-      }
-      break;
-    case 23:
-      {
-        MenuActual = 21;
-        MenuDosUno();
-      }
-      break;
-      // case 22: {MenuActual=21; MenuDosUno();}break;
-    case 21:
-      {
-        MenuActual = 20;
-        MenuDosCero();
-      }
-      break;
-    case 210:
-      {
-        SetP_ACS_Edit = SetP_ACS_Edit + 1;
-        if (SetP_ACS_Edit > 48) {
-          SetP_ACS_Edit = 48;
+        break;
+      case 2:
+        {
+          MenuActual = 1;
+          MenuUno();
         }
-      }
-      break;
-    case 40:
-      {
-        digitalWrite(DO_Buzzer, LOW);
-      }
-      break;
+        break;
+      case 11:
+        {
+          MenuActual = 10;
+          MenuUnoCero();
+        }
+        break;
+      case 12:
+        {
+          MenuActual = 11;
+          MenuUnoUno();
+        }
+        break;
+      case 29:
+        {
+          MenuActual = 281;
+          MenuDosOchoUno();
+        }
+        break;
+      case 281:
+        {
+          MenuActual = 28;
+          MenuDosOcho();
+        }
+        break;
+      case 28:
+        {
+          MenuActual = 27;
+          MenuDosSiete();
+        }
+        break;
+      case 27:
+        {
+          MenuActual = 24;
+          MenuDosCuatro();
+        }
+        break;
+      case 271:
+        break;
+      case 24:
+        {
+          MenuActual = 23;
+          MenuDosTres();
+        }
+        break;
+      case 23:
+        {
+          MenuActual = 21;
+          MenuDosUno();
+        }
+        break;
+      case 21:
+        {
+          MenuActual = 20;
+          MenuDosCero();
+        }
+        break;
+      case 210:
+        {
+          SetP_ACS_Edit = SetP_ACS_Edit + 1;
+          if (SetP_ACS_Edit > 48) {
+            SetP_ACS_Edit = 48;
+          }
+        }
+        break;
+      case 40:
+        {
+          digitalWrite(DO_Buzzer, LOW);
+        }
+        break;
     }
   }
 
   if (BotonAtras) {
     switch (MenuActual) {
-    case 0:
-      {
-      }
-      break;
-    case 10:
-      {
-        MenuActual = 1;
-        MenuUno();
-      }
-      break;
-    case 11:
-      {
-        MenuActual = 1;
-        MenuUno();
-      }
-      break;
-    case 12:
-      {
-        MenuActual = 1;
-        MenuUno();
-      }
-      break;
-    case 13:
-      {
-        MenuActual = 1;
-        MenuUno();
-      }
-      break;
-    case 20:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 21:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 23:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 24:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 25:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 27:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 271:
-      break;
-    case 28:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 281:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 29:
-      {
-        MenuActual = 2;
-        MenuDos();
-      }
-      break;
-    case 270:
-      {
-        Estado_ConfigWIFI = 0;
-        MenuActual = 27;
-        MenuDosSiete();
-      }
-      break;
-      /*    case 30:
-            {
-              MenuActual = 3;
-              MenuTres();
-            }
-            break;*/
-    case 40:
-      {
-        MenuActual = 4;
-        MenuCuatro();
-      }
-      break;
-    case 50:
-      {
-        MenuActual = 5;
-        MenuCinco();
-      }
-      break;
-    case 210:
-      {
-        MenuActual = 21;
-        MenuDosUno();
-      }
-      break;
-    case 5:
-      {
-        MenuActual = 0;
-        MenuCero();
-      }
-      break;
-    case 4:
-      {
-        MenuActual = 0;
-        MenuCero();
-      }
-      break;
-      /*case 3:
+      case 0:
+        {
+        }
+        break;
+      case 10:
+        {
+          MenuActual = 1;
+          MenuUno();
+        }
+        break;
+      case 11:
+        {
+          MenuActual = 1;
+          MenuUno();
+        }
+        break;
+      case 12:
+        {
+          MenuActual = 1;
+          MenuUno();
+        }
+        break;
+      case 13:
+        {
+          MenuActual = 1;
+          MenuUno();
+        }
+        break;
+      case 20:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 21:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 23:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 24:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 25:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 27:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 271:
+        break;
+      case 28:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 281:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 29:
+        {
+          MenuActual = 2;
+          MenuDos();
+        }
+        break;
+      case 270:
+        {
+          Estado_ConfigWIFI = 0;
+          MenuActual = 27;
+          MenuDosSiete();
+        }
+        break;
+      case 40:
+        {
+          MenuActual = 4;
+          MenuCuatro();
+        }
+        break;
+      case 50:
+        {
+          MenuActual = 5;
+          MenuCinco();
+        }
+        break;
+      case 210:
+        {
+          MenuActual = 21;
+          MenuDosUno();
+        }
+        break;
+      case 5:
         {
           MenuActual = 0;
           MenuCero();
         }
-        break;*/
-    case 2:
-      {
-        MenuActual = 0;
-        MenuCero();
-      }
-      break;
-    case 1:
-      {
-        MenuActual = 0;
-        MenuCero();
-      }
-      break;
+        break;
+      case 4:
+        {
+          MenuActual = 0;
+          MenuCero();
+        }
+        break;
+      case 2:
+        {
+          MenuActual = 0;
+          MenuCero();
+        }
+        break;
+      case 1:
+        {
+          MenuActual = 0;
+          MenuCero();
+        }
+        break;
     }
   }
 }

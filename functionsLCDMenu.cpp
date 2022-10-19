@@ -107,10 +107,6 @@ void RefreshMenuUnoCero() {
   else {
     lcd.print(F("CALOR"));
   }
-  // lcd.setCursor(5, 1);
-  //  lcd.print(Temp_intX_T, 1);
-  // lcd.setCursor(15, 1);
-  //  lcd.print(Temp_intX_H, 1);
   lcd.setCursor(5, 2);
   lcd.print(Temp_comp_acu, 1);
   lcd.setCursor(15, 2);
@@ -119,8 +115,6 @@ void RefreshMenuUnoCero() {
   lcd.print(Temp_Descargaacu, 1);
   lcd.setCursor(15, 3);
   lcd.print(Temp_ACSacu, 1);
-  // lcd.setCursor(16,3);
-  // lcd.print(Temp_PCB, 1);
 }
 
 // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
@@ -628,7 +622,7 @@ void MenuDosSieteUno() // Estado Modo Smart
   lcd.setCursor(0, 0);
   lcd.print(F("Entrada modo SMART  "));
   lcd.setCursor(0, 3);
-  lcd.print(F("Enter camcela"));
+  lcd.print(F("Enter cancela"));
 }
 
 

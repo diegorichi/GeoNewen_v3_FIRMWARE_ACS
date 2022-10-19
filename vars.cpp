@@ -68,8 +68,6 @@ const int AI_TI = A0;
 const int AI_Sensor_Tension = A11;
 
 //VARIABLES DEL PROGRAMA
-int Val_Temp_intX_T;
-int Val_Temp_intX_H;
 int Val_Temp_Comp_01;
 int Val_Temp_ACS;
 int Val_Temp_out_H;
@@ -78,12 +76,7 @@ int Val_Temp_out_T;
 int Val_Temp_in_T;
 int Val_Temp_Descarga;
 int Val_Temp_Admision;
-int Valor_ADC = 0;
-int Val_TI;
-int Valor_Pico_V = 0;
-int descanso = 0;
 int mVperAmp = 160;
-int contador;
 int Caud_T;
 int C1_T = 0;
 int C2_T = 0;
@@ -118,8 +111,6 @@ int Cont_Press_HI = 0;
 int Cont_Press_LOW = 0;
 int Cont_Temp_Descarga = 0;
 
-float Temp_intX_T;
-float Temp_intX_H;
 float Temp_Comp_01;
 float T5_Comp = 0;
 float T4_Comp = 0;
@@ -140,18 +131,13 @@ float Temp_in_T;
 float Temp_Descarga;
 float Temp_Admision;
 float TI;
-//float AuxTempH;
-//float AuxTempT;
 
-//float DC_V = 0;
-//float AC_V = 0;
 float Fesc = 1.982; //Actualizado el 22/01/18 1.982;
 float FCal = 1.055; //1.77;// caudalimetro  sen - hz21wa                    //1.9 caudalimetros  geo v1.0 y 2.0;
 float Ef_Termica_1;
 float Ef_Termica_2;
 float CosFI = 0.90;
 float FescTI = (1024 / 8.24); //Factor de escala del TI
-float Aporte_E;
 float Temp_out_Hacu = 0;
 float T1_OH = 0;
 float T2_OH = 0;
@@ -173,14 +159,8 @@ float Temp_Admisionaux;
 float Temp_Descargaaux;
 float Temp_ACSaux;
 
-unsigned long Equipo_en_regimen = 230000; //5 minutos para que el equipo este en condiciones nominales
 unsigned long E1_a_E2 = 120000;           //2 minutos para pasar de E1 a E2
 unsigned long E2_a_E3 = 10000;            //10 segundos para pasar de E2 a E3
-unsigned long Tpo_Mod_Rap = 3000;         //5 segundos para la modulacion rapida de la VE
-unsigned long Tpo_Mod_Lento = 120000;     //2min para la modulacion lenta de la VE
-unsigned long Tpo_Mod_Lento2 = 60000;     //60 segundos para la modulacion lenta con SC > 8
-unsigned long Tpo_Refresco_TS = 600000;   //10 minutos de refresco de TS
-unsigned long Arranque_Frio = 600000;     //Periodo de calentamiento de compresor para arranque en frio
 
 bool Flag_ACS_EN = true;
 bool Flag_ACS_DT_EN = true;
@@ -198,33 +178,18 @@ unsigned long EsperaValv = 0;
 unsigned long Ingreso_E7 = 0;
 unsigned long Ingreso_E71 = 0;
 unsigned long Ingreso_E9 = 0;
-unsigned long Arranque_Equipo = 0;
 unsigned long Periodo_Fin_ACS = 0;
-unsigned long Periodo_Com = 0;
 
-unsigned long Muestras_Tension = 0; //las variables de tipo unsignedlong se usan para periodos de tiempo
 unsigned long Ventana_Caudal1;
 unsigned long Ventana_Caudal2;
-unsigned long PreviousMillis;
-unsigned long CurrentMillis;
 unsigned long Periodo_Refresco;
-unsigned long Desact_Comp;
 unsigned long Activacion_Comp;
-unsigned long Apagado_Comp;
-unsigned long Periodo_Temps;
-unsigned long Refresco_Caudal;
-unsigned long Valor_Per_Esp_C;
 unsigned long Salto_E1;
-unsigned long Ventana_Alarma_CaudalT;
-unsigned long Ventana_Alarma_CaudalH;
 unsigned long Periodo_Refresco_Wifi;
 unsigned long Activacion_Bombas;
 unsigned long Periodo_Bombas;
-unsigned long PrimerEnvio = 0;
 unsigned long Ingreso_E3;
 unsigned long LecturaDSB;
-unsigned long PeriodoLeg = 0;
-unsigned long Temp_Leg = 0;
 
 unsigned long Ingreso_Descanso = 0;
 
@@ -296,7 +261,6 @@ bool Flag_Estado_Comp = false;
 bool Flag_Aporte_E = false;
 bool Flag_RetornoLiq = false;
 bool Flag_Temp_Adm = false;
-bool Flag_Temp_Des = false;
 volatile bool ModoFrioCalor = false; //Frio = true , Calor = false
 bool Alarma_Activa;
 bool Flag_Marcha_ON;
@@ -306,21 +270,15 @@ volatile bool Flag_Alarma_Caudal;
 bool Flag_Corriente = false;
 bool Flag_Wifi;
 bool Flag_ESP;
-bool Flag_Caldera;
 bool Flag_Temp_Caldera;
 bool Flag_Alarma_Trif;
 bool Flag_Alarma_EN;
 bool Flag_Primer_Envio = false;
 bool Flag_Temp_Leg = false;
-bool Cal_ACS = true;
-bool Cal = true;
 
 //IMAGENES DE ENTRADAS/SALIDAS
 int Valor_DO_Bombas;
 int Valor_DO_Calentador;
 int Valor_DO_Comp_01;
-int Valor_DO_Marcha_Ext;
 int Valor_DO_VACS;
 int Valor_DO_V4V;
-int Valor_DO_Aux;
-int SenalComp;
