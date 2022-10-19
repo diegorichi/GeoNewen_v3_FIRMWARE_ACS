@@ -1,6 +1,6 @@
 
-#ifndef machinecontrol__
-#define machinecontrol__
+#ifndef state_machine__
+#define state_machine__
 #include "vars.h"
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"

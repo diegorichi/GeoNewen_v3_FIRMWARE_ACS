@@ -1,10 +1,14 @@
 #include "vars.h"
 #include "keyboard.h"
 #include "functionsLCDMenu.h"
-#include "routines.h"
 #include "kume_eeprom.h"
 #include "thingspeak.h"
 #include "machine_control.h"
+#include "connectivity.h"
+#include "machine_control.h"
+#include "measurement_and_calculations.h"
+#include "stateMachine.h"
+
 
 #define ONE_WIRE_BUS 22
 OneWire oneWire(ONE_WIRE_BUS);
@@ -81,22 +85,7 @@ void setup() { // Inicializacion de I/O y variables generales
   Serial.begin(115200);
   Serial3.begin(115200);
 
-  checkESP();
-
-  if (Flag_ESP) {
-    Serial3.println("AT+CWMODE=1"); // 1:Mode station 2:Mode AP 3:Mode BOTH
-    delay(100);
-    Serial3.println("AT+CWSTOPSMART");
-    delay(100);
-    Serial3.println("AT+CIPMUX=0"); // 1:multiple connection 0:single connection
-    delay(100);
-    Serial.println(F("ESP Inicializado"));
-    delay(100);
-    checkWifi();
-  }
-  else {
-    Serial.println(F("Fallo en inicializacion de ESP"));
-  }
+  setupConnectivity();
 
   EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
 
@@ -193,28 +182,3 @@ void Caudal2() // Función de Cuenta de Pulsos de Caudalímetro
   Pulsos_Caud_H++;
 }
 
-float getVPP() // Función Auxiliar para determinación del valor de Tensión
-{
-  float VPP;
-  int readValue;       // value read from the sensor
-  int maxValue = 0;    // store max value here
-  int minValue = 1024; // store min value here
-  uint32_t start_time = millis();
-  while ((millis() - start_time) < 1000) // sample for 1 Sec
-  {
-    readValue = analogRead(AI_TI);
-    // see if you have a new maxValue
-    if (readValue > maxValue) {
-      /*record the maximum sensor value*/
-      maxValue = readValue;
-    }
-    if (readValue < minValue) {
-      /*record the maximum sensor value*/
-      minValue = readValue;
-    }
-  }
-  // Subtract min from max
-  VPP = ((maxValue - minValue) * 5.0) / 1024.0;
-
-  return VPP;
-}

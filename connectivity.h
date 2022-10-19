@@ -16,4 +16,6 @@ void checkEspWifiConnected(); // Verificacion de conexion a Wifi
 
 void sendAndReceiveDataCloud(); // Envio de datos a ThingSpeak
 
+void setupConnectivity(); // inicializa esp y wifi
+
 #endif

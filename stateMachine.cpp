@@ -1,9 +1,4 @@
-
-#ifndef machinecontrol__
-#define machinecontrol__
-#include "vars.h"
-#include "functionsLCDMenu.h"
-#include "kume_eeprom.h"
+#include "stateMachine.h"
 
 void stateMachine0(){ // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
   if (Estado_Maquina == 0) // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
@@ -244,5 +239,3 @@ void stateMachine8(){ // Estado de transicion al finalizar la generacion de ACS 
     }
   } // Fin Estado 8
 }
-
-#endif

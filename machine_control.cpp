@@ -1,4 +1,4 @@
-#include "routines.h"
+#include "machine_control.h"
 
 void FrioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
@@ -56,7 +56,6 @@ void setupDigitalOuputs() {
   pinMode(STEP, OUTPUT);
   pinMode(ED_ENABLE, OUTPUT);
 }
-
 
 void initializeDigitalOuputs() {
   digitalWrite(ED_ENABLE, LOW); // Inicialización de salidas

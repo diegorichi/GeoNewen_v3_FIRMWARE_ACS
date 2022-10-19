@@ -5,7 +5,6 @@
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
 
-
 void temperatureMeasuement(); 
 
 void flowsCalculation(); 
@@ -13,8 +12,11 @@ void flowsCalculation();
 void thermalEfficiencyCalculation(); 
 
 void powerCalculation(); 
+
 void flowControl(); 
+
 void temperatureControl(); 
+
 void presureControl(); 
 
 void auxiliaryACSHeatingControl();

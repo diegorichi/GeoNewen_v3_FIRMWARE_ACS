@@ -1,4 +1,4 @@
-#include "routines.h"
+#include "connectivity.h"
 
 void checkWifi() {
   Flag_Wifi = false;
@@ -31,7 +31,6 @@ void checkESP() {
   delay(1000);
   Flag_ESP = Serial3.find("OK");
 }
-
 
 void configWifi() {
   wdt_disable();
@@ -84,5 +83,24 @@ void sendAndReceiveDataCloud(){ // Envio de datos a ThingSpeak
     wdt_reset();
     ThingSUpdate();
     Periodo_Refresco_Wifi = millis();
+  }
+}
+
+void setupConnectivity(){
+  checkESP();
+
+  if (Flag_ESP) {
+    Serial3.println("AT+CWMODE=1"); // 1:Mode station 2:Mode AP 3:Mode BOTH
+    delay(100);
+    Serial3.println("AT+CWSTOPSMART");
+    delay(100);
+    Serial3.println("AT+CIPMUX=0"); // 1:multiple connection 0:single connection
+    delay(100);
+    Serial.println(F("ESP Inicializado"));
+    delay(100);
+    checkWifi();
+  }
+  else {
+    Serial.println(F("Fallo en inicializacion de ESP"));
   }
 }
