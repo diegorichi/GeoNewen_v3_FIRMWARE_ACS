@@ -4,6 +4,8 @@
 #include "vars.h"
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
+#include "machine_control.h"
+#include "thingspeak.h"
 
 
 void checkWifi(); //Función de chequeo de conexión a internet

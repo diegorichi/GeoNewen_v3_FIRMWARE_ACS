@@ -10,9 +10,6 @@
 #include "stateMachine.h"
 
 
-#define ONE_WIRE_BUS 22
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensors(&oneWire);
 
 /*******/
 /*SETUP*/
@@ -170,15 +167,5 @@ void mainLoop() {
   digitalWrite(DO_Val1, Valor_DO_VACS);
 
   wdt_reset();
-}
-
-void Caudal1() // Función de Cuenta de Pulsos de Caudalímetro
-{
-  Pulsos_Caud_T++;
-}
-
-void Caudal2() // Función de Cuenta de Pulsos de Caudalímetro
-{
-  Pulsos_Caud_H++;
 }
 

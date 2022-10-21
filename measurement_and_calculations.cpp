@@ -1,5 +1,19 @@
 #include "measurement_and_calculations.h"
 
+#define ONE_WIRE_BUS 22
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+void Caudal1() // Función de Cuenta de Pulsos de Caudalímetro
+{
+  Pulsos_Caud_T++;
+}
+
+void Caudal2() // Función de Cuenta de Pulsos de Caudalímetro
+{
+  Pulsos_Caud_H++;
+}
+
 
 void temperatureMeasuement() {
 if ((millis() - LecturaDSB) > 5000) // Se toma una lectura de los sensores DS18B20 cada 5 segundos, demoran aproximadamente 200ms en entregar un resultado, 750ms máx

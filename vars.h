@@ -4,8 +4,7 @@
 #include <TimerOne.h>        //Librería para el control de salidas PWM
 #include <avr/wdt.h>         //Libreria para uso de watchdog de Arduino
 #include <stdlib.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+
 
 /*-----------------ESP8266 Serial WiFi Module---------------*/
 //Informacion para la conexion a internet del modulo ESP8266 a Thingspeak

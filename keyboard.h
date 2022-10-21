@@ -3,9 +3,11 @@
 
 #include "vars.h"
 #include "functionsLCDMenu.h"
-#include "routines.h"
 #include "kume_eeprom.h"
 #include "menu.h"
+#include "machine_control.h"
+#include "alarm.h"
+
 
 void keyboardSetup(); // setup de pin modes y demas
 

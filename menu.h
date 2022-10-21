@@ -2,7 +2,8 @@
 #define Menu_h
 #include "Arduino.h"
 #include "functionsLCDMenu.h"
-#include "routines.h"
+#include "machine_control.h"
+#include "alarm.h"
 
 
 void initializeAndSetupMenu();

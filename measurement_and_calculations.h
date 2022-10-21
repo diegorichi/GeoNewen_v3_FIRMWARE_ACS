@@ -4,6 +4,14 @@
 #include "vars.h"
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+
+
+void Caudal1();
+
+void Caudal2();
 
 void temperatureMeasuement(); 
 
