@@ -161,6 +161,10 @@ float Temp_ACSaux;
 
 unsigned long E1_a_E2 = 120000;           //2 minutos para pasar de E1 a E2
 unsigned long E2_a_E3 = 10000;            //10 segundos para pasar de E2 a E3
+volatile byte MAX_ACS = 48;
+volatile byte MIN_ACS = 30;
+volatile byte GAP_ACS = 2;
+volatile byte DELTA_ACS_ELECTRICO = 7;
 
 bool Flag_ACS_EN = true;
 bool Flag_ACS_DT_EN = true;
@@ -264,6 +268,9 @@ bool Flag_Temp_Adm = false;
 volatile bool ModoFrioCalor = false; //Frio = true , Calor = false
 bool Alarma_Activa;
 bool Flag_Marcha_ON;
+bool senal_start; // senal de marcha, segun ModoFrioCalor 
+                   // se trabaja con 1 termostato.
+bool senal_stop;
 volatile bool Modo_Funcionamiento = false; //false = Automatico, true = Manual
 volatile bool Flag_Buzzer;
 volatile bool Flag_Alarma_Caudal;

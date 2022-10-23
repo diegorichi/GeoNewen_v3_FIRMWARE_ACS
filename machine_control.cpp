@@ -69,15 +69,34 @@ void initializeDigitalOuputs() {
   digitalWrite(DO_Buzzer, LOW);
 }
 
-void refreshDataToShow(){
-   if (millis() - Periodo_Refresco > 1000) // Refresco de valores
+void refreshDataToShow() {
+  if (millis() - Periodo_Refresco > 1000) // Refresco de valores
   {
     calculateValuesToShow();
-    
+
     lcdRefreshValues();
 
     //menuActivo->refresh();
 
     Periodo_Refresco = millis(); // El período de refresco es a los fines de que la información mostrada no esté constanmente cambiando y la visualización sea más adecuada
   }
+}
+
+void processStartStopSignal() {
+  /*
+Si modo calor:
+  di marcha on == HIGH -> arrancar
+  di marcha on == LOW -> parar
+Si modo frio:
+  di marcha on == LOW -> arrancar
+  di marcha on == HIGH -> parar
+
+digitalRead(DI_Marcha_on) == HIGH
+modoFrioCalor
+
+*/
+
+  senal_start = ((digitalRead(DI_Marcha_on) == HIGH) && !ModoFrioCalor) || ((digitalRead(DI_Marcha_on) == LOW) && ModoFrioCalor);
+
+  senal_stop = ((digitalRead(DI_Marcha_on) == LOW) && !ModoFrioCalor) || ((digitalRead(DI_Marcha_on) == HIGH) && ModoFrioCalor);
 }

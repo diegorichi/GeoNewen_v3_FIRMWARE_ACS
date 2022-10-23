@@ -9,13 +9,12 @@
 #include "measurement_and_calculations.h"
 #include "stateMachine.h"
 
-
-
 /*******/
 /*SETUP*/
 /*******/
 
-void setup() { // Inicializacion de I/O y variables generales
+void setup()
+{ // Inicializacion de I/O y variables generales
 
   wdt_disable();
 
@@ -86,11 +85,13 @@ void setup() { // Inicializacion de I/O y variables generales
 
   EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
 
-  if (SetP_ACS < 30) {
-    SetP_ACS = 30;
+  if (SetP_ACS < MIN_ACS)
+  {
+    SetP_ACS = MIN_ACS;
   }
-  if (SetP_ACS > 48) {
-    SetP_ACS = 48;
+  if (SetP_ACS > MAX_ACS)
+  {
+    SetP_ACS = MAX_ACS;
   }
   SetP_ACS_Edit = SetP_ACS;
 
@@ -104,9 +105,11 @@ void setup() { // Inicializacion de I/O y variables generales
 /*LAZO INFINITO*/
 /***************/
 
-void loop() {
+void loop()
+{
 
-  if (Estado_ConfigWIFI == 0) {
+  if (Estado_ConfigWIFI == 0)
+  {
     mainLoop();
   }
   else if (Estado_ConfigWIFI == 1) // Esto se ejecuta cuando se activa la configuracion WIFI, el resto del codigo no se ejecuta hasta que se sale de este modo
@@ -116,16 +119,17 @@ void loop() {
 
 } // Fin del loop
 
-void mainLoop() {
+void mainLoop()
+{
   // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
 
   temperatureMeasuement();
-  
+
   flowsCalculation(); // Determinación de Caudal
-   
+
   thermalEfficiencyCalculation(); // Cálculo de Eficiencia Térmica
 
-  powerCalculation();// Cálculo de la Potecia
+  powerCalculation(); // Cálculo de la Potecia
 
   checkEspWifiConnected(); // Verificacion de conexion a Wifi
 
@@ -134,30 +138,32 @@ void mainLoop() {
   wdt_reset();
 
   refreshDataToShow(); // INFORMACIÓN A REFRESCAR (depende del menú en el que nos encontremos)
- 
+
   //***************************
   // COMPROBACIONES DE SEGURIDAD (Aquí se determinan las posibles causas de alarmas
   //***************************
 
-  flowControl();// Control de Caudales
+  flowControl(); // Control de Caudales
 
-  temperatureControl();// Control de Temperaturas
+  temperatureControl(); // Control de Temperaturas
 
-  presureControl();// Comprobación de Presiones
+  presureControl(); // Comprobación de Presiones
 
   auxiliaryACSHeatingControl(); // Control de calentamiento ACS auxiliar con cartucho electrico.
 
   // TRANSICIÓN DE ESTADOS  //Definición del funcionamiento del equipo
 
-  stateMachine0(); // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
-  stateMachine1(); // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
-  stateMachine2(); // Arranque Compresor y Bombas
-  stateMachine3(); // Este es el estado final del sistema, donde se controlan las condiciones de alarma
-  stateMachine4(); // Estado de Alarma
-  stateMachine6(); // Estado de descanso
-  stateMachine7(); // Generacion ACS
+  processStartStopSignal();
+
+  stateMachine0();  // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
+  stateMachine1();  // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
+  stateMachine2();  // Arranque Compresor y Bombas
+  stateMachine3();  // Este es el estado final del sistema, donde se controlan las condiciones de alarma
+  stateMachine4();  // Estado de Alarma
+  stateMachine6();  // Estado de descanso
+  stateMachine7();  // Generacion ACS
   stateMachine71(); // Generacion ACS: Estado con bombas andando y compresor apagado
-  stateMachine8(); // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
+  stateMachine8();  // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
 
   // IMAGEN DE SALIDAS
   digitalWrite(DO_Bombas, Valor_DO_Bombas);
@@ -168,4 +174,3 @@ void mainLoop() {
 
   wdt_reset();
 }
-

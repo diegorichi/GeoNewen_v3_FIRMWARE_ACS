@@ -222,8 +222,8 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       case 210:
         {
           SetP_ACS_Edit = SetP_ACS_Edit - 1;
-          if (SetP_ACS_Edit < 30) {
-            SetP_ACS_Edit = 30;
+          if (SetP_ACS_Edit < MIN_ACS) {
+            SetP_ACS_Edit = MIN_ACS;
           }
         }
         break;
@@ -346,8 +346,8 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       case 210:
         {
           SetP_ACS_Edit = SetP_ACS_Edit + 1;
-          if (SetP_ACS_Edit > 48) {
-            SetP_ACS_Edit = 48;
+          if (SetP_ACS_Edit > MAX_ACS) {
+            SetP_ACS_Edit = MAX_ACS;
           }
         }
         break;

@@ -80,10 +80,18 @@ void RefreshMenuCero() {
   lcd.print(Estado_Maquina);
 
   lcd.setCursor(19, 1);
-  if (digitalRead(DI_Marcha_on) == HIGH)
+  if (senal_start)
     lcd.print(F("H"));
   else
     lcd.print(F("L"));
+
+  lcd.setCursor(19, 0);
+  if (ModoFrioCalor) {
+    lcd.print(F("F"));
+  }
+  else {
+    lcd.print(F("C"));
+  }
 
   lcd.setCursor(0, 1);
   if (Flag_Wifi)
@@ -180,7 +188,7 @@ void RefreshMenuDosTres() {
 // Funcionamiento Auto/Manual
 void RefreshMenuDosCuatro() {
   lcd.setCursor(10, 2);
-  if (Modo_Funcionamiento == false) {
+  if (!Modo_Funcionamiento) {
     lcd.print(F("AUTO  "));
   }
   else
