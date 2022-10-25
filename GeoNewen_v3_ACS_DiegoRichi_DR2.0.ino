@@ -153,7 +153,7 @@ void mainLoop()
 
   // TRANSICIÓN DE ESTADOS  //Definición del funcionamiento del equipo
 
-  processStartStopSignal();
+  processStartStopSignal(); // determina si la bomba tiene senal de marcha del termostato
 
   stateMachine0();  // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
   stateMachine1();  // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema

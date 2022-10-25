@@ -171,10 +171,10 @@ extern float Temp_ACSaux;
 
 extern unsigned long E1_a_E2; // 120000;           //2 minutos para pasar de E1 a E2
 extern unsigned long E2_a_E3; // 10000;            //10 segundos para pasar de E2 a E3
-extern volatile byte MAX_ACS = 48;
-extern volatile byte MIN_ACS = 30;
-extern volatile byte GAP_ACS = 2;
-extern volatile byte DELTA_ACS_ELECTRICO = 7;
+extern volatile byte MAX_ACS; // 48
+extern volatile byte MIN_ACS; // 30
+extern volatile byte GAP_ACS; // 2
+extern volatile byte DELTA_ACS_ELECTRICO; // 7
 
 extern bool Flag_ACS_EN; // true;
 extern bool Flag_ACS_DT_EN; // true;
