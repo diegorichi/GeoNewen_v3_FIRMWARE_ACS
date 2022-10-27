@@ -101,24 +101,6 @@ void setup()
   wdt_enable(WDTO_8S);
 }
 
-/***************/
-/*LAZO INFINITO*/
-/***************/
-
-void loop()
-{
-
-  if (Estado_ConfigWIFI == 0)
-  {
-    mainLoop();
-  }
-  else if (Estado_ConfigWIFI == 1) // Esto se ejecuta cuando se activa la configuracion WIFI, el resto del codigo no se ejecuta hasta que se sale de este modo
-  {
-    configWifi();
-  } // Fin del estado config WIFI
-
-} // Fin del loop
-
 void mainLoop()
 {
   // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
@@ -174,3 +156,21 @@ void mainLoop()
 
   wdt_reset();
 }
+
+/***************/
+/*LAZO INFINITO*/
+/***************/
+
+void loop()
+{
+
+  if (Estado_ConfigWIFI == 0)
+  {
+    mainLoop();
+  }
+  else if (Estado_ConfigWIFI == 1) // Esto se ejecuta cuando se activa la configuracion WIFI, el resto del codigo no se ejecuta hasta que se sale de este modo
+  {
+    configWifi();
+  } // Fin del estado config WIFI
+
+} // Fin del loop
