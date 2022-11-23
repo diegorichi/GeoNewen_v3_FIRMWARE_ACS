@@ -47,7 +47,7 @@ void setup()
 
   MenuActual = 0;
   MenuCero();
-  initializeAndSetupMenu();
+  //initializeAndSetupMenu();
 
   // menuActivo->show();
 

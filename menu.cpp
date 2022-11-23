@@ -167,8 +167,7 @@ void initializeAndSetupMenu()
   menuConfiguracionACSElectrico.setEnterAction([]()
                                                {
     Flag_ACS_EN_ELECT = !Flag_ACS_EN_ELECT;
-    //EEPROMUpdate(); 
-    });
+    EEPROMwrite(ACS_EN_ELECT_Address, Flag_ACS_EN_ELECT); });
   menuConfiguracionACSElectrico.setEscape(&menuConfiguracionSistema);
 
   // 281
@@ -177,8 +176,7 @@ void initializeAndSetupMenu()
   menuConfiguracionACSDT.setEnterAction([]()
                                         {
     Flag_ACS_DT_EN = !Flag_ACS_DT_EN;
-    //EEPROMUpdate(); 
-    });
+    EEPROMwrite(ACS_DT_EN_Address, Flag_ACS_DT_EN); });
   menuConfiguracionACSDT.setEscape(&menuConfiguracionSistema);
 
   // 28
@@ -187,8 +185,7 @@ void initializeAndSetupMenu()
   menuConfiguracionACS.setEnterAction([]()
                                       {
     Flag_ACS_EN = !Flag_ACS_EN;
-    //EEPROMUpdate(); 
-    });
+    EEPROMwrite(ACS_EN_Address, Flag_ACS_EN); });
   menuConfiguracionACS.setEscape(&menuConfiguracionSistema);
 
   // 24
@@ -197,8 +194,7 @@ void initializeAndSetupMenu()
   menuConfiguracionModoAutomatico.setEnterAction([]()
                                                  {
     heating_off = !heating_off;
-    //EEPROMUpdate();
-     });
+    EEPROMwrite(heating_off_address, heating_off); });
   menuConfiguracionModoAutomatico.setEscape(&menuConfiguracionSistema);
 
   // 23
@@ -207,28 +203,22 @@ void initializeAndSetupMenu()
   menuConfiguracionAlarmasCaudal.setEnterAction([]()
                                                 {
     Flag_Alarma_EN = !Flag_Alarma_EN;
-    //EEPROMUpdate(); 
-    });
+    EEPROMwrite(ACS_EN_Address, Flag_Alarma_EN); });
   menuConfiguracionAlarmasCaudal.setEscape(&menuConfiguracionSistema);
 
   // 210
   menuConfiguracionEditTemperaturaACS.setUpAction([]()
                                                   {
     SetP_ACS_Edit = SetP_ACS_Edit + 1;
-    if (SetP_ACS_Edit > 48) {
-      SetP_ACS_Edit = 48;
-    } });
+    normalizeAcsTemp(&SetP_ACS_Edit); });
   menuConfiguracionEditTemperaturaACS.setDownAction([]()
                                                     {
     SetP_ACS_Edit = SetP_ACS_Edit - 1;
-    if (SetP_ACS_Edit < 30) {
-      SetP_ACS_Edit = 30;
-    } });
+    normalizeAcsTemp(&SetP_ACS_Edit); });
   menuConfiguracionEditTemperaturaACS.setEnterAction([]()
                                                      {
     SetP_ACS = SetP_ACS_Edit;
-    //EEPROMUpdate(); 
-    });
+    EEPROMwrite(SetP_ACS_Address, SetP_ACS); });
   menuConfiguracionEditTemperaturaACS.setEscape(&menuConfiguracionTemperaturaACS);
 
   // 21
@@ -257,8 +247,7 @@ void initializeAndSetupMenu()
   // 50
   menuMonitorRegistroAlarmas.setEscape(&menuRegistroAlarmas);
   menuMonitorRegistroAlarmas.setEnterAction([]()
-                                            { EEPROMwrite(Alarma_Address, (uint8_t)0); 
-                                            });
+                                            { EEPROMwrite(Alarma_Address, (uint8_t)0); });
 
   // 5
   menuRegistroAlarmas.setUp(&menuAlarmas);

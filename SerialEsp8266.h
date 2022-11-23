@@ -103,7 +103,7 @@ public:
   SerialEsp8266(HardwareSerial *serialHardware, long refresh_period_param)
   {
     this->_espSerial = serialHardware;
-    this->_espSerial->begin(9600);
+    this->_espSerial->begin(4800);
     this->refresh_period = refresh_period_param;
   }
 
