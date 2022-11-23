@@ -34,12 +34,6 @@ void RefreshMenuDosTres();
 // Funcionamiento Auto/Manual
 void RefreshMenuDosCuatro();
 
-// Conexion de WIFI (Conectado/No Conectado)
-void RefreshMenuDosSiete();
-
-// Conexion Modo Smart 
-void RefreshMenuDosSieteUno();
-
 // Activacion/desactivacion de ACS
 void RefreshMenuDosOcho();
 
@@ -50,7 +44,7 @@ void RefreshMenuDosOchoUno();
 void RefreshMenuDosNueve();
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
-void RefreshAlarma(volatile uint8_t _nro_Alarma);
+void RefreshAlarma(uint8_t _nro_Alarma);
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
 void RefreshMenuCuatroCero();
@@ -78,9 +72,6 @@ void MenuDosTres(); // Habilitacion alarmas de caudal
 
 void MenuDosCuatro(); // Cambio a modo manual o automatico
 
-void MenuDosSiete(); // confiuracion de WIFI
-
-void MenuDosSieteUno(); // configuracion SMART
 void MenuCuatro(); // Menú de Visualización de Alarmas
 
 void MenuCuatroCero(); // Visualización de Alarmas Activas

@@ -2,9 +2,6 @@
 #include "keyboard.h"
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
-#include "thingspeak.h"
-#include "machine_control.h"
-#include "connectivity.h"
 #include "machine_control.h"
 #include "measurement_and_calculations.h"
 #include "stateMachine.h"
@@ -34,56 +31,15 @@ void setup()
 
   lcdCreateSpecialChars();
 
-  Caud_T = 0; // Inicialización de variables
-  Caud_H = 0;
-  Pulsos_Caud_T = 0;
-  Pulsos_Caud_H = 0;
-  Ventana_Caudal1 = 0;
-  Ventana_Caudal2 = 0;
-  Estado_Maquina = 0;
-  Estado_Bombas = 0;
-  Estado_Comp = 0;
-  Activacion_Comp = 0;
-  Periodo_Refresco_Wifi = 0;
-  Estado_ConfigWIFI = 0;
-  Activacion_Bombas = 0;
-  Periodo_Bombas = 0;
-  A_RMS = 0;
-  Valor_DO_VACS = HIGH;
-  Valor_DO_V4V = LOW;
+  initializeFlowState();
 
-  Flag_TempIntXT_Baja = false; // inicializacion  de banderas
-  Flag_TempIntXT_Alta = false;
-  Flag_TempIntXH_Baja = false;
-  Flag_TempIntXH_Alta = false;
-  Flag_TempTriacs = false;
-  Flag_TempComp01 = false;
-  Flag_CaudT = false;
-  Flag_CaudH = false;
-  Flag_PresHI = false;
-  Flag_PresLOW = false;
-  Flag_Alarma_General = false;
-  modoFrio = false;
-  Modo_Funcionamiento = false;
+  initializeStateMachine();
 
-  Cont_Temp_intX_T = 0;
-  Cont_Temp_intX_T2 = 0;
-  Cont_Temp_intX_H = 0;
-  Cont_Temp_intX_H2 = 0;
-  Cont_Temp_Comp_01 = 0;
-  Cont_Caud_T = 0;
-  Cont_Caud_H = 0;
-  Cont_Press_HI = 0;
-  Cont_Press_LOW = 0;
-  W = "";
-  w = ' ';
+  ResetFlags();
 
   Timer1.initialize(100000);
 
   Serial.begin(115200);
-  Serial3.begin(115200);
-
-  setupConnectivity();
 
   EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
 
@@ -93,7 +49,7 @@ void setup()
   MenuCero();
   initializeAndSetupMenu();
 
-  //menuActivo->show();
+  // menuActivo->show();
 
   wdt_enable(WDTO_8S);
 }
@@ -102,17 +58,9 @@ void mainLoop()
 {
   // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
 
-  temperatureMeasuement();
+  temperatureMeasurement();
 
   flowsCalculation(); // Determinación de Caudal
-
-  thermalEfficiencyCalculation(); // Cálculo de Eficiencia Térmica
-
-  powerCalculation(); // Cálculo de la Potecia
-
-  checkEspWifiConnected(); // Verificacion de conexion a Wifi
-
-  sendAndReceiveDataCloud(); // Envio de datos a ThingSpeak
 
   esp8266.handleEspSerial();
 
@@ -162,14 +110,5 @@ void mainLoop()
 
 void loop()
 {
-
-  if (Estado_ConfigWIFI == 0)
-  {
-    mainLoop();
-  }
-  else if (Estado_ConfigWIFI == 1) // Esto se ejecuta cuando se activa la configuracion WIFI, el resto del codigo no se ejecuta hasta que se sale de este modo
-  {
-    configWifi();
-  } // Fin del estado config WIFI
-
+  mainLoop();
 } // Fin del loop
