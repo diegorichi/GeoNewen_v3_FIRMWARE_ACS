@@ -8,10 +8,12 @@
 #include "machine_control.h"
 #include "measurement_and_calculations.h"
 #include "stateMachine.h"
-
+#include "SerialEsp8266.h"
 /*******/
 /*SETUP*/
 /*******/
+
+SerialEsp8266 esp8266(&Serial2);
 
 void setup()
 { // Inicializacion de I/O y variables generales
@@ -61,7 +63,7 @@ void setup()
   Flag_PresHI = false;
   Flag_PresLOW = false;
   Flag_Alarma_General = false;
-  ModoFrioCalor = false;
+  modoFrio = false;
   Modo_Funcionamiento = false;
 
   Cont_Temp_intX_T = 0;
@@ -85,18 +87,13 @@ void setup()
 
   EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
 
-  if (SetP_ACS < MIN_ACS)
-  {
-    SetP_ACS = MIN_ACS;
-  }
-  if (SetP_ACS > MAX_ACS)
-  {
-    SetP_ACS = MAX_ACS;
-  }
-  SetP_ACS_Edit = SetP_ACS;
+  SetP_ACS_Edit = normalizeAcsTemp(&SetP_ACS);
 
   MenuActual = 0;
   MenuCero();
+  initializeAndSetupMenu();
+
+  //menuActivo->show();
 
   wdt_enable(WDTO_8S);
 }
@@ -116,6 +113,8 @@ void mainLoop()
   checkEspWifiConnected(); // Verificacion de conexion a Wifi
 
   sendAndReceiveDataCloud(); // Envio de datos a ThingSpeak
+
+  esp8266.handleEspSerial();
 
   wdt_reset();
 

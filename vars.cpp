@@ -161,10 +161,10 @@ float Temp_ACSaux;
 
 unsigned long E1_a_E2 = 120000;           //2 minutos para pasar de E1 a E2
 unsigned long E2_a_E3 = 10000;            //10 segundos para pasar de E2 a E3
-volatile byte MAX_ACS = 48;
-volatile byte MIN_ACS = 30;
-volatile byte GAP_ACS = 2;
-volatile byte DELTA_ACS_ELECTRICO = 7;
+volatile uint8_t MAX_ACS = 48;
+volatile uint8_t MIN_ACS = 30;
+volatile uint8_t GAP_ACS = 2;
+volatile uint8_t DELTA_ACS_ELECTRICO = 7;
 
 bool Flag_ACS_EN = true;
 bool Flag_ACS_DT_EN = true;
@@ -198,18 +198,18 @@ unsigned long LecturaDSB;
 unsigned long Ingreso_Descanso = 0;
 
 volatile int MenuActual; //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
-volatile byte Pulsos_Caud_T;
-volatile byte Pulsos_Caud_H;
-volatile byte Pulsos_Caud_T_Bis;
-volatile byte Pulsos_Caud_H_Bis;
+volatile uint8_t Pulsos_Caud_T;
+volatile uint8_t Pulsos_Caud_H;
+volatile uint8_t Pulsos_Caud_T_Bis;
+volatile uint8_t Pulsos_Caud_H_Bis;
 volatile int Ciclo_Trabajo;
 volatile int Ciclo_Trabajoedit;
 volatile int Estado_Comp = 0;
-volatile byte Nro_Alarma = 0;
-volatile byte SetP_ACS = 0;
-volatile byte SetP_ACS_Edit = 0;
-//volatile byte SetP_Temp_Admision = 0;
-//volatile byte SetP_Temp_Admision_Edit = 0;
+volatile uint8_t Nro_Alarma = 0;
+volatile uint8_t SetP_ACS = 0;
+volatile uint8_t SetP_ACS_Edit = 0;
+//volatile uint8_t SetP_Temp_Admision = 0;
+//volatile uint8_t SetP_Temp_Admision_Edit = 0;
 
 volatile int Per_Esp_C; //Variables modificables por teclado
 volatile int Var_Mod_2;
@@ -219,8 +219,8 @@ volatile int Per_Esp_C_Edit;
 volatile int Var_Mod_2_Edit;
 volatile int Var_Mod_3_Edit;
 
-byte H; //usados para escribir y leer variables de la memoria EEPROM
-byte L;
+uint8_t H; //usados para escribir y leer variables de la memoria EEPROM
+uint8_t L;
 //char s;
 
 const int DutyCAddress = 0; //Direcciones de memoria EEPROM
@@ -238,7 +238,7 @@ const int ACS_EN_ELECT_Address = 23;
 //const int SetP_Temp_Amision_Address = 25; // address 25 y 26 tomadas por ACS
 
 
-volatile byte Alarma_Eeprom;
+volatile uint8_t Alarma_Eeprom;
 
 
 
@@ -265,10 +265,10 @@ bool Flag_Estado_Comp = false;
 bool Flag_Aporte_E = false;
 bool Flag_RetornoLiq = false;
 bool Flag_Temp_Adm = false;
-volatile bool ModoFrioCalor = false; //Frio = true , Calor = false
+volatile bool modoFrio = false; //Frio = true , Calor = false
 bool Alarma_Activa;
 bool Flag_Marcha_ON;
-bool senal_start; // senal de marcha, segun ModoFrioCalor 
+bool senal_start; // senal de marcha, segun modoFrio 
                    // se trabaja con 1 termostato.
 bool senal_stop;
 volatile bool Modo_Funcionamiento = false; //false = Automatico, true = Manual

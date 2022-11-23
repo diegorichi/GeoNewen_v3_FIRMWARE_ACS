@@ -105,3 +105,14 @@ void checkFlagsForAlarms() {
     MenuActual = 40;
   }
 }
+
+
+void resetAlarms(){
+  Flag_Alarma_General = false;
+  Nro_Alarma = 0;
+  digitalWrite(DO_Buzzer, LOW);
+  Alarma_Activa = false;
+  ResetFlags();
+  Flag_Buzzer = false;
+  Estado_Maquina = 0;
+}

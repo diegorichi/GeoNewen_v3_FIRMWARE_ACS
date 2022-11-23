@@ -81,7 +81,7 @@ void sendAndReceiveDataCloud(){ // Envio de datos a ThingSpeak
   if (((millis() - Periodo_Refresco_Wifi) > 60000) && Flag_Wifi) 
   {
     wdt_reset();
-    ThingSUpdate();
+    //ThingSUpdate();
     Periodo_Refresco_Wifi = millis();
   }
 }

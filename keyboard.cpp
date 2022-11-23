@@ -36,7 +36,7 @@ void AtencionTecladoNew() // Función de Navegación entre Menús y Modificació
     buzzerBeep();
   }
   if (BotonEnter) {
-    menuActivo = &(menuActivo->enter());
+    menuActivo = &menuActivo->enter();
   }
   if (BotonAbajo) {
     menuActivo = &(menuActivo->down());
@@ -99,10 +99,7 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         break;
       case 20:
         {
-          if (Estado_Maquina == 1) {
-            FrioCalor();
-            EEPROMUpdate();
-          }
+          changeModo();
         }
         break;
       case 21:
@@ -164,13 +161,7 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
         break;
       case 40:
         {
-          Flag_Alarma_General = false;
-          Nro_Alarma = 0;
-          digitalWrite(DO_Buzzer, LOW);
-          Alarma_Activa = false;
-          ResetFlags();
-          Flag_Buzzer = false;
-          Estado_Maquina = 0;
+          resetAlarms();
         }
         break;
       case 50:
@@ -222,9 +213,7 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       case 210:
         {
           SetP_ACS_Edit = SetP_ACS_Edit - 1;
-          if (SetP_ACS_Edit < MIN_ACS) {
-            SetP_ACS_Edit = MIN_ACS;
-          }
+          normalizeAcsTemp(&SetP_ACS_Edit);
         }
         break;
       case 23:
@@ -346,9 +335,7 @@ void AtencionTecladoOld() // Función de Navegación entre Menús y Modificació
       case 210:
         {
           SetP_ACS_Edit = SetP_ACS_Edit + 1;
-          if (SetP_ACS_Edit > MAX_ACS) {
-            SetP_ACS_Edit = MAX_ACS;
-          }
+          normalizeAcsTemp(&SetP_ACS_Edit);
         }
         break;
       case 40:

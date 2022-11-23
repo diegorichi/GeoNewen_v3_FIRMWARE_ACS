@@ -6,7 +6,7 @@ Valor_DO_Bombas = HIGH;
 Valor_DO_VACS = HIGH; // modo calor
 
 
-ModoFrioCalor == true (modo frio)        
+modoFrio == true (modo frio)        
         Valor_DO_VACS = LOW; //frio
 
 

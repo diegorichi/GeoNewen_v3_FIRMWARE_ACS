@@ -26,7 +26,7 @@ void EEPROMUpdate() //Función de guardado de valores en memoria EEPROM
   EEPROM.write(ACS_EN_Address, Flag_ACS_EN);
   EEPROM.write(ACS_DT_EN_Address, Flag_ACS_DT_EN);
   EEPROM.write(ACS_EN_ELECT_Address, Flag_ACS_EN_ELECT);
-  EEPROM.write(ModeAddress, ModoFrioCalor); //La variable "ModoFrioCalor es de tipo bool y ocupa solo 8 bits, por lo que no hay que dividirla en 2 partes
+  EEPROM.write(ModeAddress, modoFrio); //La variable "modoFrio es de tipo bool y ocupa solo 8 bits, por lo que no hay que dividirla en 2 partes
   //EEPROM.write(Mode_F_Address, Modo_Funcionamiento);
   //H = highByte(Pos_Valv);
   //L = lowByte(Pos_Valv);
@@ -36,8 +36,8 @@ void EEPROMUpdate() //Función de guardado de valores en memoria EEPROM
 
 void EEPROMLectura() //Función de lectura de valores almacenados en memoria EEPROM
 {
-  byte lowByte = EEPROM.read(DutyCAddress + 1); //Se leen los 2 bytes que componen la variable int por separado
-  byte highByte = EEPROM.read(DutyCAddress);
+  uint8_t lowByte = EEPROM.read(DutyCAddress + 1); //Se leen los 2 bytes que componen la variable int por separado
+  uint8_t highByte = EEPROM.read(DutyCAddress);
   Ciclo_Trabajo = ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00); //Se ensamblan las 2 mitades de la variable
   Ciclo_Trabajoedit = Ciclo_Trabajo;                                    //Se asigna el valor a la variable de edición, para poder mostrar el valor actual de la misma
   lowByte = EEPROM.read(SetP_ACS_Address + 1);
@@ -57,7 +57,7 @@ void EEPROMLectura() //Función de lectura de valores almacenados en memoria EEP
   Flag_ACS_EN = EEPROM.read(ACS_EN_Address);
   Flag_ACS_DT_EN = EEPROM.read(ACS_DT_EN_Address);
   Flag_ACS_EN_ELECT = EEPROM.read(ACS_EN_ELECT_Address);
-  ModoFrioCalor = EEPROM.read(ModeAddress);
+  modoFrio = EEPROM.read(ModeAddress);
   //lowByte = EEPROM.read(SetP_Temp_Admision_Address + 1);
   //highByte = EEPROM.read(SetP_Temp_Admision_Address);
   //SetP_Temp_Admision = ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);

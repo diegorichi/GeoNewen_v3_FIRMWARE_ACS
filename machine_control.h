@@ -6,7 +6,9 @@
 #include "kume_eeprom.h"
 #include "measurement_and_calculations.h"
 
-void FrioCalor(); // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
+void frioCalor(); // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
+
+void changeModo(); // funcion extra para cambio de Modo de Funcionamiento
 
 void setupDigitalInputs();
 
@@ -17,5 +19,7 @@ void initializeDigitalOuputs();
 void refreshDataToShow();
 
 void processStartStopSignal();
+
+volatile uint8_t normalizeAcsTemp(volatile uint8_t *acsValue);
 
 #endif

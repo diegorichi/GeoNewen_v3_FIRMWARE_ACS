@@ -50,7 +50,7 @@ void RefreshMenuDosOchoUno();
 void RefreshMenuDosNueve();
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
-void RefreshAlarma(volatile byte _nro_Alarma);
+void RefreshAlarma(volatile uint8_t _nro_Alarma);
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
 void RefreshMenuCuatroCero();

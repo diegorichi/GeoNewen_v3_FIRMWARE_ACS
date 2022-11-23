@@ -1,10 +1,8 @@
 #include "functionsLCDMenu.h"
 LiquidCrystal lcd(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); // Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
 
-#define byte uint8_t
-
 // DEFINICIÓN DE CARACTERES (símbolos especiales a mostrar)
-byte FlechaAbajo[8] = {
+uint8_t FlechaAbajo[8] = {
     B00000,
     B00000,
     B00000,
@@ -14,7 +12,7 @@ byte FlechaAbajo[8] = {
     B01110,
     B00100 };
 
-byte FlechaArriba[8] = {
+uint8_t FlechaArriba[8] = {
     B00100,
     B01110,
     B11111,
@@ -86,7 +84,7 @@ void RefreshMenuCero() {
     lcd.print(F("L"));
 
   lcd.setCursor(19, 0);
-  if (ModoFrioCalor) {
+  if (modoFrio) {
     lcd.print(F("F"));
   }
   else {
@@ -109,7 +107,7 @@ void RefreshMenuCero() {
 // Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
 void RefreshMenuUnoCero() {
   lcd.setCursor(5, 0);
-  if (ModoFrioCalor) {
+  if (modoFrio) {
     lcd.print(F("FRIO "));
   }
   else {
@@ -128,7 +126,7 @@ void RefreshMenuUnoCero() {
 // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
 void RefreshMenuUnoUno() {
   lcd.setCursor(5, 0);
-  if (ModoFrioCalor) {
+  if (modoFrio) {
     lcd.print(F("FRIO "));
     lcd.setCursor(15, 3);
     lcd.print(F("    "));
@@ -159,7 +157,7 @@ void RefreshMenuUnoUno() {
 // Modo Frio / Calor
 void RefreshMenuDosCero() {
   lcd.setCursor(12, 2);
-  if (ModoFrioCalor) {
+  if (modoFrio) {
     lcd.print(F("FRIO "));
   }
   else {
@@ -208,26 +206,25 @@ void RefreshMenuDosSiete() {
   lcd.print(local_ip);
 }
 
-// Conexion Modo Smart 
-      /* implementar protocolo de informacion en Modo Smart
-       *
-        Menu WIFI SMART:
+/* Conexion Modo Smart implementar protocolo de informacion en Modo Smart
+  *
+  Menu WIFI SMART:
 
-        23:57:17.575 -> AT+CWSTARTSMART
-        23:57:17.575 -> OK
-        23:57:17.575 -> WIFI DISCONNECT
-        23:57:25.588 -> smartconfig type:ESPTOUCH
-        23:57:30.377 -> Smart get wifi info
-        23:57:30.377 -> ssid:Guess
-        23:57:30.377 -> password:atardecer
-        23:57:31.495 -> WIFI CONNECTED
-        23:57:34.485 -> WIFI GOT IP
-        23:57:38.477 -> smartconfig connected wifi
-        23:57:39.082 -> Conectado a red
-        23:57:40.108 -> Ip is:192.168.0.101
-        23:57:42.112 -> Conectado a red
-        -> Menu WiFi
-       */
+  23:57:17.575 -> AT+CWSTARTSMART
+  23:57:17.575 -> OK
+  23:57:17.575 -> WIFI DISCONNECT
+  23:57:25.588 -> smartconfig type:ESPTOUCH
+  23:57:30.377 -> Smart get wifi info
+  23:57:30.377 -> ssid:Guess
+  23:57:30.377 -> password:atardecer
+  23:57:31.495 -> WIFI CONNECTED
+  23:57:34.485 -> WIFI GOT IP
+  23:57:38.477 -> smartconfig connected wifi
+  23:57:39.082 -> Conectado a red
+  23:57:40.108 -> Ip is:192.168.0.101
+  23:57:42.112 -> Conectado a red
+  -> Menu WiFi
+  */
 
 void RefreshMenuDosSieteUno() {
   if (W.indexOf("DISCONNECT") > -1) // Si P13 esta incluido en el string
@@ -324,7 +321,7 @@ void RefreshMenuDosNueve() {
 }
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
-void RefreshAlarma(volatile byte _nro_Alarma) {
+void RefreshAlarma(volatile uint8_t _nro_Alarma) {
   lcd.setCursor(0, 1);
   switch (_nro_Alarma) {
   case 0:

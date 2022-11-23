@@ -6,7 +6,6 @@
 #include "alarm.h"
 
 
-void initializeAndSetupMenu();
 
 class Menu {
 
@@ -49,7 +48,10 @@ public:
   void refresh();
 };
 
+extern Menu *menuActivo;
 
-extern Menu* menuActivo;
+
+void initializeAndSetupMenu();
+
 
 #endif

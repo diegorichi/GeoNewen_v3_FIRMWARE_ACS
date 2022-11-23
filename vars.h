@@ -171,10 +171,10 @@ extern float Temp_ACSaux;
 
 extern unsigned long E1_a_E2; // 120000;           //2 minutos para pasar de E1 a E2
 extern unsigned long E2_a_E3; // 10000;            //10 segundos para pasar de E2 a E3
-extern volatile byte MAX_ACS; // 48
-extern volatile byte MIN_ACS; // 30
-extern volatile byte GAP_ACS; // 2
-extern volatile byte DELTA_ACS_ELECTRICO; // 7
+extern volatile uint8_t MAX_ACS; // 48
+extern volatile uint8_t MIN_ACS; // 30
+extern volatile uint8_t GAP_ACS; // 2
+extern volatile uint8_t DELTA_ACS_ELECTRICO; // 7
 
 extern bool Flag_ACS_EN; // true;
 extern bool Flag_ACS_DT_EN; // true;
@@ -208,18 +208,18 @@ extern unsigned long LecturaDSB;
 extern unsigned long Ingreso_Descanso; // 0;
 
 extern volatile int MenuActual; //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
-extern volatile byte Pulsos_Caud_T;
-extern volatile byte Pulsos_Caud_H;
-extern volatile byte Pulsos_Caud_T_Bis;
-extern volatile byte Pulsos_Caud_H_Bis;
+extern volatile uint8_t Pulsos_Caud_T;
+extern volatile uint8_t Pulsos_Caud_H;
+extern volatile uint8_t Pulsos_Caud_T_Bis;
+extern volatile uint8_t Pulsos_Caud_H_Bis;
 extern volatile int Ciclo_Trabajo; // libres
 extern volatile int Ciclo_Trabajoedit;  // libres
 extern volatile int Estado_Comp; // 0;
-extern volatile byte Nro_Alarma; // 0;
-extern volatile byte SetP_ACS; // 0;
-extern volatile byte SetP_ACS_Edit; // 0;
-//extern volatile byte SetP_Temp_Admision; // 0;
-//extern volatile byte SetP_Temp_Admision_Edit; // 0;
+extern volatile uint8_t Nro_Alarma; // 0;
+extern volatile uint8_t SetP_ACS; // 0;
+extern volatile uint8_t SetP_ACS_Edit; // 0;
+//extern volatile uint8_t SetP_Temp_Admision; // 0;
+//extern volatile uint8_t SetP_Temp_Admision_Edit; // 0;
 
 extern volatile int Per_Esp_C; //Variables modificables por teclado
 extern volatile int Var_Mod_2;
@@ -229,8 +229,8 @@ extern volatile int Per_Esp_C_Edit;
 extern volatile int Var_Mod_2_Edit;
 extern volatile int Var_Mod_3_Edit;
 
-extern byte H; //usados para escribir y leer variables de la memoria EEPROM
-extern byte L;
+extern uint8_t H; //usados para escribir y leer variables de la memoria EEPROM
+extern uint8_t L;
 //char s;
 
 extern const int DutyCAddress; // 0; //Direcciones de memoria EEPROM
@@ -246,7 +246,7 @@ extern const int ACS_DT_EN_Address; // 19;
 extern const int ACS_EN_Address; // 21;
 extern const int ACS_EN_ELECT_Address; // 23;
 //extern const int SetP_Temp_Amision_Address; // 25;
-extern volatile byte Alarma_Eeprom;
+extern volatile uint8_t Alarma_Eeprom;
 
 
 
@@ -273,10 +273,10 @@ extern bool Flag_Estado_Comp; // false;
 extern bool Flag_Aporte_E; // false;
 extern bool Flag_RetornoLiq; // false;
 extern bool Flag_Temp_Adm; // false;
-extern volatile bool ModoFrioCalor; // false; //Frio ; // true , Calor ; // false
+extern volatile bool modoFrio; // false; //Frio ; // true , Calor ; // false
 extern bool Alarma_Activa;
 extern bool Flag_Marcha_ON; // control de salto e1
-extern bool senal_start; // senal de marcha, segun ModoFrioCalor 
+extern bool senal_start; // senal de marcha, segun modoFrio 
                    // se trabaja con 1 termostato.
 extern bool senal_stop;
 extern volatile bool Modo_Funcionamiento; // false; //false ; // Automatico, true ; // Manual

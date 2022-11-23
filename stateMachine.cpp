@@ -11,7 +11,7 @@ void stateMachine0() { // Estado inicial del sistema, tanto el compresor como la
 
     Valor_DO_VACS = LOW; // paso a losa radiante
 
-    if (ModoFrioCalor) {
+    if (modoFrio) {
       Valor_DO_V4V = LOW; // modo frio
     } else {
       Valor_DO_V4V = HIGH; // modo calor
@@ -207,12 +207,12 @@ void stateMachine7() // Generacion ACS
       Flag_retardo_e7 = false;
     }
 
-    if ((Temp_ACS >= SetP_ACS) && !ModoFrioCalor || !Flag_ACS_EN) //
+    if ((Temp_ACS >= SetP_ACS) && !modoFrio || !Flag_ACS_EN) //
     {
       Estado_Maquina = 0;
       Flag_retardo_e7 = false; // termino el ciclo en modo calor y vuelve a 0
     }
-    else if ((Temp_ACS >= SetP_ACS) && ModoFrioCalor && (Estado_Comp == 1)) // termino el ciclo en modo frio y vuelve a 0, previa espera de 5 minutos en el estado 8
+    else if ((Temp_ACS >= SetP_ACS) && modoFrio && (Estado_Comp == 1)) // termino el ciclo en modo frio y vuelve a 0, previa espera de 5 minutos en el estado 8
     {
       Periodo_Fin_ACS = millis();
       Estado_Maquina = 8;

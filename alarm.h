@@ -12,4 +12,6 @@ void ResetFlags(); //Luego de ocurrida una alarma y revisada por parte del usuar
 
 void checkFlagsForAlarms();
 
+void resetAlarms();
+
 #endif
