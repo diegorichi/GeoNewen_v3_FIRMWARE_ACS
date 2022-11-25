@@ -15,32 +15,26 @@ void frioCalor() // Función de cambio de Modo de Funcionamiento  (Bromberg: mod
   {
     Valor_DO_V4V = HIGH;
     modoFrio = false;
-  }
-  else
-  {
+  } else {
     Valor_DO_V4V = LOW;
     modoFrio = true;
   }
 
-  for (unsigned long i = 0; i < 200000; i++)
-  {
+  for (unsigned long i = 0; i < 200000; i++) {
     wdt_reset();
   }
   MenuActual = 20;
   MenuDosCero();
 }
 
-void changeModo()
-{
-  if (Estado_Maquina == 1)
-  {
+void changeModo() {
+  if (Estado_Maquina == 1) {
     frioCalor();
     EEPROMwrite(modo_frio_address, modoFrio);
   }
 }
 
-void setupDigitalInputs()
-{
+void setupDigitalInputs() {
   pinMode(DI_Marcha_on, INPUT);
   pinMode(DI_Pres_HI, INPUT);
   pinMode(DI_Pres_LOW, INPUT);
@@ -48,8 +42,7 @@ void setupDigitalInputs()
   pinMode(DI_Caud_H, INPUT);
 }
 
-void setupDigitalOuputs()
-{
+void setupDigitalOuputs() {
 
   pinMode(DO_Comp_01, OUTPUT);
   pinMode(DO_Val1, OUTPUT);
@@ -65,8 +58,7 @@ void setupDigitalOuputs()
   pinMode(ED_ENABLE, OUTPUT);
 }
 
-void initializeDigitalOuputs()
-{
+void initializeDigitalOuputs() {
   digitalWrite(ED_ENABLE, LOW); // Inicialización de salidas
   digitalWrite(DO_Comp_01, LOW);
   digitalWrite(DO_Val1, LOW); // Inicia con la valvula de loza encendida
@@ -77,8 +69,7 @@ void initializeDigitalOuputs()
   digitalWrite(DO_Buzzer, LOW);
 }
 
-void refreshDataToShow()
-{
+void refreshDataToShow() {
   if (millis() - Periodo_Refresco > 500) // Refresco de valores
   {
     calculateValuesToShow();
@@ -91,8 +82,7 @@ void refreshDataToShow()
   }
 }
 
-void processStartStopSignal()
-{
+void processStartStopSignal() {
   /*
 Si modo calor:
   di marcha on == HIGH -> arrancar
@@ -111,14 +101,11 @@ modoFrio
   senal_stop = ((digitalRead(DI_Marcha_on) == LOW) && !modoFrio) || ((digitalRead(DI_Marcha_on) == HIGH) && modoFrio);
 }
 
-uint8_t normalizeAcsTemp(volatile uint8_t *acsValue)
-{
-  if (*acsValue < MIN_ACS)
-  {
+uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {
+  if (*acsValue < MIN_ACS) {
     *acsValue = MIN_ACS;
   }
-  if (*acsValue > MAX_ACS)
-  {
+  if (*acsValue > MAX_ACS) {
     *acsValue = MAX_ACS;
   }
   return *acsValue;

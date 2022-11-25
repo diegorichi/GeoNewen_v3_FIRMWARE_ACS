@@ -4,37 +4,23 @@ int Alarmas() // Función de identificación de Alarma Activa
 {
   Flag_Alarma_General = false;
   Nro_Alarma = 0;
-  if (Flag_TempComp01)
-  {
+  if (Flag_TempComp01) {
     Nro_Alarma = 6;
-  }
-  else if (Flag_CaudT)
-  {
+  } else if (Flag_CaudT) {
     Nro_Alarma = 7;
-  }
-  else if (Flag_CaudH)
-  {
+  } else if (Flag_CaudH) {
     Nro_Alarma = 8;
-  }
-  else if (Flag_PresHI)
-  {
+  } else if (Flag_PresHI) {
     Nro_Alarma = 9;
-  }
-  else if (Flag_PresLOW)
-  {
+  } else if (Flag_PresLOW) {
     Nro_Alarma = 10;
-  }
-  else if (Flag_Temp_Adm)
-  {
+  } else if (Flag_Temp_Adm) {
     Nro_Alarma = 15;
-  }
-  else if (Flag_Temp_Descarga)
-  {
+  } else if (Flag_Temp_Descarga) {
     Nro_Alarma = 18;
   }
 
-  if (Nro_Alarma != 0)
-  {
+  if (Nro_Alarma != 0) {
     Flag_Alarma_General = true;
     EEPROMwrite(Alarma_Address, Nro_Alarma);
   }
@@ -58,18 +44,15 @@ void ResetFlags() // Luego de ocurrida una alarma y revisada por parte del usuar
   Cont_Temp_Des = 0;
 }
 
-void checkFlagsForAlarms()
-{
-  if (Flag_TempComp01 || !PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga)
-  {
+void checkFlagsForAlarms() {
+  if (Flag_TempComp01 || !PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) {
     Estado_Maquina = 4;
     MenuCuatroCero();
     MenuActual = 40;
   }
 }
 
-void resetAlarms()
-{
+void resetAlarms() {
   Flag_Alarma_General = false;
   Nro_Alarma = 0;
   digitalWrite(DO_Buzzer, LOW);

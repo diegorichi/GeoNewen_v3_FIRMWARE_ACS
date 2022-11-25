@@ -1,8 +1,7 @@
 #include "stateMachine.h"
 
-void initializeStateMachine(){
+void initializeStateMachine() {
   Estado_Maquina = 0;
-  Estado_Comp = 0;
   Activacion_Comp = 0;
   dont_stuck_pumps_activation = 0;
   dont_stuck_pumps = 0;
@@ -14,41 +13,29 @@ void initializeStateMachine(){
 }
 
 
-void stateMachine0()
-{ // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
-  if (Estado_Maquina == 0)
-  {
+void stateMachine0() { // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
+  if (Estado_Maquina == 0) {
     Flag_Marcha_ON = false;
     Valor_DO_Comp_01 = LOW;
-    Estado_Comp = 0;
     Activacion_Comp = 0;
     Valor_DO_Bombas = LOW;
     dont_stuck_pumps = millis();
 
     Valor_DO_VACS = LOW; // paso a losa radiante
 
-    if (modoFrio)
-    {
-      Valor_DO_V4V = LOW; // modo frio
-    }
-    else
-    {
-      Valor_DO_V4V = HIGH; // modo calor
-    }
+    Valor_DO_V4V = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
 
     EsperaValv = millis();
     if (!heating_off)
       Estado_Maquina = 1;
-    Flag_TempComp01 = false;
+
   }
 }
 
-void stateMachine1()
-{                          // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
+void stateMachine1() {                          // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
   if (Estado_Maquina == 1) // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
   {                        // Espera de Marcha_ON
-    if (heating_off)
-    {
+    if (heating_off) {
       Estado_Maquina = 0;
       return;
     }
@@ -59,16 +46,14 @@ void stateMachine1()
       digitalWrite(DO_Buzzer, HIGH);
       dont_stuck_pumps_activation = millis();
     }
-    if ((millis() - dont_stuck_pumps_activation) > 10000)
-    {
+    if ((millis() - dont_stuck_pumps_activation) > 10000) {
       Valor_DO_Bombas = LOW;
       dont_stuck_pumps = millis();
       digitalWrite(DO_Buzzer, LOW);
     }
 
-    if ((millis() - EsperaValv) > 15000)
-    {
-      if (Temp_ACS < (SetP_ACS - GAP_ACS) && Flag_ACS_EN) // Control de ACS, modo calor
+    if ((millis() - EsperaValv) > 15000) {
+      if GENERATE_ACS // Control de ACS, modo calor
       {
         Valor_DO_V4V = HIGH;  // abre la valvula de 3v para calentar el agua
         Valor_DO_VACS = HIGH; // la generacion de ACS requiere que la valv 4v este activa
@@ -97,27 +82,18 @@ void stateMachine1()
 
 void stateMachine2() // Arranque Compresor y Bombas
 {
-  if (Estado_Maquina == 2)
-  {
+  if (Estado_Maquina == 2) {
 
-    if (heating_off)
-    {
+    if (heating_off || senal_stop) {
       Estado_Maquina = 0;
       return;
     }
 
     Valor_DO_Bombas = HIGH;
 
-    if (Estado_Comp == 0)
-    {
+    if (Valor_DO_Comp_01 == LOW) {
       Valor_DO_Comp_01 = HIGH;
-      Estado_Comp = 1;
       Activacion_Comp = millis();
-    }
-
-    if (senal_stop)
-    {
-      Estado_Maquina = 0;
     }
 
     if (millis() - Activacion_Comp > E2_a_E3) // Transcurrido un cierto tiempo (10 seg), se avanza al siguiente estado
@@ -128,44 +104,31 @@ void stateMachine2() // Arranque Compresor y Bombas
   }
 }
 
-void stateMachine3()
-{ // Este es el estado final del sistema, donde se controlan las condiciones de alarma
-  if (Estado_Maquina == 3)
-  {
-    if (heating_off)
-    {
+void stateMachine3() { // Este es el estado final del sistema, donde se controlan las condiciones de alarma
+  if (Estado_Maquina == 3) {
+    /* Si hay que generar ACS, pasamos por es estado 0 */
+    if ((heating_off || senal_stop)
+      || GENERATE_ACS) {
       Estado_Maquina = 0;
       return;
     }
 
-    if (Temp_ACS < (SetP_ACS - GAP_ACS) && Flag_ACS_EN) // Si estamos en el estado 3 y hay que generar ACS, por razones de seguridad pasamos siempre por es estado 0
-    {
-      Estado_Maquina = 0;
-    }
-
-    if (senal_stop)
-    {
-      Estado_Maquina = 0;
-    }
-
     // Condiciones de Apagado del Compresor
-    if ((millis() - Ingreso_E3) > 1000)
-    {
+    if ((millis() - Ingreso_E3) > 1000) {
       checkFlagsForAlarms();
     }
 
-    {                             //   ###########    Condiciones de descanso generales      ##############
+    {  //   ###########    Condiciones de descanso generales      ##############
       if ((Temp_out_H > MAX_TEMP_OUT_H)     // Condicion para ir a Descanso
-          || (Temp_out_H < MIN_TEMP_OUT_H)  // Condicion para ir a Descanso
-          || (Temp_out_T > MAX_TEMP_OUT_T)  // Condicion para ir a Descanso
-          || (Temp_out_T < MIN_TEMP_OUT_T)    // Condicion para ir a Descanso
-          || (Temp_Admision < MIN_TEMP_ADMISION) // Condicion para ir a Descanso
-      )
-      {
+        || (Temp_out_H < MIN_TEMP_OUT_H)  // Condicion para ir a Descanso
+        || (Temp_out_T > MAX_TEMP_OUT_T)  // Condicion para ir a Descanso
+        || (Temp_out_T < MIN_TEMP_OUT_T)    // Condicion para ir a Descanso
+        || (Temp_Admision < MIN_TEMP_ADMISION) // Condicion para ir a Descanso
+        ) {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
       }
-      //   #################    FIN Condiciones de descanso generales      #####################################
+      //   #################    FIN Condiciones de descanso generales      ############
     }
   }
 }
@@ -173,25 +136,20 @@ void stateMachine3()
 void stateMachine4() // Estado de Alarma
 {
 
-  if (Estado_Maquina == 4)
-  {
+  if (Estado_Maquina == 4) {
 
     Valor_DO_Comp_01 = LOW;
-    Estado_Comp = 0;
     Activacion_Comp = 0;
     Valor_DO_Bombas = LOW;
     digitalWrite(DO_Triac_01, LOW);
 
-    if (!Alarma_Activa)
-    {
+    if (!Alarma_Activa) {
       Alarmas();
       Alarma_Activa = true;
     }
-    if (Nro_Alarma != 0)
-    {
+    if (Nro_Alarma != 0) {
       Flag_Alarma_General = true;
-      if (!Flag_Buzzer)
-      {
+      if (!Flag_Buzzer) {
         Timer1.pwm(DO_Buzzer, 100, 1000000);
         Flag_Buzzer = true;
       }
@@ -202,8 +160,7 @@ void stateMachine4() // Estado de Alarma
 
 void stateMachine6() // Estado de descanso
 {
-  if (Estado_Maquina == 6)
-  {
+  if (Estado_Maquina == 6) {
     Valor_DO_Comp_01 = LOW;
     Valor_DO_Bombas = LOW;
     if ((millis() - Ingreso_Descanso > 400000)) // 6 min //una vez en el descanso, se espera una hora antes de enviar el sistema al estado inicial
@@ -215,47 +172,38 @@ void stateMachine6() // Estado de descanso
 
 void stateMachine7() // Generacion ACS
 {
-  if (Estado_Maquina == 7)
-  {
-    if (heating_off)
-    {
+  if (Estado_Maquina == 7) {
+    if (heating_off) {
       Estado_Maquina = 0;
       return;
     }
 
     Valor_DO_Bombas = HIGH; // se mantiene HIGH hasta que se va a estado 0 (puede pasar por 71 u 8)
 
-    if (millis() - Ingreso_E7 > 5000)
-    {
+    if (millis() - Ingreso_E7 > 5000) {
       checkFlagsForAlarms();
       Flag_retardo_e7 = true;
 
-      if (Temp_ACSacu > SetP_ACS)
-      { // si se alcanzan la temperatura deseada se deja de calentar
-        Estado_Maquina = 0;
-        Flag_retardo_e7 = false;
-      }
-
-      if ((millis() - Ingreso_E7) > 30000)
-      {
+      if ((millis() - Ingreso_E7) > 30000) {
         Valor_DO_Comp_01 = HIGH;
-        Estado_Comp = 1;
       }
     }
-    if (Temp_out_H > 50.0 || Temp_Descarga > 80.0) // se le da energia al ACS de a saltos para evitar pasar de presion y temperatura el circuito de gas
-    {
+
+    // se le da energia al ACS de a saltos para evitar pasar de presion y temperatura el circuito de gas
+    if (Temp_out_H > 50.0 || Temp_Descarga > 80.0) {
       Estado_Maquina = 71;
       Ingreso_E71 = millis();
       Flag_retardo_e7 = false;
     }
 
+    // termino el ciclo en modo calor y vuelve a 0
     if (((Temp_ACS >= SetP_ACS) && !modoFrio) || !Flag_ACS_EN) //
     {
       Estado_Maquina = 0;
-      Flag_retardo_e7 = false; // termino el ciclo en modo calor y vuelve a 0
+      Flag_retardo_e7 = false;
     }
-    else if ((Temp_ACS >= SetP_ACS) && modoFrio && (Estado_Comp == 1)) // termino el ciclo en modo frio y vuelve a 0, previa espera de 5 minutos en el estado 8
-    {
+    // termino el ciclo en modo frio y vuelve a 0, previa espera de 5 minutos en el estado 8
+    else if ((Temp_ACS >= SetP_ACS) && modoFrio ) {
       Periodo_Fin_ACS = millis();
       Estado_Maquina = 8;
       Flag_retardo_e7 = false;
@@ -265,18 +213,23 @@ void stateMachine7() // Generacion ACS
 
 void stateMachine71() // Generacion ACS: Estado con bombas andando y compresor apagado
 {
-  if (Estado_Maquina == 71)
-  {
-    if (heating_off)
-    {
+  if (Estado_Maquina == 71) {
+    if (heating_off) {
       Estado_Maquina = 0;
       return;
     }
 
     Valor_DO_Comp_01 = LOW;
-    Estado_Comp = 0;
-    if ((millis() - Ingreso_E71) > 90000 || !Flag_ACS_EN) // espero 1.5 minuto antes de volver al estado 7
-    {
+
+    /*
+    Ahora lo hace por tiempo, pero:
+    Debe volver cuando se haya transferido la temperatura
+    y esten casi igualadas, o con un gap minimo
+    en ese momento si no se alcanzo la temperatura deseada,
+    se debe volver a 7 para prender el compresor
+    */
+    if ((Temp_ACS > SetP_ACS) || (Temp_ACS < (Temp_out_H - GAP_ACS))
+      || ((millis() - Ingreso_E71)) > 90000 || !Flag_ACS_EN) {
       Estado_Maquina = 7;
       Ingreso_E7 = millis();
     }
@@ -285,12 +238,9 @@ void stateMachine71() // Generacion ACS: Estado con bombas andando y compresor a
 
 void stateMachine8() // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
 {
-  if (Estado_Maquina == 8)
-  {
+  if (Estado_Maquina == 8) {
     Valor_DO_Comp_01 = LOW;
-    Estado_Comp = 0;
-    if ((millis() - Periodo_Fin_ACS) > 30000)
-    {
+    if ((millis() - Periodo_Fin_ACS) > 30000) {
       Estado_Maquina = 0;
     }
   }

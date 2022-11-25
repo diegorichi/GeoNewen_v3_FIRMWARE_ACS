@@ -36,14 +36,6 @@ extern const int STEP;      // 9;       //Pines para control del EasyDriver
 extern const int DIR;       // 8;        //STEP es el pin por donde se envian los pasos para que el motor gire, DIR indica la direccion
 extern const int ED_ENABLE; // 10; //Pin para "dormir" al EasyDriver, evitando consumo de energia
 
-// PINES ANALOGICOS    //Usados para la lectura de los sensores analogicos LM35 y los sensores de corriente ACS712
-extern const int AI_Temp_Comp_01; // A2;
-extern const int AI_Temp_ACS;     // A3;
-extern const int AI_Temp_out_H;   // A4;
-extern const int AI_Temp_in_H;    // A5;
-extern const int AI_Temp_out_T;   // A7;
-extern const int AI_Temp_in_T;    // A6;
-
 // VARIABLES DEL PROGRAMA
 
 extern int Caud_T;
@@ -61,8 +53,6 @@ extern int Caud_Hacu; // 0;
 extern volatile int Estado_Maquina; // 0;
 
 extern int Cont_Temp_Des; // 0;
-extern int Pos_Valv;      // 0;
-extern int Pos_Valv_Edit; // 0;
 
 // Contadores auxiliares de alarmas
 
@@ -106,8 +96,6 @@ extern float T2_Des;           // 0;
 extern float T3_Des;           // 0;
 extern float Temp_Descargaacu; // 0;
 
-extern unsigned long E1_a_E2; // 120000;           //2 minutos para pasar de E1 a E2
-extern unsigned long E2_a_E3; // 10000;            //10 segundos para pasar de E2 a E3
 const uint8_t MAX_ACS = 48;
 const uint8_t MIN_ACS = 30;
 const uint8_t GAP_ACS = 2;
@@ -123,13 +111,14 @@ extern bool Flag_TempComp01;    // false;
 extern bool Flag_Temp_Descarga; // false;
 extern bool Flag_retardo_e7;    // flag que indica que ACS esta efectivamente andando (luego de la espera)
 
+extern unsigned long E1_a_E2; // 120000;           //2 minutos para pasar de E1 a E2
+extern unsigned long E2_a_E3; // 10000;            //10 segundos para pasar de E2 a E3
+
 extern unsigned long EsperaValv;      // 0;
 extern unsigned long Ingreso_E7;      // 0;
 extern unsigned long Ingreso_E71;     // 0;
 extern unsigned long Periodo_Fin_ACS; // 0;
 
-extern unsigned long Ventana_Caudal1;
-extern unsigned long Ventana_Caudal2;
 extern unsigned long Periodo_Refresco;
 extern unsigned long Activacion_Comp;
 extern unsigned long Salto_E1;
@@ -141,10 +130,7 @@ extern unsigned long LecturaDSB;
 extern unsigned long Ingreso_Descanso; // 0;
 
 extern volatile int MenuActual; //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
-extern volatile uint8_t Pulsos_Caud_T;
-extern volatile uint8_t Pulsos_Caud_H;
 
-extern volatile uint8_t Estado_Comp;   // 0;
 extern volatile uint8_t Nro_Alarma;    // 0;
 extern volatile uint8_t SetP_ACS;      // 0;
 extern volatile uint8_t SetP_ACS_Edit; // 0;
@@ -161,14 +147,13 @@ extern bool Flag_PresLOW;           // false;
 
 extern bool PressOK;                      // false;
 extern volatile bool Flag_Alarma_General; // false;
-extern bool Flag_Estado_Comp;             // false;
 
 extern bool Flag_Temp_Adm;     // false;
 extern volatile bool modoFrio; // false; //Frio ; // true , Calor ; // false
 extern volatile bool Alarma_Activa;
 extern bool Flag_Marcha_ON; // control de salto e1
 extern bool senal_start;    // senal de marcha, segun modoFrio
-                            // se trabaja con 1 termostato.
+// se trabaja con 1 termostato.
 extern bool senal_stop;
 extern volatile bool heating_off;
 extern volatile bool Flag_Buzzer;

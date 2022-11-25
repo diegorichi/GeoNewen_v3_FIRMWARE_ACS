@@ -1,21 +1,17 @@
 #include "kume_eeprom.h"
 
-void EEPROMwrite(int address, bool flag)
-{
+void EEPROMwrite(int address, bool flag) {
   EEPROM.write(address, flag);
 }
 
-void EEPROMwrite(int address, uint8_t number)
-{
+void EEPROMwrite(int address, uint8_t number) {
   EEPROM.write(address, number);
 }
 
-uint8_t EEPROMreaduint8_t(int address)
-{
+uint8_t EEPROMreaduint8_t(int address) {
   return EEPROM.read(address);
 }
-bool EEPROMbool(int address)
-{
+bool EEPROMbool(int address) {
   return EEPROM.read(address);
 }
 

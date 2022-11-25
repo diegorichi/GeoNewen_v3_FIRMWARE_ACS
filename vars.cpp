@@ -31,13 +31,8 @@ const int STEP = 9;       // Pines para control del EasyDriver
 const int DIR = 8;        // STEP es el pin por donde se envian los pasos para que el motor gire, DIR indica la direccion
 const int ED_ENABLE = 10; // Pin para "dormir" al EasyDriver, evitando consumo de energia
 
-// PINES ANALOGICOS    //Usados para la lectura de los sensores analogicos LM35 y los sensores de corriente ACS712
-const int AI_Temp_Comp_01 = A2;
-const int AI_Temp_ACS = A3;
-const int AI_Temp_out_H = A4;
-const int AI_Temp_in_H = A5;
-const int AI_Temp_out_T = A7;
-const int AI_Temp_in_T = A6;
+
+volatile int Estado_Maquina = 0;
 
 // VARIABLES DEL PROGRAMA
 
@@ -53,11 +48,8 @@ int C2_H = 0;
 int C3_H = 0;
 int Caud_Hacu = 0;
 
-volatile int Estado_Maquina = 0;
 
 int Cont_Temp_Des = 0;
-int Pos_Valv = 0;
-int Pos_Valv_Edit = 0;
 
 // Contadores auxiliares de alarmas
 
@@ -100,9 +92,6 @@ float T2_Des = 0;
 float T3_Des = 0;
 float Temp_Descargaacu = 0;
 
-unsigned long E1_a_E2 = 120000; // 2 minutos para pasar de E1 a E2
-unsigned long E2_a_E3 = 10000;  // 10 segundos para pasar de E2 a E3
-
 bool Flag_TempComp01 = false;
 bool Flag_Temp_Descarga = false;
 bool Flag_retardo_e7 = false;
@@ -112,8 +101,9 @@ unsigned long Ingreso_E7 = 0;
 unsigned long Ingreso_E71 = 0;
 unsigned long Periodo_Fin_ACS = 0;
 
-unsigned long Ventana_Caudal1;
-unsigned long Ventana_Caudal2;
+unsigned long E1_a_E2 = 120000; // 2 minutos para pasar de E1 a E2
+unsigned long E2_a_E3 = 10000;  // 10 segundos para pasar de E2 a E3
+
 unsigned long Periodo_Refresco;
 unsigned long Activacion_Comp;
 unsigned long Salto_E1;
@@ -125,10 +115,7 @@ unsigned long LecturaDSB;
 unsigned long Ingreso_Descanso = 0;
 
 volatile int MenuActual; //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
-volatile uint8_t Pulsos_Caud_T;
-volatile uint8_t Pulsos_Caud_H;
 
-volatile uint8_t Estado_Comp = 0;
 volatile uint8_t Nro_Alarma = 0;
 volatile uint8_t SetP_ACS = 0;
 volatile uint8_t SetP_ACS_Edit = 0;
@@ -145,14 +132,13 @@ bool Flag_PresLOW = false;
 
 bool PressOK = false;
 volatile bool Flag_Alarma_General = false;
-bool Flag_Estado_Comp = false;
 
 bool Flag_Temp_Adm = false;
 volatile bool modoFrio = false; // Frio = true , Calor = false
 volatile bool Alarma_Activa;
 bool Flag_Marcha_ON;
 bool senal_start; // senal de marcha, segun modoFrio
-                  // se trabaja con 1 termostato.
+// se trabaja con 1 termostato.
 bool senal_stop;
 volatile bool heating_off = false;
 volatile bool Flag_Buzzer;

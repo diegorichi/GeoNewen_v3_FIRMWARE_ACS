@@ -12,8 +12,7 @@
 
 SerialEsp8266 esp8266(&Serial2);
 
-void setup()
-{ // Inicializacion de I/O y variables generales
+void setup() { // Inicializacion de I/O y variables generales
 
   wdt_disable();
 
@@ -26,8 +25,6 @@ void setup()
   initializeDigitalOuputs();
 
   attachInterrupt(1, AtencionTeclado, FALLING); // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
-  attachInterrupt(4, Caudal1, FALLING);         // Pin 19
-  attachInterrupt(5, Caudal2, FALLING);         // Pin 18
 
   lcdCreateSpecialChars();
 
@@ -54,8 +51,7 @@ void setup()
   wdt_enable(WDTO_8S);
 }
 
-void mainLoop()
-{
+void mainLoop() {
   // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
 
   temperatureMeasurement();
@@ -108,7 +104,6 @@ void mainLoop()
 /*LAZO INFINITO*/
 /***************/
 
-void loop()
-{
+void loop() {
   mainLoop();
 } // Fin del loop

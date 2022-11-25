@@ -9,7 +9,7 @@
 
 class Menu {
 
-private:
+  private:
   String _name;
   Menu* _up;
   Menu* _down;
@@ -23,7 +23,7 @@ private:
   void (*_showMenu)(void);      // puntero a funcion ej:MenuUnoCero
   void (*_refresh)(void);       // puntero a funcion ej:MenuUnoCero
 
-public:
+  public:
   int menuActual;
 
   Menu(String aName, void (*showMenu)(), void (*refreshMenu)(), int _menuActual);
@@ -48,7 +48,7 @@ public:
   void refresh();
 };
 
-extern Menu *menuActivo;
+extern Menu* menuActivo;
 
 
 void initializeAndSetupMenu();

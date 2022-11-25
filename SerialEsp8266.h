@@ -6,11 +6,10 @@
 #include "machine_control.h"
 #include "alarm.h"
 
-class SerialEsp8266
-{
-private:
+class SerialEsp8266 {
+  private:
   // SoftwareSerial* _espSerial;
-  HardwareSerial *_espSerial;
+  HardwareSerial* _espSerial;
   unsigned int refresh_period = 350; // 5 minutos
   /*
   this increment by 1 when we received 1
@@ -25,62 +24,39 @@ private:
   String espWord = "";
   char espLetter;
 
-  void handleProtocolWithEsp(String command)
-  {
-    if (command.indexOf("1") >= 0)
-    {
+  void handleProtocolWithEsp(String command) {
+    if (command.indexOf("1") >= 0) {
       what_should_be_pushed += 1;
-      if (what_should_be_pushed > 16)
-      {
+      if (what_should_be_pushed > 16) {
         what_should_be_pushed = 1;
       }
-    }
-    else if (command.indexOf("ACS_G:on") >= 0)
-    {
+    } else if (command.indexOf("ACS_G:on") >= 0) {
       Flag_ACS_EN = true;
       EEPROMwrite(ACS_EN_Address, Flag_ACS_EN);
-    }
-    else if (command.indexOf("ACS_G:off") >= 0)
-    {
+    } else if (command.indexOf("ACS_G:off") >= 0) {
       Flag_ACS_EN = false;
       EEPROMwrite(ACS_EN_Address, Flag_ACS_EN);
-    }
-    else if (command.indexOf("ACS_DT_E:on") >= 0)
-    {
+    } else if (command.indexOf("ACS_DT_E:on") >= 0) {
       Flag_ACS_DT_EN = true;
       EEPROMwrite(ACS_DT_EN_Address, Flag_ACS_DT_EN);
-    }
-    else if (command.indexOf("ACS_DT_E:off") >= 0)
-    {
+    } else if (command.indexOf("ACS_DT_E:off") >= 0) {
       Flag_ACS_DT_EN = false;
       EEPROMwrite(ACS_DT_EN_Address, Flag_ACS_DT_EN);
-    }
-    else if (command.indexOf("ACS_E:on") >= 0)
-    {
+    } else if (command.indexOf("ACS_E:on") >= 0) {
       Flag_ACS_EN_ELECT = true;
       EEPROMwrite(ACS_EN_ELECT_Address, Flag_ACS_EN_ELECT);
-    }
-    else if (command.indexOf("ACS_E:off") >= 0)
-    {
+    } else if (command.indexOf("ACS_E:off") >= 0) {
       Flag_ACS_EN_ELECT = false;
       EEPROMwrite(ACS_EN_ELECT_Address, Flag_ACS_EN_ELECT);
-    }
-    else if (command.indexOf("ALARM_RESET") >= 0)
-    {
+    } else if (command.indexOf("ALARM_RESET") >= 0) {
       resetAlarms();
-    }
-    else if (command.indexOf("MODO_FRIO:on") >= 0)
-    {
+    } else if (command.indexOf("MODO_FRIO:on") >= 0) {
       modoFrio = true;
       changeModo();
-    }
-    else if (command.indexOf("MODO_FRIO:off") >= 0)
-    {
+    } else if (command.indexOf("MODO_FRIO:off") >= 0) {
       modoFrio = false;
       changeModo();
-    }
-    else if (command.indexOf("TEMP_ACS:") >= 0)
-    {
+    } else if (command.indexOf("TEMP_ACS:") >= 0) {
       volatile uint8_t aux = command.substring(9, command.length() - 1).toInt();
       SetP_ACS = normalizeAcsTemp(&aux);
       SetP_ACS_Edit = SetP_ACS;
@@ -88,20 +64,18 @@ private:
     }
   };
 
-public:
+  public:
   // SerialEsp(int rx, int tx){
   //         espSerial = new SoftwareSerial(rx,tx);
   //         espSerial->begin(9600);
   // }
 
-  SerialEsp8266(HardwareSerial *serialHardware)
-  {
+  SerialEsp8266(HardwareSerial* serialHardware) {
     this->_espSerial = serialHardware;
     this->_espSerial->begin(4800);
   }
 
-  SerialEsp8266(HardwareSerial *serialHardware, long refresh_period_param)
-  {
+  SerialEsp8266(HardwareSerial* serialHardware, long refresh_period_param) {
     this->_espSerial = serialHardware;
     this->_espSerial->begin(4800);
     this->refresh_period = refresh_period_param;
@@ -126,100 +100,83 @@ public:
   status:TEMP_COMP_:000000;
   status:TEMP_DESC_:000000
   */
-  void sendStatusToEspSerial()
-  {
-    char buffer[26];
-    char var_number[6];
+  void sendStatusToEspSerial() {
+    char buffer [26];
+    char var_number [6];
     int i = 1;
-    if (what_should_be_pushed == i)
-    {
+    if (what_should_be_pushed == i) {
       sprintf(buffer, "contrl:ACS_GEO___:%s", Flag_ACS_EN ? "1" : "0");
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       sprintf(buffer, "contrl:ACS_DT_ELE:%s", Flag_ACS_DT_EN ? "1" : "0");
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       sprintf(buffer, "contrl:ACS_ELEC__:%s", Flag_ACS_EN_ELECT ? "1" : "0");
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       sprintf(buffer, "contrl:MODO_FRIO_:%s", modoFrio ? "1" : "0");
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Nro_Alarma, 2, 0, var_number);
       sprintf(buffer, "contrl:ALARMA____:%s", var_number);
       _espSerial->println(buffer);
     }
 
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_ACSacu, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_ACS__:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       sprintf(buffer, "status:STATE_____:%2d", Estado_Maquina);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Caud_Hacu, 4, 0, var_number);
       sprintf(buffer, "status:CAU_HOGAR_:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_in_Hacu, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_IN_H_:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_out_Hacu, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_OUT_H:%s", var_number);
       _espSerial->println(buffer);
     }
 
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Caud_Tacu, 4, 0, var_number);
       sprintf(buffer, "status:CAU_TIERRA:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_in_T, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_IN_T_:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_out_T, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_OUT_T:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_Admision, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_ADM__:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_comp_acu, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_COMP_:%s", var_number);
       _espSerial->println(buffer);
     }
-    if (what_should_be_pushed == ++i)
-    {
+    if (what_should_be_pushed == ++i) {
       dtostrf(Temp_Descargaacu, 4, 2, var_number);
       sprintf(buffer, "status:TEMP_DESC_:%s", var_number);
       _espSerial->println(buffer);
@@ -227,20 +184,16 @@ public:
   };
 
   // this should be called in main loop"
-  void handleEspSerial()
-  {
-    if (_espSerial->available() > 0)
-    {
+  void handleEspSerial() {
+    if (_espSerial->available() > 0) {
       espLetter = _espSerial->read();
       espWord += espLetter;
-      if (espLetter == '\n')
-      {
+      if (espLetter == '\n') {
         this->handleProtocolWithEsp(espWord);
         espWord = "";
       }
     }
-    if (((millis() - this->Periodo_Refresco_Wifi) > this->refresh_period))
-    {
+    if (((millis() - this->Periodo_Refresco_Wifi) > this->refresh_period)) {
       this->sendStatusToEspSerial();
       this->Periodo_Refresco_Wifi = millis();
     }

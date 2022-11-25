@@ -18,6 +18,6 @@ void refreshDataToShow();
 
 void processStartStopSignal();
 
-uint8_t normalizeAcsTemp(volatile uint8_t *acsValue);
+uint8_t normalizeAcsTemp(volatile uint8_t* acsValue);
 
 #endif

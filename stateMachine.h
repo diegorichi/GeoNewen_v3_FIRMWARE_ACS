@@ -6,6 +6,8 @@
 #include "kume_eeprom.h"
 #include "alarm.h"
 
+#define GENERATE_ACS (Temp_ACS < (SetP_ACS - GAP_ACS) && Flag_ACS_EN)
+
 void initializeStateMachine();
 
 void stateMachine0();  // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
