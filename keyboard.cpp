@@ -25,35 +25,6 @@ void buzzerBeep() {
   timer_things.in(300, buzzerStop);
 }
 
-void AtencionTecladoNew() // Función de Navegación entre Menús y Modificación de Parámetros
-{
-  bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
-  bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
-  bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
-  bool BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
-
-  for (int j = 0; j < 100; j++) // Debuoncing
-  {
-  }
-
-  if (BotonEnter || BotonAbajo || BotonArriba || BotonAtras) {
-    buzzerBeep();
-  }
-  if (BotonEnter) {
-    menuActivo = &menuActivo->enter();
-  }
-  if (BotonAbajo) {
-    menuActivo = &(menuActivo->down());
-  }
-  if (BotonArriba) {
-    menuActivo = &(menuActivo->up());
-  }
-  if (BotonAtras) {
-    menuActivo = &(menuActivo->escape());
-  }
-  menuActivo->refresh();
-}
-
 void AtencionTecladoOld() // Función de Navegación entre Menús y Modificación de Parámetros
 {
   bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;

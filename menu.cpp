@@ -1,14 +1,6 @@
 #include "Arduino.h"
 #include "menu.h"
 
-Menu* menuActivo;
-
-Menu::Menu(String aName, void (*showMenu)(), void (*refreshMenu)(), int _menuActual) {
-  _name = aName;
-  _showMenu = showMenu;
-  _refresh = refreshMenu;
-  menuActual = _menuActual;
-}
 
 void Menu::setUp(Menu* up) {
   _up = up;
@@ -97,40 +89,38 @@ void Menu::refresh() {
   }
 }
 
-Menu menuMonitorRegistroAlarmas("MonitorRegistroAlarmas", &MenuCincoCero, &RefreshMenuCincoCero, 50);
+Menu menuMonitorRegistroAlarmas("MonitorRegistroAlarmas", &MenuCincoCero, &RefreshMenuCincoCero);
 
-Menu menuMonitorAlarmas("MonitorAlarmas", &MenuCuatroCero, &RefreshMenuCuatroCero, 40);
+Menu menuMonitorAlarmas("MonitorAlarmas", &MenuCuatroCero, &RefreshMenuCuatroCero);
 
-// Menu menuConfCalderaElectrica("ConfCalderaElectrica", &MenuTresCero, &RefreshMenuTresCero, 30);
+Menu menuConfiguracionEditTemperaturaACS("ConfEditTemperaturaACS", &MenuDosUnoCero, &RefreshMenuDosUnoCero);
 
-Menu menuConfiguracionEditTemperaturaACS("ConfEditTemperaturaACS", &MenuDosUnoCero, &RefreshMenuDosUnoCero, 210);
+Menu menuConfiguracionACSElectrico("ConfACSElectrico", &MenuDosNueve, &RefreshMenuDosNueve);
+Menu menuConfiguracionACSDT("ConfACSDT", &MenuDosOchoUno, &RefreshMenuDosOchoUno);
+Menu menuConfiguracionACS("ConfACS", &MenuDosOcho, &RefreshMenuDosOcho);
+Menu menuConfiguracionModoAutomatico("ConfModoAutomatico", &MenuDosCuatro, &RefreshMenuDosCuatro);
+Menu menuConfiguracionAlarmasCaudal("ConfAlarmasCaudal", &MenuDosTres, &RefreshMenuDosTres);
 
-Menu menuConfiguracionACSElectrico("ConfACSElectrico", &MenuDosNueve, &RefreshMenuDosNueve, 29);
-Menu menuConfiguracionACSDT("ConfACSDT", &MenuDosOchoUno, &RefreshMenuDosOchoUno, 281);
-Menu menuConfiguracionACS("ConfACS", &MenuDosOcho, &RefreshMenuDosOcho, 28);
-Menu menuConfiguracionModoAutomatico("ConfModoAutomatico", &MenuDosCuatro, &RefreshMenuDosCuatro, 24);
-Menu menuConfiguracionAlarmasCaudal("ConfAlarmasCaudal", &MenuDosTres, &RefreshMenuDosTres, 23);
 // [](){} es una funcion lambra que []= esos son los argumentos ()agumentos que recibe {} cuerpo
-Menu menuConfiguracionTemperaturaACS(
-  "ConfTemperaturaACS", &MenuDosUno, [ ]() { }, 21);
-Menu menuConfiguracionmodoFrio("ConfmodoFrio", &MenuDosCero, &RefreshMenuDosCero, 20);
+Menu menuConfiguracionTemperaturaACS("ConfTemperaturaACS", &MenuDosUno, [ ]() { });
+Menu menuConfiguracionmodoFrio("ConfmodoFrio", &MenuDosCero, &RefreshMenuDosCero);
 
-// Menu menuMonitorSistemaCompresor("MonitorSistemaCompresor", &MenuUnoDos, &RefreshMenuUnoDos, 12);
-Menu menuMonitorSistemaCaudalesYTemperaturas("MonitorSistemaCaudalesYTemperaturas", &MenuUnoUno, &RefreshMenuUnoUno, 11);
-Menu menuMonitorSistemaACSADM("MonitorSistemaACSADM", &MenuUnoCero, &RefreshMenuUnoCero, 10);
+// Menu menuMonitorSistemaCompresor("MonitorSistemaCompresor", &MenuUnoDos, &RefreshMenuUnoDos);
+Menu menuMonitorSistemaCaudalesYTemperaturas("MonitorSistemaCaudalesYTemperaturas", &MenuUnoUno, &RefreshMenuUnoUno);
+Menu menuMonitorSistemaACSADM("MonitorSistemaACSADM", &MenuUnoCero, &RefreshMenuUnoCero);
 
 Menu menuRegistroAlarmas(
-  "RegistroAlarmas", &MenuCinco, [ ]() { }, 5);
+  "RegistroAlarmas", &MenuCinco, [ ]() { });
 Menu menuAlarmas(
-  "Alarmas", &MenuCuatro, [ ]() { }, 4);
+  "Alarmas", &MenuCuatro, [ ]() { });
 // Menu menuCalderaElectrica(
-//   "ConfCalderaElectrica", &MenuTres, [ ] () {}, 3);
+//   "ConfCalderaElectrica", &MenuTres, [ ] () {});
 Menu menuConfiguracionSistema(
-  "ConfigracionSistema", &MenuDos, [ ]() { }, 2);
+  "ConfigracionSistema", &MenuDos, [ ]() { });
 Menu menuMonitorSistema(
-  "MonitorSistema", &MenuUno, [ ]() { }, 1);
+  "MonitorSistema", &MenuUno, [ ]() { });
 
-Menu menuInicial("MenuInicial", &MenuCero, &RefreshMenuCero, 0);
+Menu menuInicial("MenuInicial", &MenuCero, &RefreshMenuCero);
 
 void initializeAndSetupMenu() {
 
@@ -242,5 +232,5 @@ void initializeAndSetupMenu() {
   menuMonitorSistema.setEscape(&menuInicial);
 
   menuInicial.setEnter(&menuMonitorSistema);
-  menuActivo = &menuInicial;
+  //menuActivo = &menuInicial;
 }

@@ -44,9 +44,6 @@ void RefreshMenuDosOchoUno();
 void RefreshMenuDosNueve();
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
-void RefreshAlarma(uint8_t _nro_Alarma);
-
-// En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma
 void RefreshMenuCuatroCero();
 
 // En función al número de alarma devuelto por la función Alarmas(), se muestra el mensaje indicando la causa de la misma

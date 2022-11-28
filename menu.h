@@ -24,9 +24,16 @@ class Menu {
   void (*_refresh)(void);       // puntero a funcion ej:MenuUnoCero
 
   public:
-  int menuActual;
+  Menu() {
 
-  Menu(String aName, void (*showMenu)(), void (*refreshMenu)(), int _menuActual);
+  }
+
+
+  Menu(String aName, void (*showMenu)(), void (*refreshMenu)()) {
+    this->_name = aName;
+    this->_showMenu = showMenu;
+    this->_refresh = refreshMenu;
+  }
 
   String getName();
 
@@ -47,8 +54,6 @@ class Menu {
   void show();
   void refresh();
 };
-
-extern Menu* menuActivo;
 
 
 void initializeAndSetupMenu();

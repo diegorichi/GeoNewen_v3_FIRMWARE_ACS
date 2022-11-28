@@ -6,6 +6,7 @@
 #include "measurement_and_calculations.h"
 #include "stateMachine.h"
 #include "SerialEsp8266.h"
+#include "Machine.h"
 /*******/
 /*SETUP*/
 /*******/
