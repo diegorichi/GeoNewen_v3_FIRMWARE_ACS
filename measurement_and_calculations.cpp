@@ -14,7 +14,9 @@ uint8_t DI_Temp_ACS [8] = { 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 };   
 uint8_t DI_Temp_out_H [8] = { 0x28, 0x87, 0x9F, 0xE9, 0x1B, 0x19, 0x01, 0xF8 };    // n13
 uint8_t DI_Temp_in_T [8] = { 0x28, 0x83, 0x69, 0x3D, 0x1B, 0x19, 0x01, 0x11 };     // n14
 
-float FCal = 1.055; // 1.77;// caudalimetro  sen - hz21wa                    //1.9 caudalimetros  geo v1.0 y 2.0;
+//1.9 -> caudalimetros  geo v1.0 y 2.0;
+// 1.77 -> caudalimetro  sen - hz21wa
+float FCal = 1.055;
 
 unsigned long Ventana_Caudal_H;
 unsigned long Ventana_Caudal_T;
@@ -45,6 +47,8 @@ void Caudal2() // Función de Cuenta de Pulsos de Caudalímetro
 
 bool delayedTemperatureMeasuement(void*) {
 
+    // Temperaturas de hogar
+
   float Temp_out_Haux = sensors.getTempC(DI_Temp_out_H);
   if ((Temp_out_Haux > -10.0 && Temp_out_Haux < -1.0) || (Temp_out_Haux > 1.0 && Temp_out_Haux < 80.0))
     Temp_out_H = Temp_out_Haux;
@@ -53,6 +57,8 @@ bool delayedTemperatureMeasuement(void*) {
   if ((Temp_in_Haux > -10.0 && Temp_in_Haux < -1.0) || (Temp_in_Haux > 1.0 && Temp_in_Haux < 80.0))
     Temp_in_H = Temp_in_Haux;
 
+  // Temperaturas de tierra
+
   float Temp_out_Taux = sensors.getTempC(DI_Temp_out_T);
   if (Temp_out_Taux > -10.0 && Temp_out_Taux < 80.0)
     Temp_out_T = Temp_out_Taux;
@@ -60,6 +66,8 @@ bool delayedTemperatureMeasuement(void*) {
   float Temp_in_Taux = sensors.getTempC(DI_Temp_in_T);
   if (Temp_in_Taux > -10.0 && Temp_in_Taux < 80.0)
     Temp_in_T = Temp_in_Taux;
+
+  // Temperaturas de compresor
 
   float Temp_Comp_01aux = sensors.getTempC(DI_Temp_Compresor);
   if ((Temp_Comp_01aux > -10.0 && Temp_Comp_01aux < -1.0) || (Temp_Comp_01aux > 1.0 && Temp_Comp_01aux < 80.0))
@@ -72,6 +80,8 @@ bool delayedTemperatureMeasuement(void*) {
   float Temp_Admisionaux = sensors.getTempC(DI_Temp_Admision);
   if ((Temp_Admisionaux > -10.0 && Temp_Admisionaux < -1.0) || (Temp_Admisionaux > 1.0 && Temp_Admisionaux < 60))
     Temp_Admision = Temp_Admisionaux;
+
+  // Temperaturas de ACS
 
   float Temp_ACSaux = sensors.getTempC(DI_Temp_ACS);
   if (Temp_ACSaux > -10.0 && Temp_ACSaux < 80.0)

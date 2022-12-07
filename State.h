@@ -21,6 +21,7 @@ class State {
         }
 
         virtual void handle();
+        virtual void checkHealtSystem();
 
 };
 

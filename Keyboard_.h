@@ -1,28 +1,18 @@
 
-#ifndef keyboard_
-#define keyboard_
+#ifndef kumekeyboard__
+#define kumekeyboard__
 #include "vars.h"
 #include "Pinout.h"
 #include "Menu.h"
 #include "Configuration.h"
+#include "BuzzerHandler.h"
 
-
-class Keyboard {
+class KumeKeyboard {
         private:
         static Pinout* pinoutConfiguration;
         static Configuration* configuration;
         static Menu* _menuActivo;
-
-        static bool buzzerStop(void*) {
-                digitalWrite(pinoutConfiguration->DO_BUZZER, LOW);
-                return false;
-        }
-
-        static void buzzerBeep() {
-                digitalWrite(pinoutConfiguration->DO_BUZZER, HIGH);
-                timer_things.in(configuration->KEYBOARD_BEEP_LONG, buzzerStop);
-        }
-
+        static BuzzerHandler* buzzerHandler;
 
         static void handleKeyPress() // Función de Navegación entre Menús y Modificación de Parámetros
         {
@@ -32,7 +22,7 @@ class Keyboard {
                 bool BotonAtras = digitalRead(pinoutConfiguration->DI_KEYBOARD_BACK) == LOW;
 
                 if (BotonEnter || BotonAbajo || BotonArriba || BotonAtras) {
-                        buzzerBeep();
+                    buzzerHandler->beep(configuration->KEYBOARD_BEEP_LONG);
                 }
                 if (BotonEnter) {
                         _menuActivo = &(_menuActivo->enter());
@@ -49,23 +39,26 @@ class Keyboard {
                 _menuActivo->refresh();
         }
 
-        void keyboardSetup() {
+        void init() {
                 pinMode(pinoutConfiguration->DI_KEYBOARD_UP, INPUT); // Definición de entradas y salidas
                 pinMode(pinoutConfiguration->DI_KEYBOARD_DOWN, INPUT);
                 pinMode(pinoutConfiguration->DI_KEYBOARD_ENTER, INPUT);
                 pinMode(pinoutConfiguration->DI_KEYBOARD_BACK, INPUT);
                 pinMode(pinoutConfiguration->InterruptPin, INPUT);
-                attachInterrupt(configuration->KEYBOARD_INTERRUPT, handleKeyPress, FALLING); // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
+                // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
+                attachInterrupt(configuration->KEYBOARD_INTERRUPT, handleKeyPress, FALLING); 
         }
 
         public:
-        Keyboard(Pinout* pinout, Menu* menuInicial, Configuration* config) {
+
+        KumeKeyboard(Pinout* pinout, Menu* menuInicial, Configuration* config,
+            BuzzerHandler* buzzerHandler) {
                 this->pinoutConfiguration = pinout;
                 this->_menuActivo = menuInicial;
                 this->configuration = config;
-                keyboardSetup();
+                this->buzzerHandler = buzzerHandler;
+                init();
         }
-
 
 };
 
