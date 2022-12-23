@@ -19,7 +19,7 @@ const PROGMEM LangDictionary dictionary [ ]{
     {103, SPANISH, "   Presione ENTER   "},
 
     //uno
-    {111, SPANISH, "MONITOR DE TEMPS,"},
+    {111, SPANISH, "MONITOR DE TEMPS Y"},
     {112, SPANISH, "CONSUMO DE ENERGIA"},
 
     //dos
@@ -115,7 +115,7 @@ const PROGMEM LangDictionary dictionary [ ]{
 
 class Messages {
     public:
-    char* getMessage(int _code, char* _lang) {
+    char* getMessage(uint16_t _code, char* _lang) {
         for (uint16_t i = 0; i < sizeof(dictionary); ++i) {
             if ((dictionary [i].code == _code) &&
                 (dictionary [i].lang == _lang)

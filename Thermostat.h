@@ -16,8 +16,21 @@ class Thermostat {
         modoFrio = _modoFrio;
     };
 
-    bool isOn();
-    bool isOff();
+    bool isOn() {
+        return (
+            (digitalRead(this->pinout->DI_MARCHA) == HIGH)
+            && !this->modoFrio)
+            || ((digitalRead(this->pinout->DI_MARCHA) == LOW)
+                && this->modoFrio);
+
+    }
+    bool isOff() {
+        return (
+            (digitalRead(this->pinout->DI_MARCHA) == LOW)
+            && !this->modoFrio)
+            || ((digitalRead(this->pinout->DI_MARCHA) == HIGH)
+                && this->modoFrio);
+    }
 };
 
 

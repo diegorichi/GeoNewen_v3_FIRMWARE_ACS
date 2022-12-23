@@ -36,7 +36,7 @@ class TakeRestState : public State {
         if (this->machine->heatingOff)
             this->machine->setState(this->machine->RESET_STATE);
 
-        start();
+        if (startTakingRestMillis == 0) start();
 
         // se espera antes de enviar el sistema al estado inicial
         if ((millis() - startTakingRestMillis > this->machine->configuration->TAKE_REST_DURATION)) {
