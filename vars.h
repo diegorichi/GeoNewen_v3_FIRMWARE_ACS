@@ -101,7 +101,7 @@ const uint8_t MIN_ACS = 30;
 const uint8_t GAP_ACS = 2;
 const uint8_t DELTA_ACS_ELECTRICO = 7;
 
-const float MAX_TEMP_OUT_H = 49.0;
+const float MAX_TEMP_OUT_H = 50.0;
 const float MIN_TEMP_OUT_H = 10.0;
 const float MAX_TEMP_OUT_T = 40.0;
 const float MIN_TEMP_OUT_T = -6.0;

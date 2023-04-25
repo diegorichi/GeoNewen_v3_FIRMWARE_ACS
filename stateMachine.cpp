@@ -190,7 +190,7 @@ void stateMachine7() // Generacion ACS
     }
 
     // se le da energia al ACS de a saltos para evitar pasar de presion y temperatura el circuito de gas
-    if (Temp_out_H > 50.0 || Temp_Descarga > 80.0) {
+    if (Temp_out_H > MAX_TEMP_OUT_H || Temp_Descarga > 80.0) {
       Estado_Maquina = 71;
       Ingreso_E71 = millis();
       Flag_retardo_e7 = false;
@@ -228,8 +228,8 @@ void stateMachine71() // Generacion ACS: Estado con bombas andando y compresor a
     en ese momento si no se alcanzo la temperatura deseada,
     se debe volver a 7 para prender el compresor
     */
-    if ((Temp_ACS > SetP_ACS) || (Temp_ACS < (Temp_out_H - GAP_ACS))
-      || ((millis() - Ingreso_E71)) > 90000 || !Flag_ACS_EN) {
+    if ((Temp_ACS > SetP_ACS) || (Temp_ACS > (Temp_out_H - GAP_ACS))
+      || ((millis() - Ingreso_E71) > 90000) || !Flag_ACS_EN) {
       Estado_Maquina = 7;
       Ingreso_E7 = millis();
     }
