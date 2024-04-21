@@ -130,18 +130,14 @@ void RefreshMenuUnoUno() {
   lcd.setCursor(5, 0);
   if (ModoFrioCalor) {
     lcd.print(F("FRIO "));
-    lcd.setCursor(15, 3);
-    lcd.print(F("    "));
-    lcd.setCursor(15, 3);
-    lcd.print(Caud_Tacu);
   }
   else {
     lcd.print(F("CALOR"));
-    lcd.setCursor(15, 3);
-    lcd.print(F("    "));
-    lcd.setCursor(15, 3);
-    lcd.print(Caud_T);
   }
+  lcd.setCursor(15, 3);
+  lcd.print(F("    "));
+  lcd.setCursor(15, 3);
+  lcd.print(Caud_Tacu);
   lcd.setCursor(5, 1);
   lcd.print(Temp_in_Hacu, 1);
   lcd.setCursor(15, 1);
@@ -208,26 +204,26 @@ void RefreshMenuDosSiete() {
   lcd.print(local_ip);
 }
 
-// Conexion Modo Smart 
-      /* implementar protocolo de informacion en Modo Smart
-       *
-        Menu WIFI SMART:
+// Conexion Modo Smart
+/* implementar protocolo de informacion en Modo Smart
+ *
+  Menu WIFI SMART:
 
-        23:57:17.575 -> AT+CWSTARTSMART
-        23:57:17.575 -> OK
-        23:57:17.575 -> WIFI DISCONNECT
-        23:57:25.588 -> smartconfig type:ESPTOUCH
-        23:57:30.377 -> Smart get wifi info
-        23:57:30.377 -> ssid:Guess
-        23:57:30.377 -> password:atardecer
-        23:57:31.495 -> WIFI CONNECTED
-        23:57:34.485 -> WIFI GOT IP
-        23:57:38.477 -> smartconfig connected wifi
-        23:57:39.082 -> Conectado a red
-        23:57:40.108 -> Ip is:192.168.0.101
-        23:57:42.112 -> Conectado a red
-        -> Menu WiFi
-       */
+  23:57:17.575 -> AT+CWSTARTSMART
+  23:57:17.575 -> OK
+  23:57:17.575 -> WIFI DISCONNECT
+  23:57:25.588 -> smartconfig type:ESPTOUCH
+  23:57:30.377 -> Smart get wifi info
+  23:57:30.377 -> ssid:Guess
+  23:57:30.377 -> password:atardecer
+  23:57:31.495 -> WIFI CONNECTED
+  23:57:34.485 -> WIFI GOT IP
+  23:57:38.477 -> smartconfig connected wifi
+  23:57:39.082 -> Conectado a red
+  23:57:40.108 -> Ip is:192.168.0.101
+  23:57:42.112 -> Conectado a red
+  -> Menu WiFi
+ */
 
 void RefreshMenuDosSieteUno() {
   if (W.indexOf("DISCONNECT") > -1) // Si P13 esta incluido en el string
@@ -328,126 +324,126 @@ void RefreshAlarma(volatile byte _nro_Alarma) {
   lcd.setCursor(0, 1);
   switch (_nro_Alarma) {
   case 0:
-    {
-      lcd.print(F("No hay alarmas act. "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("                    "));
-    }
-    break;
+  {
+    lcd.print(F("No hay alarmas act. "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("                    "));
+  }
+  break;
   case 1:
-    {
-      lcd.print(F("Temp Intercambiador "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("de Tierra es BAJA   "));
-    }
-    break;
+  {
+    lcd.print(F("Temp Intercambiador "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("de Tierra es BAJA   "));
+  }
+  break;
   case 2:
-    {
-      lcd.print(F("Temp Intercambiador "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("de Tierra es ALTA   "));
-    }
-    break;
+  {
+    lcd.print(F("Temp Intercambiador "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("de Tierra es ALTA   "));
+  }
+  break;
   case 3:
-    {
-      lcd.print(F("Temp Intercambiador "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("de Hogar es BAJA    "));
-    }
-    break;
+  {
+    lcd.print(F("Temp Intercambiador "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("de Hogar es BAJA    "));
+  }
+  break;
   case 4:
-    {
-      lcd.print(F("Temp Intercambiador "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("de Hogar es ALTA    "));
-    }
-    break;
+  {
+    lcd.print(F("Temp Intercambiador "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("de Hogar es ALTA    "));
+  }
+  break;
   case 5:
-    {
-      lcd.print(F("Temp Admision Gas   "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("es ALTA             "));
-    }
-    break;
+  {
+    lcd.print(F("Temp Admision Gas   "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("es ALTA             "));
+  }
+  break;
   case 6:
-    {
-      lcd.print(F("Temp Compresor es   "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("ALTA                "));
-    }
-    break;
+  {
+    lcd.print(F("Temp Compresor es   "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("ALTA                "));
+  }
+  break;
   case 7:
-    {
-      lcd.print(F("Caudal de Tierra es "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("BAJO                "));
-    }
-    break;
+  {
+    lcd.print(F("Caudal de Tierra es "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("BAJO                "));
+  }
+  break;
   case 8:
-    {
-      lcd.print(F("Caudal de Hogar es  "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("BAJO                "));
-    }
-    break;
+  {
+    lcd.print(F("Caudal de Hogar es  "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("BAJO                "));
+  }
+  break;
   case 9:
-    {
-      lcd.print(F("Presion Pres. HI es "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("ALTA                "));
-    }
-    break;
+  {
+    lcd.print(F("Presion Pres. HI es "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("ALTA                "));
+  }
+  break;
   case 10:
-    {
-      lcd.print(F("Presion Pres. LOW  "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("BAJA                "));
-    }
-    break;
+  {
+    lcd.print(F("Presion Pres. LOW  "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("BAJA                "));
+  }
+  break;
   case 11:
-    {
-      lcd.print(F("Delta T INTX BAJO  "));
-    }
-    break;
+  {
+    lcd.print(F("Delta T INTX BAJO  "));
+  }
+  break;
   case 12:
-    {
-      lcd.print(F("Corriente compresor"));
-      lcd.setCursor(0, 2);
-      lcd.print(F("fuera de rango     "));
-    }
-    break;
+  {
+    lcd.print(F("Corriente compresor"));
+    lcd.setCursor(0, 2);
+    lcd.print(F("fuera de rango     "));
+  }
+  break;
   case 13:
-    {
-      lcd.print(F("Temp Caldera Aux   "));
-      lcd.setCursor(0, 2);
-      lcd.print(F("es ALTA             "));
-    }
-    break;
+  {
+    lcd.print(F("Temp Caldera Aux   "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("es ALTA             "));
+  }
+  break;
   case 14:
-    {
-      lcd.print(F("Alarma Modulo Trif."));
-    }
-    break;
+  {
+    lcd.print(F("Alarma Modulo Trif."));
+  }
+  break;
   case 15:
-    {
-      lcd.print(F("Temp ADM elevada"));
-    }
-    break;
+  {
+    lcd.print(F("Temp ADM elevada"));
+  }
+  break;
   case 16:
-    {
-      lcd.print(F("Bajo aporte de kcal"));
-    }
-    break;
+  {
+    lcd.print(F("Bajo aporte de kcal"));
+  }
+  break;
   case 17:
-    {
-      lcd.print(F("Retorno liquido comp"));
-    }
-    break;
+  {
+    lcd.print(F("Retorno liquido comp"));
+  }
+  break;
   case 18:
-    {
-      lcd.print(F("Temp DES elevada"));
-    }
-    break;
+  {
+    lcd.print(F("Temp DES elevada"));
+  }
+  break;
   }
 }
 
@@ -632,7 +628,6 @@ void MenuDosSieteUno() // Estado Modo Smart
   lcd.setCursor(0, 3);
   lcd.print(F("Enter cancela"));
 }
-
 
 void MenuDosOcho() // Habilitacion de Generacion de ACS
 {
