@@ -62,6 +62,8 @@ void stateMachine1() {    // Aquí se espera la señal de Marcha_ON para iniciar
       Flag_Marcha_ON = false;
     }
 
+    // E1_E2 no puede ser menor a 15000 ya que si no viola la condicion
+    //     if ((millis() - EsperaValv) > 15000)
     if ((millis() - Salto_E1 > E1_a_E2) && !Modo_Funcionamiento && senal_start) // Se espera un tiempo (2 min) para que abran las electrovalvulas de la loza radiante
     {
       Estado_Maquina = 2;
@@ -122,7 +124,7 @@ void stateMachine3() { // Este es el estado final del sistema, donde se controla
     }
 
     {                             //   ###########    Condiciones de descanso generales      ##############
-      if ((Temp_out_H > 45.0)     // Condicion para ir a Descanso
+      if ((Temp_out_H > 50.0)     // Condicion para ir a Descanso
           || (Temp_out_H < 10.0)  // Condicion para ir a Descanso
           || (Temp_out_T > 40.0)  // Condicion para ir a Descanso
           || (Temp_out_T < -6)    // Condicion para ir a Descanso
