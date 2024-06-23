@@ -25,6 +25,6 @@ void presureControl();
 
 void auxiliaryACSHeatingControl();
 
-void calculateValuesToShow();
+void temperatureCalculation();
 
 #endif

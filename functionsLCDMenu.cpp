@@ -88,15 +88,9 @@ void RefreshMenuCero() {
   }
 
   lcd.setCursor(0, 1);
-  // if (Flag_Wifi)
-  //   lcd.print(F("W "));
-  // else
   lcd.print(F("NW"));
 
   lcd.setCursor(0, 2);
-  // if (Flag_ESP)
-  //   lcd.print(F("E "));
-  // else
   lcd.print(F("NE"));
 }
 
@@ -201,7 +195,7 @@ void RefreshMenuDosOchoUno() {
   if (flag_dtElectrico_final) {
     lcd.print(F("ENCENDIDO"));
   } else
-    lcd.print(F("APAGADO"));
+    lcd.print(F("APAGADO  "));
 }
 
 // Activacion/desactivacion de ACS electrico
@@ -329,10 +323,6 @@ void MenuUnoCero() // 1º Ventana de Monitor
 {
   beginLcd();
   lcd.print(F("MODO:            "));
-  lcd.setCursor(0, 1);
-  lcd.print(F("IxT: n/a"));
-  lcd.setCursor(10, 1);
-  lcd.print(F("IxH: n/a"));
   lcd.setCursor(0, 2);
   lcd.print(F("Com:"));
   lcd.setCursor(10, 2);
@@ -341,8 +331,6 @@ void MenuUnoCero() // 1º Ventana de Monitor
   lcd.print(F("Des:"));
   lcd.setCursor(10, 3);
   lcd.print(F("ACS:"));
-  // lcd.setCursor(10, 3);
-  // lcd.print(F("Evap:"));
   showNavigation();
 }
 
@@ -372,7 +360,6 @@ void MenuDos() // Menu de Configuración del Sistema
   lcd.setCursor(0, 1);
   lcd.print(F("     SISTEMA        "));
   lcd.setCursor(0, 3);
-  // lcd.print(F("ENTER para ver..."));
   showNavigation();
 }
 
@@ -468,24 +455,6 @@ void MenuDosNueve() // ACS electrico
   showNavigation();
 }
 
-/*
-void MenuTres() // Menú de Configuración de Caldera Eléctrica
-{
-  beginLcd();
-  lcd.print(F("CALDERA AUXILIAR"));
-  showNavigation();
-}
-
-void MenuTresCero() // Ventana de Variación del Ciclo de Trabajo de la Caldera Eléctrica
-{
-  beginLcd();
-  lcd.print(F("Presione ENTER para "));
-  lcd.setCursor(0, 2);
-  lcd.print(F("encender/apagar     "));
-  lcd.setCursor(0, 3);
-  lcd.print(F("ESTADO:             "));
-}
-*/
 void MenuCuatro() // Menú de Visualización de Alarmas
 {
   beginLcd();
@@ -498,7 +467,7 @@ void MenuCuatroCero() // Visualización de Alarmas Activas
   beginLcd();
   lcd.print(F("ALARMA ACTIVA:"));
   lcd.setCursor(0, 3);
-  lcd.print(F("Resetear Sist=>ENTER"));
+  lcd.print(F("Enter Resetea"));
 }
 
 void MenuCinco() // REGISTRO DE ALARMAS
@@ -512,5 +481,5 @@ void MenuCincoCero() {
   beginLcd();
   lcd.print(F("ULTIMA ALARMA ACTIVA"));
   lcd.setCursor(0, 3);
-  lcd.print(F("ENTER para borrar..."));
+  lcd.print(F("Enter borra"));
 }

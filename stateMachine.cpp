@@ -73,6 +73,8 @@ void stateMachine1() {                          // Aquí se espera la señal de 
       Flag_Marcha_ON = false;
     }
 
+    // E1_E2 no puede ser menor a 15000 ya que si no viola la condicion
+    //     if ((millis() - EsperaValv) > 15000)
     if ((millis() - Salto_E1 > E1_a_E2) && senal_start) // Se espera un tiempo (2 min) para que abran las electrovalvulas de la loza radiante
     {
       Estado_Maquina = 2;
@@ -118,18 +120,7 @@ void stateMachine3() { // Este es el estado final del sistema, donde se controla
       checkFlagsForAlarms();
     }
 
-    {  //   ###########    Condiciones de descanso generales      ##############
-      if ((Temp_out_H > MAX_TEMP_OUT_H)     // Condicion para ir a Descanso
-        || (Temp_out_H < MIN_TEMP_OUT_H)  // Condicion para ir a Descanso
-        || (Temp_out_T > MAX_TEMP_OUT_T)  // Condicion para ir a Descanso
-        || (Temp_out_T < MIN_TEMP_OUT_T)    // Condicion para ir a Descanso
-        || (Temp_Admision < MIN_TEMP_ADMISION) // Condicion para ir a Descanso
-        ) {
-        Estado_Maquina = 6;
-        Ingreso_Descanso = millis();
-      }
-      //   #################    FIN Condiciones de descanso generales      ############
-    }
+    takeRestControl();
   }
 }
 
@@ -148,7 +139,6 @@ void stateMachine4() // Estado de Alarma
       Alarma_Activa = true;
     }
     if (Nro_Alarma != 0) {
-      Flag_Alarma_General = true;
       if (!Flag_Buzzer) {
         Timer1.pwm(DO_Buzzer, 100, 1000000);
         Flag_Buzzer = true;
@@ -190,7 +180,7 @@ void stateMachine7() // Generacion ACS
     }
 
     // se le da energia al ACS de a saltos para evitar pasar de presion y temperatura el circuito de gas
-    if (Temp_out_H > MAX_TEMP_OUT_H || Temp_Descarga > 80.0) {
+    if (Temp_out_H > MAX_TEMP_OUT_H_ACS || Temp_Descarga > 80.0) {
       Estado_Maquina = 71;
       Ingreso_E71 = millis();
       Flag_retardo_e7 = false;

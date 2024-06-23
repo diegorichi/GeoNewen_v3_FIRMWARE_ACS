@@ -43,7 +43,7 @@ void Caudal2() // Función de Cuenta de Pulsos de Caudalímetro
   Pulsos_Caud_H++;
 }
 
-bool delayedTemperatureMeasuement(void*) {
+bool delayedTemperatureMeasurement(void*) {
 
   float Temp_out_Haux = sensors.getTempC(DI_Temp_out_H);
   if ((Temp_out_Haux > -10.0 && Temp_out_Haux < -1.0) || (Temp_out_Haux > 1.0 && Temp_out_Haux < 80.0))
@@ -85,7 +85,7 @@ void temperatureMeasurement() {
   {
     sensors.requestTemperatures(); // se les envía un comando para que inicien la toma de datos
 
-    timer_things.in(200, delayedTemperatureMeasuement);
+    timer_things.in(200, delayedTemperatureMeasurement);
   }
 }
 
@@ -202,7 +202,8 @@ void auxiliaryACSHeatingControl() {
   }
 }
 
-void calculateValuesToShow() {
+void temperatureCalculation()
+{
   T3_OH = T2_OH;
   T2_OH = T1_OH;
   T1_OH = Temp_out_H;

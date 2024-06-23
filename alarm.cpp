@@ -2,7 +2,6 @@
 
 int Alarmas() // Función de identificación de Alarma Activa
 {
-  Flag_Alarma_General = false;
   Nro_Alarma = 0;
   if (Flag_TempComp01) {
     Nro_Alarma = 6;
@@ -21,7 +20,6 @@ int Alarmas() // Función de identificación de Alarma Activa
   }
 
   if (Nro_Alarma != 0) {
-    Flag_Alarma_General = true;
     EEPROMwrite(Alarma_Address, Nro_Alarma);
   }
   return Nro_Alarma;
@@ -53,7 +51,6 @@ void checkFlagsForAlarms() {
 }
 
 void resetAlarms() {
-  Flag_Alarma_General = false;
   Nro_Alarma = 0;
   digitalWrite(DO_Buzzer, LOW);
   Alarma_Activa = false;

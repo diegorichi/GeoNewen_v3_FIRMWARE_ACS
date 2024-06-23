@@ -131,7 +131,6 @@ bool Flag_PresHI = false;
 bool Flag_PresLOW = false;
 
 bool PressOK = false;
-volatile bool Flag_Alarma_General = false;
 
 bool Flag_Temp_Adm = false;
 volatile bool modoFrio = false; // Frio = true , Calor = false
