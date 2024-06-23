@@ -5,6 +5,7 @@
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
 #include "alarm.h"
+#include "machine_control.h"
 
 void stateMachine0(); // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
 void stateMachine1(); // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema

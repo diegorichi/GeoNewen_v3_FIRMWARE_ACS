@@ -107,16 +107,18 @@ bool heatingCheck() {
           || (Temp_out_H < 1)              // condicion de arranque
           || (Temp_out_T < -6)             // condicion de corte
           || (Temp_Admision < -7)          // condicion de corte
-      )
+      );
 }
+
 bool coolingCheck() {
   return ModoFrioCalor && (
                               (Temp_out_H < 10.0) // condicion de corte
                             || (Temp_out_T > 40.0) // condicion de corte
-            )
+            );
 }
+
 bool longPeriodRunningCheck() {
-    return ((millis() - Ingreso_E3) > 43200000)  // 12 horas
+    return ((millis() - Ingreso_E3) > 43200000);  // 12 horas
 }
 
 void takeRestControl() {
@@ -125,11 +127,5 @@ void takeRestControl() {
       Estado_Maquina = 6;
       Ingreso_Descanso = millis();
     }
-/*    if ((Temp_out_H > 50.0)     // Condicion para ir a Descanso
-        || (Temp_out_H < 10.0)  // Condicion para ir a Descanso
-        || (Temp_out_T > 40.0)  // Condicion para ir a Descanso
-        || (Temp_out_T < -6)    // Condicion para ir a Descanso
-        || (Temp_Admision < -7) // Condicion para ir a Descanso
-    )*/
   }
 }
