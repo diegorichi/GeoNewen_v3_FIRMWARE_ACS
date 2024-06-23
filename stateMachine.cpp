@@ -72,7 +72,7 @@ void stateMachine1() {    // Aquí se espera la señal de Marcha_ON para iniciar
 }
 
 void stateMachine2() // Arranque Compresor y Bombas
-{                          
+{
   if (Estado_Maquina == 2)
   {
     Valor_DO_Bombas = HIGH;
@@ -123,24 +123,12 @@ void stateMachine3() { // Este es el estado final del sistema, donde se controla
       checkFlagsForAlarms();
     }
 
-    {                             //   ###########    Condiciones de descanso generales      ##############
-      if ((Temp_out_H > 50.0)     // Condicion para ir a Descanso
-          || (Temp_out_H < 10.0)  // Condicion para ir a Descanso
-          || (Temp_out_T > 40.0)  // Condicion para ir a Descanso
-          || (Temp_out_T < -6)    // Condicion para ir a Descanso
-          || (Temp_Admision < -7) // Condicion para ir a Descanso
-      )
-      {
-        Estado_Maquina = 6;
-        Ingreso_Descanso = millis();
-      }
-      //   #################    FIN Condiciones de descanso generales      #####################################
-    }
+    takeRestControl();
   }
 }
 
 void stateMachine4() // Estado de Alarma
-{ 
+{
 
   if (Estado_Maquina == 4)
   {
@@ -168,7 +156,7 @@ void stateMachine4() // Estado de Alarma
 
 void stateMachine6() // Estado de descanso
 {
-  if (Estado_Maquina == 6) 
+  if (Estado_Maquina == 6)
   {
     Valor_DO_Comp_01 = LOW;
     Valor_DO_Bombas = LOW;
@@ -180,7 +168,7 @@ void stateMachine6() // Estado de descanso
 }
 
 void stateMachine7() // Generacion ACS
-{                          
+{
   if (Estado_Maquina == 7)
   {
     Valor_DO_Bombas = HIGH; // se mantiene HIGH hasta que se va a estado 0 (puede pasar por 71 u 8)

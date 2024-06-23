@@ -7,28 +7,26 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-
-
 void Caudal1();
 
 void Caudal2();
 
-void temperatureMeasuement(); 
+void temperatureMeasurement();
 
-void flowsCalculation(); 
+void flowsCalculation();
 
-void thermalEfficiencyCalculation(); 
+void thermalEfficiencyCalculation();
 
-void powerCalculation(); 
+void powerCalculation();
 
-void flowControl(); 
+void flowControl();
 
-void temperatureControl(); 
+void temperatureControl();
 
-void presureControl(); 
+void presureControl();
 
 void auxiliaryACSHeatingControl();
 
-void calculateValuesToShow();
+void temperatureCalculation();
 
 #endif

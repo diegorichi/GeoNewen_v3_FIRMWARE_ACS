@@ -14,7 +14,7 @@ void Caudal2() // Función de Cuenta de Pulsos de Caudalímetro
   Pulsos_Caud_H++;
 }
 
-void temperatureMeasuement() {
+void temperatureMeasurement() {
   if ((millis() - LecturaDSB) > 5000) // Se toma una lectura de los sensores DS18B20 cada 5 segundos, demoran aproximadamente 200ms en entregar un resultado, 750ms máx
   {
     sensors.requestTemperatures(); // se les envía un comando para que inicien la toma de datos
@@ -98,7 +98,7 @@ void flowControl() {
   if (Caud_Tacu > 100.0)
     Flag_CaudT = false;
 
-  if (Caud_Hacu < 100.0 && senal_start && (Flag_Alarma_EN == true) && (Estado_Maquina == 3 || (Estado_Maquina == 7 && Flag_retardo_e7 == true))) // Se comprueba que el caudal no sea inferior a un cierto valor, para evitar daños a las bombas 
+  if (Caud_Hacu < 100.0 && senal_start && (Flag_Alarma_EN == true) && (Estado_Maquina == 3 || (Estado_Maquina == 7 && Flag_retardo_e7 == true))) // Se comprueba que el caudal no sea inferior a un cierto valor, para evitar daños a las bombas
   {
     Flag_CaudH = true;
   }
@@ -190,7 +190,8 @@ void auxiliaryACSHeatingControl() {
   }
 }
 
-void calculateValuesToShow() {
+void temperatureCalculation()
+{
   T3_OH = T2_OH;
   T2_OH = T1_OH;
   T1_OH = Temp_out_H;

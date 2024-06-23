@@ -105,7 +105,7 @@ void mainLoop()
 {
   // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
 
-  temperatureMeasuement();
+  temperatureMeasurement();
 
   flowsCalculation(); // Determinación de Caudal
 

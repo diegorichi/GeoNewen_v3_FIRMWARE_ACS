@@ -206,6 +206,7 @@ volatile int Ciclo_Trabajo;
 volatile int Ciclo_Trabajoedit;
 volatile int Estado_Comp = 0;
 volatile byte Nro_Alarma = 0;
+extern volatile byte MAX_TEMP_OUT_H = 37;
 volatile byte SetP_ACS = 0;
 volatile byte SetP_ACS_Edit = 0;
 //volatile byte SetP_Temp_Admision = 0;
