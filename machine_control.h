@@ -18,4 +18,10 @@ void refreshDataToShow();
 
 void processStartStopSignal();
 
+bool heatingCheck();
+bool coolingCheck();
+bool longPeriodRunningCheck();
+
+void takeRestControl();
+
 #endif
