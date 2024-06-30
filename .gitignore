@@ -1,1 +1,8 @@
+# Ignore PlatformIO build files
+.pio/build
 
+# Ignore generated files
+*.bin
+*.elf
+*.hex
+*.a
