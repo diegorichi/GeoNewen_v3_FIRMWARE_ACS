@@ -5,6 +5,7 @@
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
 #include "alarm.h"
+#include "machine_control.h"
 
 #define GENERATE_ACS (Temp_ACS < (SetP_ACS - GAP_ACS) && Flag_ACS_EN)
 

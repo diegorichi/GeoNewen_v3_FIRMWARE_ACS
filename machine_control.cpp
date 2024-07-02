@@ -117,13 +117,15 @@ bool heatingCheck() {
                                  || (Temp_Admision < MIN_TEMP_ADMISION)    // condicion de corte
                              )
 }
+
 bool coolingCheck() {
     return ModoFrioCalor && ((Temp_out_H < MIN_TEMP_OUT_H_COOLING)  // condicion de corte
                              || (Temp_out_T > MAX_TEMP_OUT_T)       // condicion de corte
                             )
 }
+
 bool longPeriodRunningCheck() {
-    return ((millis() - Ingreso_E3) > 43200000)  // 12 horas
+    return ((millis() - Ingreso_E3) > 43200000);  // 12 horas
 }
 
 void takeRestControl() {
