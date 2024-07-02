@@ -1,5 +1,10 @@
 #include "stateMachine.h"
 
+const float MAX_TEMP_OUT_H_ACS = 50.0;
+
+unsigned long E1_a_E2 = 120000; // 2 minutos para pasar de E1 a E2
+unsigned long E2_a_E3 = 10000;  // 10 segundos para pasar de E2 a E3
+
 void initializeStateMachine() {
   Estado_Maquina = 0;
   Activacion_Comp = 0;

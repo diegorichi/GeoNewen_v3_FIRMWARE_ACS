@@ -95,29 +95,11 @@ extern float T2_Des;            // 0;
 extern float T3_Des;            // 0;
 extern float Temp_Descargaacu;  // 0;
 
-const uint8_t MAX_ACS = 48;
-const uint8_t MIN_ACS = 30;
-const uint8_t GAP_ACS = 2;
-const uint8_t DELTA_ACS_ELECTRICO = 7;
-
-const float MAX_TEMP_OUT_H_ACS = 50.0;
-const float MAX_TEMP_OUT_H_HEATING = 37.0;
-const float MIN_TEMP_OUT_H_COOLING = 10.0;
-const float MIN_TEMP_OUT_H_HEATING = -1.0;
-const float MAX_TEMP_OUT_T = 40.0;
-const float MIN_TEMP_OUT_T = -6.0;
-const float MIN_TEMP_ADMISION = -7.0;
-
 extern bool Flag_TempComp01;     // false;
 extern bool Flag_Temp_Descarga;  // false;
 extern bool Flag_retardo_e7;     // flag que indica que ACS esta efectivamente andando (luego de la espera)
 
-extern unsigned long E1_a_E2;              // 120000;           //2 minutos para pasar de E1 a E2
-extern unsigned long E2_a_E3;              // 10000;            //10 segundos para pasar de E2 a E3
-extern volatile byte MAX_ACS;              // 48
-extern volatile byte MIN_ACS;              // 30
-extern volatile byte GAP_ACS;              // 2
-extern volatile byte DELTA_ACS_ELECTRICO;  // 7
+extern const uint8_t GAP_ACS;           // 2 grados
 
 extern unsigned long EsperaValv;       // 0;
 extern unsigned long Ingreso_E7;       // 0;

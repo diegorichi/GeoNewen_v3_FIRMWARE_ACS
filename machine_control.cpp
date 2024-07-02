@@ -1,5 +1,14 @@
 #include "machine_control.h"
 
+const float MAX_TEMP_OUT_H_HEATING = 37.0;
+const float MIN_TEMP_OUT_H_COOLING = 10.0;
+const float MIN_TEMP_OUT_H_HEATING = -1.0;
+const float MAX_TEMP_OUT_T = 40.0;
+const float MIN_TEMP_OUT_T = -6.0;
+const float MIN_TEMP_ADMISION = -7.0;
+const uint8_t MAX_ACS = 48;
+const uint8_t MIN_ACS = 30;
+
 void frioCalor()  // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
     lcd.clear();
@@ -110,18 +119,18 @@ uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {
 }
 
 bool heatingCheck() {
-    return !ModoFrioCalor && (                                             // modo calefaccion
+    return !modoFrio && (                                             // modo calefaccion
                                  (Temp_out_H > MAX_TEMP_OUT_H_HEATING)             // condicion de corte
                                  || (Temp_out_H < MIN_TEMP_OUT_H_HEATING)  // condicion de arranque
                                  || (Temp_out_T < MIN_TEMP_OUT_T)          // condicion de corte
                                  || (Temp_Admision < MIN_TEMP_ADMISION)    // condicion de corte
-                             )
+                             );
 }
 
 bool coolingCheck() {
-    return ModoFrioCalor && ((Temp_out_H < MIN_TEMP_OUT_H_COOLING)  // condicion de corte
+    return modoFrio && ((Temp_out_H < MIN_TEMP_OUT_H_COOLING)  // condicion de corte
                              || (Temp_out_T > MAX_TEMP_OUT_T)       // condicion de corte
-                            )
+                            );
 }
 
 bool longPeriodRunningCheck() {

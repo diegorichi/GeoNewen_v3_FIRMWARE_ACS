@@ -101,8 +101,7 @@ unsigned long Ingreso_E7 = 0;
 unsigned long Ingreso_E71 = 0;
 unsigned long Periodo_Fin_ACS = 0;
 
-unsigned long E1_a_E2 = 120000; // 2 minutos para pasar de E1 a E2
-unsigned long E2_a_E3 = 10000;  // 10 segundos para pasar de E2 a E3
+const uint8_t GAP_ACS = 2;
 
 unsigned long Periodo_Refresco;
 unsigned long Activacion_Comp;

@@ -21,6 +21,8 @@ unsigned long Ventana_Caudal_T;
 volatile uint8_t Pulsos_Caud_T;
 volatile uint8_t Pulsos_Caud_H;
 
+const uint8_t DELTA_ACS_ELECTRICO = 7;
+
 void initializeFlowState() {
   attachInterrupt(4, Caudal1, FALLING); // Pin 19
   attachInterrupt(5, Caudal2, FALLING); // Pin 18
