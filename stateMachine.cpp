@@ -98,14 +98,12 @@ void stateMachine2() // Arranque Compresor y Bombas
       return;
     }
 
-    if ((millis() - EsperaValv) > 15000){
-      Valor_DO_Bombas = HIGH;
-      PumpStart = millis();   
-      if (Valor_DO_Comp_01 == LOW) {
-        if ((millis() - PumpStart) > 15000){
-          Valor_DO_Comp_01 = HIGH;
-          Activacion_Comp = millis();
-        }
+    Valor_DO_Bombas = HIGH;
+    PumpStart = millis();   
+    if (Valor_DO_Comp_01 == LOW) {
+      if ((millis() - PumpStart) > 10000){
+        Valor_DO_Comp_01 = HIGH;
+        Activacion_Comp = millis();
       }
     }
 
