@@ -97,6 +97,7 @@ void mainLoop() {
   digitalWrite(DO_Comp_01, Valor_DO_Comp_01);
   digitalWrite(DO_Val1, Valor_DO_VACS);
 
+  timer_things.tick();
   wdt_reset();
 }
 
