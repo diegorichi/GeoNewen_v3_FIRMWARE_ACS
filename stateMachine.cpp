@@ -98,17 +98,20 @@ void stateMachine2() // Arranque Compresor y Bombas
       return;
     }
 
-    Valor_DO_Bombas = HIGH;
-    PumpStart = millis();   
-    if (Valor_DO_Comp_01 == LOW) {
-      if ((millis() - PumpStart) > 10000){
-        Valor_DO_Comp_01 = HIGH;
-        Activacion_Comp = millis();
-      }
+    if (Valor_DO_Bombas == LOW) {
+      Valor_DO_Bombas = HIGH;
+      PumpStart = millis();
     }
 
-    if (millis() - Activacion_Comp > E2_a_E3) // Transcurrido un cierto tiempo, se avanza al siguiente estado
-    {
+    if (Valor_DO_Comp_01 == LOW) {
+      //if (millis() - PumpStart > 25000) {
+        Valor_DO_Comp_01 = HIGH;
+        Activacion_Comp = millis();
+      //}
+    }
+
+    // Transcurrido un cierto tiempo, se avanza al siguiente estado
+    if (millis() - Activacion_Comp > E2_a_E3) {
       Estado_Maquina = 3;
       Ingreso_E3 = millis();
     }
