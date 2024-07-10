@@ -102,6 +102,7 @@ extern bool Flag_retardo_e7;     // flag que indica que ACS esta efectivamente a
 extern const uint8_t GAP_ACS;           // 2 grados
 
 extern unsigned long EsperaValv;       // 0;
+extern unsigned long PumpStart;       // 0;
 extern unsigned long Ingreso_E7;       // 0;
 extern unsigned long Ingreso_E71;      // 0;
 extern unsigned long Periodo_Fin_ACS;  // 0;

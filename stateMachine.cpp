@@ -2,15 +2,15 @@
 
 const float MAX_TEMP_OUT_H_ACS = 50.0;
 
-unsigned long E1_a_E2 = 120000; // 2 minutos para pasar de E1 a E2
-unsigned long E2_a_E3 = 10000;  // 10 segundos para pasar de E2 a E3
+unsigned long E1_a_E2 = 60000; // 1 minuto para pasar de E1 a E2
+unsigned long E2_a_E3 = 15000;  // 15 segundos para pasar de E2 a E3
 
 void initializeStateMachine() {
   Estado_Maquina = 0;
   Activacion_Comp = 0;
   dont_stuck_pumps_activation = 0;
   dont_stuck_pumps = 0;
-  Valor_DO_VACS = HIGH;
+  Valor_DO_VACS = LOW;
   Valor_DO_V4V = LOW;
   modoFrio = false;
   heating_off = false;
@@ -24,13 +24,14 @@ void stateMachine0() { // Estado inicial del sistema, tanto el compresor como la
     Valor_DO_Comp_01 = LOW;
     Activacion_Comp = 0;
     Valor_DO_Bombas = LOW;
+    PumpStart = 0;
     dont_stuck_pumps = millis();
 
     Valor_DO_VACS = LOW; // paso a losa radiante
+    EsperaValv = millis();
 
     Valor_DO_V4V = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
 
-    EsperaValv = millis();
     if (!heating_off)
       Estado_Maquina = 1;
 
@@ -60,8 +61,9 @@ void stateMachine1() {                          // Aquí se espera la señal de 
     if ((millis() - EsperaValv) > 15000) {
       if GENERATE_ACS // Control de ACS, modo calor
       {
-        Valor_DO_V4V = HIGH;  // abre la valvula de 3v para calentar el agua
         Valor_DO_VACS = HIGH; // la generacion de ACS requiere que la valv 4v este activa
+        Valor_DO_V4V = HIGH;  // abre la valvula de 3v para calentar el agua
+        EsperaValv = millis();
         Estado_Maquina = 7;   // Generacion ACS
         Ingreso_E7 = millis();
       }
@@ -96,14 +98,18 @@ void stateMachine2() // Arranque Compresor y Bombas
       return;
     }
 
-    Valor_DO_Bombas = HIGH;
-
-    if (Valor_DO_Comp_01 == LOW) {
-      Valor_DO_Comp_01 = HIGH;
-      Activacion_Comp = millis();
+    if ((millis() - EsperaValv) > 15000){
+      Valor_DO_Bombas = HIGH;
+      PumpStart = millis();   
+      if (Valor_DO_Comp_01 == LOW) {
+        if ((millis() - PumpStart) > 15000){
+          Valor_DO_Comp_01 = HIGH;
+          Activacion_Comp = millis();
+        }
+      }
     }
 
-    if (millis() - Activacion_Comp > E2_a_E3) // Transcurrido un cierto tiempo (10 seg), se avanza al siguiente estado
+    if (millis() - Activacion_Comp > E2_a_E3) // Transcurrido un cierto tiempo, se avanza al siguiente estado
     {
       Estado_Maquina = 3;
       Ingreso_E3 = millis();
@@ -137,6 +143,7 @@ void stateMachine4() // Estado de Alarma
     Valor_DO_Comp_01 = LOW;
     Activacion_Comp = 0;
     Valor_DO_Bombas = LOW;
+    PumpStart = 0;
     digitalWrite(DO_Triac_01, LOW);
 
     if (!Alarma_Activa) {
@@ -158,7 +165,8 @@ void stateMachine6() // Estado de descanso
   if (Estado_Maquina == 6) {
     Valor_DO_Comp_01 = LOW;
     Valor_DO_Bombas = LOW;
-    if ((millis() - Ingreso_Descanso > 400000)) // 6 min //una vez en el descanso, se espera una hora antes de enviar el sistema al estado inicial
+    PumpStart = 0;
+    if ((millis() - Ingreso_Descanso > 400000)) // 6 min //una vez en el descanso, se espera antes de enviar el sistema al estado inicial
     {
       Estado_Maquina = 0;
     }
@@ -173,9 +181,13 @@ void stateMachine7() // Generacion ACS
       return;
     }
 
-    Valor_DO_Bombas = HIGH; // se mantiene HIGH hasta que se va a estado 0 (puede pasar por 71 u 8)
+    if (millis() - EsperaValv > 15000) {
+      // solo prendo las bombas si paso el tiempo para abrir las valuvlas
+      Valor_DO_Bombas = HIGH; // se mantiene HIGH hasta que se va a estado 0 (puede pasar por 71 u 8)
+      PumpStart = millis();
+    }
 
-    if (millis() - Ingreso_E7 > 5000) {
+    if (millis() - Ingreso_E7 > 20000) {
       checkFlagsForAlarms();
       Flag_retardo_e7 = true;
 

@@ -97,6 +97,7 @@ bool Flag_Temp_Descarga = false;
 bool Flag_retardo_e7 = false;
 
 unsigned long EsperaValv = 0;
+unsigned long PumpStart = 0;
 unsigned long Ingreso_E7 = 0;
 unsigned long Ingreso_E71 = 0;
 unsigned long Periodo_Fin_ACS = 0;
