@@ -4,33 +4,26 @@
 /*DECLARACION DE VARIABLES*/
 /**************************/
 
-Timer<2, millis> timer_things;
+Timer<1, millis> timer_things;
 
 // PINES DIGITALES
 
 // 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 }; //n5
 
-const int DI_Caud_T = 18; // ENTRADAS DE CAUDALIMETROS (no se pueden modificar)
-const int DI_Caud_H = 19;
+const int DI_Caud_T = 18;     // Entrada de caudalimetro tierra
+const int DI_Caud_H = 19;     // Entrada de caudalimetro hogar
+const int DI_Marcha_on = 33;  // Entrada de señal de Marcha
+const int DI_Pres_HI = 35;    // Preostato de alta
+const int DI_Pres_LOW = 37;   // Presotato de baja
 
-const int DO_Calentador = 23; // Compresor
-const int DO_Comp_01 = 25;    // Boombas de circulacion
-const int DO_Bombas = 27;     // Valvula Calefaccion
-const int DO_Val2 = 29;       // V4V
-const int DO_Val1 = 31;       // V ACS
+const int DO_Calentador = 23;    // Calentador
+const int DO_Compressor = 25;    // Compresor
+const int DO_Bombas = 27;        // Bombas
+const int DO_Valvula4Vias = 29;  // Valvula 4 Vias
+const int DO_ValvulaACS = 31;    // Valvula ACS
 
-const int DO_Triac_01 = 11; // Triacs,Pin salida PWM (no se puede modificar)
-const int DO_Buzzer = 12;   //
-// const int DO_Contraste     = 13;  //Control de contraste display (sin uso)
-
-const int DI_Marcha_on = 33; // Entrada de señal de Marcha
-const int DI_Pres_HI = 35;   // Preostato de alta
-const int DI_Pres_LOW = 37;  // Presotato de baja
-
-const int STEP = 9;       // Pines para control del EasyDriver
-const int DIR = 8;        // STEP es el pin por donde se envian los pasos para que el motor gire, DIR indica la direccion
-const int ED_ENABLE = 10; // Pin para "dormir" al EasyDriver, evitando consumo de energia
-
+const int DO_Triac_01 = 11;  // Triacs, Pin salida PWM (no se puede modificar)
+const int DO_Buzzer = 12;    // Pin de salida de buzzer
 
 volatile int Estado_Maquina = 0;
 
@@ -48,17 +41,16 @@ int C2_H = 0;
 int C3_H = 0;
 int Caud_Hacu = 0;
 
-
 int Cont_Temp_Des = 0;
 
 // Contadores auxiliares de alarmas
 
-int Cont_Temp_Comp_01 = 0;
+int Cont_Temp_Compressor = 0;
 int Cont_Press_HI = 0;
 int Cont_Press_LOW = 0;
 int Cont_Temp_Descarga = 0;
 
-float Temp_Comp_01;
+float Temp_Compressor;
 float T5_Comp = 0;
 float T4_Comp = 0;
 float T3_Comp = 0;
@@ -92,12 +84,12 @@ float T2_Des = 0;
 float T3_Des = 0;
 float Temp_Descargaacu = 0;
 
-bool Flag_TempComp01 = false;
+bool Flag_TempCompressor = false;
 bool Flag_Temp_Descarga = false;
-bool Flag_retardo_e7 = false;
 
 unsigned long EsperaValv = 0;
 unsigned long PumpStart = 0;
+unsigned long BuzzerStart = 0;
 unsigned long Ingreso_E7 = 0;
 unsigned long Ingreso_E71 = 0;
 unsigned long Periodo_Fin_ACS = 0;
@@ -110,11 +102,10 @@ unsigned long Salto_E1;
 unsigned long dont_stuck_pumps_activation;
 unsigned long dont_stuck_pumps;
 unsigned long Ingreso_E3;
-unsigned long LecturaDSB;
 
 unsigned long Ingreso_Descanso = 0;
 
-volatile int MenuActual; //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
+volatile int MenuActual;  //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
 
 volatile uint8_t Nro_Alarma = 0;
 volatile uint8_t SetP_ACS = 0;
@@ -130,26 +121,25 @@ bool Flag_CaudH = false;
 bool Flag_PresHI = false;
 bool Flag_PresLOW = false;
 
-bool PressOK = false;
-
 bool Flag_Temp_Adm = false;
-volatile bool modoFrio = false; // Frio = true , Calor = false
+volatile bool modoFrio = false;  // Frio = true , Calor = false
 volatile bool Alarma_Activa;
 bool Flag_Marcha_ON;
-bool senal_start; // senal de marcha, segun modoFrio
+bool senal_start;  // senal de marcha, segun modoFrio
 // se trabaja con 1 termostato.
 bool senal_stop;
 volatile bool heating_off = false;
 volatile bool Flag_Buzzer;
 
-volatile bool Flag_ACS_EN = true;
-volatile bool Flag_ACS_DT_EN = true;
-volatile bool Flag_Alarma_EN;
-volatile bool Flag_ACS_EN_ELECT = false;
+volatile bool EnableACS = true;
+volatile bool EnableACS_DeltaElectrico = true;
+volatile bool EnableFlowAlarm;
+volatile bool EnableElectricACS = false;
 
 // IMAGENES DE ENTRADAS/SALIDAS
 int Valor_DO_Bombas;
 int Valor_DO_Calentador;
-int Valor_DO_Comp_01;
+int Valor_DO_Compressor;
 int Valor_DO_VACS;
 int Valor_DO_V4V;
+int Valor_DO_Buzzer;

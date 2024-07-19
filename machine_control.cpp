@@ -38,7 +38,7 @@ void frioCalor()  // Función de cambio de Modo de Funcionamiento  (Bromberg: mo
 void changeModo() {
     if (Estado_Maquina == 1) {
         frioCalor();
-        EEPROMwrite(modo_frio_address, modoFrio);
+        EEPROMwrite(modoFrio_address, modoFrio);
     }
 }
 
@@ -51,25 +51,20 @@ void setupDigitalInputs() {
 }
 
 void setupDigitalOuputs() {
-    pinMode(DO_Comp_01, OUTPUT);
-    pinMode(DO_Val1, OUTPUT);
+    pinMode(DO_Compressor, OUTPUT);
+    pinMode(DO_ValvulaACS, OUTPUT);
     pinMode(DO_Bombas, OUTPUT);
     pinMode(DO_Calentador, OUTPUT);
-    pinMode(DO_Val2, OUTPUT);
+    pinMode(DO_Valvula4Vias, OUTPUT);
 
     pinMode(DO_Triac_01, OUTPUT);
     pinMode(DO_Buzzer, OUTPUT);
-
-    pinMode(DIR, OUTPUT);
-    pinMode(STEP, OUTPUT);
-    pinMode(ED_ENABLE, OUTPUT);
 }
 
 void initializeDigitalOuputs() {
-    digitalWrite(ED_ENABLE, LOW);  // Inicialización de salidas
-    digitalWrite(DO_Comp_01, LOW);
-    digitalWrite(DO_Val1, LOW);  // Inicia con la valvula de loza encendida
-    digitalWrite(DO_Val2, LOW);
+    digitalWrite(DO_Compressor, LOW);
+    digitalWrite(DO_ValvulaACS, LOW);  // Inicia con paso a loza encendida
+    digitalWrite(DO_Valvula4Vias, LOW);
     digitalWrite(DO_Bombas, LOW);
     digitalWrite(DO_Calentador, LOW);
     digitalWrite(DO_Triac_01, LOW);
@@ -77,19 +72,18 @@ void initializeDigitalOuputs() {
 }
 
 void refreshDataToShow() {
-    if (millis() - Periodo_Refresco > 500)  // Refresco de valores
-    {
+    if (millis() - Periodo_Refresco > 500) {
         temperatureCalculation();
 
         lcdRefreshValues();
 
         // menuActivo->refresh();
 
-        Periodo_Refresco = millis();  // El período de refresco es a los fines de que la información mostrada no esté constanmente cambiando y la visualización sea más adecuada
+        Periodo_Refresco = millis();
     }
 }
 
-void processStartStopSignal() {
+void calculateStartStopSignal() {
     /*
   Si modo calor:
     di marcha on == HIGH -> arrancar
@@ -119,18 +113,20 @@ uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {
 }
 
 bool heatingCheck() {
-    return !modoFrio && (                                             // modo calefaccion
-                                 (Temp_out_H > MAX_TEMP_OUT_H_HEATING)             // condicion de corte
-                                 || (Temp_out_H < MIN_TEMP_OUT_H_HEATING)  // condicion de arranque
-                                 || (Temp_out_T < MIN_TEMP_OUT_T)          // condicion de corte
-                                 || (Temp_Admision < MIN_TEMP_ADMISION)    // condicion de corte
-                             );
+    // le damos tiempo a que las bombas funcionen antes controlar
+    // para que si viene de calentar agua, circule el agua caliente.
+    return ((millis() - Ingreso_E3) > 30000) && !modoFrio &&
+           ((Temp_out_H > MAX_TEMP_OUT_H_HEATING)     // condicion de corte
+            || (Temp_out_H < MIN_TEMP_OUT_H_HEATING)  // condicion de arranque
+            || (Temp_out_T < MIN_TEMP_OUT_T)          // condicion de corte
+            || (Temp_Admision < MIN_TEMP_ADMISION)    // condicion de corte
+           );
 }
 
 bool coolingCheck() {
     return modoFrio && ((Temp_out_H < MIN_TEMP_OUT_H_COOLING)  // condicion de corte
-                             || (Temp_out_T > MAX_TEMP_OUT_T)       // condicion de corte
-                            );
+                        || (Temp_out_T > MAX_TEMP_OUT_T)       // condicion de corte
+                       );
 }
 
 bool longPeriodRunningCheck() {
@@ -142,4 +138,22 @@ void takeRestControl() {
         Estado_Maquina = 6;
         Ingreso_Descanso = millis();
     }
+}
+
+void buzzerStop(bool force) {
+    if (
+        (millis() - BuzzerStart > 300 && !(Estado_Maquina == 1 && Valor_DO_Bombas == HIGH)) ||
+        (Estado_Maquina == 1 && Valor_DO_Bombas == LOW) ||
+        force) {
+        Valor_DO_Buzzer = LOW;
+        BuzzerStart = 0;
+    }
+    if (Estado_Maquina == 4) {
+        // este estado maneja el bip con PWM
+    }
+}
+
+void buzzerStart() {
+    Valor_DO_Buzzer = HIGH;
+    BuzzerStart = millis();
 }

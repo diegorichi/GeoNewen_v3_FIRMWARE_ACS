@@ -1,11 +1,12 @@
 
 #ifndef measurement_and_calculation__
 #define measurement_and_calculation__
-#include "vars.h"
+#include <DallasTemperature.h>
+#include <OneWire.h>
+
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
-#include <OneWire.h>
-#include <DallasTemperature.h>
+#include "vars.h"
 
 void initializeFlowState();
 

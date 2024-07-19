@@ -1,104 +1,114 @@
-#include "vars.h"
-#include "keyboard.h"
+#include "SerialEsp8266.h"
 #include "functionsLCDMenu.h"
+#include "keyboard.h"
 #include "kume_eeprom.h"
 #include "machine_control.h"
 #include "measurement_and_calculations.h"
 #include "stateMachine.h"
-#include "SerialEsp8266.h"
+#include "vars.h"
 /*******/
 /*SETUP*/
 /*******/
 
 SerialEsp8266 esp8266(&Serial2);
 
-void setup() { // Inicializacion de I/O y variables generales
+void setup() {  // Inicializacion de I/O y variables generales
 
-  wdt_disable();
+    wdt_disable();
 
-  keyboardSetup(); // setup de pin modes y demas
+    keyboardSetup();  // setup de pin modes y demas
 
-  setupDigitalInputs(); // setup de los pines de entrada
+    setupDigitalInputs();  // setup de los pines de entrada
 
-  setupDigitalOuputs(); // setup de los pines de salida
+    setupDigitalOuputs();  // setup de los pines de salida
 
-  initializeDigitalOuputs();
+    initializeDigitalOuputs();
 
-  attachInterrupt(1, AtencionTeclado, FALLING); // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
+    attachInterrupt(1, AtencionTeclado, FALLING);
+    // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
 
-  lcdCreateSpecialChars();
+    lcdCreateSpecialChars();
 
-  initializeFlowState();
+    initializeFlowState();
 
-  initializeStateMachine();
+    initializeStateMachine();
 
-  ResetFlags();
+    ResetFlags();
 
-  Timer1.initialize(100000);
+    Timer1.initialize(100000);
 
-  Serial.begin(115200);
+    Serial.begin(115200);
 
-  EEPROMLectura(); // Carga parametros guardados en la memoria EEPROM
+    EEPROMLectura();  // Carga parametros guardados en la memoria EEPROM
 
-  SetP_ACS_Edit = normalizeAcsTemp(&SetP_ACS);
+    SetP_ACS_Edit = normalizeAcsTemp(&SetP_ACS);
 
-  MenuActual = 0;
-  MenuCero();
-  //initializeAndSetupMenu();
+    MenuActual = 0;
+    MenuCero();
+    // initializeAndSetupMenu();
 
-  // menuActivo->show();
+    // menuActivo->show();
 
-  wdt_enable(WDTO_8S);
+    wdt_enable(WDTO_8S);
 }
 
 void mainLoop() {
-  // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
+    // CÁLCULO DE TEMPERATURAS, CAUDALES, EFICIENCIA TÉRMICA Y CONSUMO DE ENERGÍA
 
-  temperatureMeasurement();
+    temperatureMeasurement();
 
-  flowsCalculation(); // Determinación de Caudal
+    flowsCalculation();  // Determinación de Caudal
 
-  esp8266.handleEspSerial();
+    esp8266.handleEspSerial();
 
-  wdt_reset();
+    wdt_reset();
 
-  refreshDataToShow(); // INFORMACIÓN A REFRESCAR (depende del menú en el que nos encontremos)
+    // INFORMACIÓN A REFRESCAR (depende del menú en el que nos encontremos)
+    refreshDataToShow();
 
-  //***************************
-  // COMPROBACIONES DE SEGURIDAD (Aquí se determinan las posibles causas de alarmas
-  //***************************
+    buzzerStop(false);
 
-  flowControl(); // Control de Caudales
+    //***************************
+    // COMPROBACIONES DE SEGURIDAD (Aquí se determinan las posibles causas de alarmas
+    //***************************
 
-  temperatureControl(); // Control de Temperaturas
+    // Control de Caudales
+    flowControl();
 
-  presureControl(); // Comprobación de Presiones
+    // Control de Temperaturas
+    temperatureControl();
 
-  auxiliaryACSHeatingControl(); // Control de calentamiento ACS auxiliar con cartucho electrico.
+    // Comprobación de Presiones
+    presureControl();
 
-  // TRANSICIÓN DE ESTADOS  //Definición del funcionamiento del equipo
+    // Control de calentamiento ACS auxiliar con cartucho electrico.
+    auxiliaryACSHeatingControl();
 
-  processStartStopSignal(); // determina si la bomba tiene senal de marcha del termostato
+    // determina si la bomba tiene senal de marcha del termostato
+    calculateStartStopSignal();
 
-  stateMachine0();  // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
-  stateMachine1();  // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
-  stateMachine2();  // Arranque Compresor y Bombas
-  stateMachine3();  // Este es el estado final del sistema, donde se controlan las condiciones de alarma
-  stateMachine4();  // Estado de Alarma
-  stateMachine6();  // Estado de descanso
-  stateMachine7();  // Generacion ACS
-  stateMachine71(); // Generacion ACS: Estado con bombas andando y compresor apagado
-  stateMachine8();  // Estado de transicion al finalizar la generacion de ACS y el sistema esta en modo frio, evita circular agua muy caliente al circuito frio
+    // TRANSICIÓN DE ESTADOS  //Definición del funcionamiento del equipo
+    stateMachine0();   // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
+    stateMachine1();   // Aquí se espera la señal de Marcha_ON para iniciar la operacion del sistema
+    stateMachine2();   // Arranque Compresor y Bombas
+    stateMachine3();   // Este es el estado final del sistema, donde se controlan las condiciones de alarma
+    stateMachine4();   // Estado de Alarma
+    stateMachine6();   // Estado de descanso
+    stateMachine7();   // Generacion ACS
+    stateMachine71();  // Generacion ACS: Estado con bombas andando y compresor apagado
 
-  // IMAGEN DE SALIDAS
-  digitalWrite(DO_Bombas, Valor_DO_Bombas);
-  digitalWrite(DO_Calentador, Valor_DO_Calentador);
-  digitalWrite(DO_Val2, Valor_DO_V4V);
-  digitalWrite(DO_Comp_01, Valor_DO_Comp_01);
-  digitalWrite(DO_Val1, Valor_DO_VACS);
+    // IMAGEN DE SALIDAS
+    digitalWrite(DO_Bombas, Valor_DO_Bombas);
+    digitalWrite(DO_Calentador, Valor_DO_Calentador);
+    digitalWrite(DO_Valvula4Vias, Valor_DO_V4V);
+    digitalWrite(DO_Compressor, Valor_DO_Compressor);
+    digitalWrite(DO_ValvulaACS, Valor_DO_VACS);
+    if (Estado_Maquina != 4) {
+        digitalWrite(DO_Buzzer, Valor_DO_Buzzer);
+    }
 
-  timer_things.tick();
-  wdt_reset();
+    timer_things.tick();
+    wdt_reset();
 }
 
 /***************/
@@ -106,5 +116,5 @@ void mainLoop() {
 /***************/
 
 void loop() {
-  mainLoop();
-} // Fin del loop
+    mainLoop();
+}  // Fin del loop

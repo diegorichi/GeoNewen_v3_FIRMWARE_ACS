@@ -4,7 +4,7 @@
 #include <TimerOne.h>  //Librería para el control de salidas PWM
 #include <arduino-timer.h>
 #include <avr/wdt.h>  //Libreria para uso de watchdog de Arduino
-extern Timer<2, millis> timer_things;
+extern Timer<1, millis> timer_things;
 
 /**************************/
 /*DECLARACION DE VARIABLES*/
@@ -14,26 +14,20 @@ extern Timer<2, millis> timer_things;
 
 // 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 }; //n5
 
-extern const int DI_Caud_T;  // 18; //ENTRADAS DE CAUDALIMETROS (no se pueden modificar)
-extern const int DI_Caud_H;  // 19;
-
-extern const int DO_Calentador;  // 23; //Compresor
-extern const int DO_Comp_01;     // 25;    //Boombas de circulacion
-extern const int DO_Bombas;      // 27;     //Valvula Calefaccion
-extern const int DO_Val2;        // 29;       //V4V
-extern const int DO_Val1;        // 31;       //V ACS
-
-extern const int DO_Triac_01;  // 11; //Triacs,Pin salida PWM (no se puede modificar)
-extern const int DO_Buzzer;    // 12;   //
-// extern const int DO_Contraste     ; // 13;  //Control de contraste display (sin uso)
-
+extern const int DI_Caud_T;     // 18; //ENTRADAS DE CAUDALIMETROS (no se pueden modificar)
+extern const int DI_Caud_H;     // 19;
 extern const int DI_Marcha_on;  // 33; //Entrada de señal de Marcha
 extern const int DI_Pres_HI;    // 35;   //Preostato de alta
 extern const int DI_Pres_LOW;   // 37;  //Presotato de baja
 
-extern const int STEP;       // 9;       //Pines para control del EasyDriver
-extern const int DIR;        // 8;        //STEP es el pin por donde se envian los pasos para que el motor gire, DIR indica la direccion
-extern const int ED_ENABLE;  // 10; //Pin para "dormir" al EasyDriver, evitando consumo de energia
+extern const int DO_Calentador;    // 23; //Compresor
+extern const int DO_Compressor;    // 25;    //Boombas de circulacion
+extern const int DO_Bombas;        // 27;     //Valvula Calefaccion
+extern const int DO_Valvula4Vias;  // 29;       //V4V
+extern const int DO_ValvulaACS;    // 31;       //V ACS
+
+extern const int DO_Triac_01;  // 11; //Triacs,Pin salida PWM (no se puede modificar)
+extern const int DO_Buzzer;    // 12;   //
 
 // VARIABLES DEL PROGRAMA
 
@@ -55,12 +49,12 @@ extern int Cont_Temp_Des;  // 0;
 
 // Contadores auxiliares de alarmas
 
-extern int Cont_Temp_Comp_01;   // 0;
-extern int Cont_Press_HI;       // 0;
-extern int Cont_Press_LOW;      // 0;
-extern int Cont_Temp_Descarga;  // 0;
+extern int Cont_Temp_Compressor;  // 0;
+extern int Cont_Press_HI;         // 0;
+extern int Cont_Press_LOW;        // 0;
+extern int Cont_Temp_Descarga;    // 0;
 
-extern float Temp_Comp_01;
+extern float Temp_Compressor;
 extern float T5_Comp;        // 0;
 extern float T4_Comp;        // 0;
 extern float T3_Comp;        // 0;
@@ -95,14 +89,14 @@ extern float T2_Des;            // 0;
 extern float T3_Des;            // 0;
 extern float Temp_Descargaacu;  // 0;
 
-extern bool Flag_TempComp01;     // false;
-extern bool Flag_Temp_Descarga;  // false;
-extern bool Flag_retardo_e7;     // flag que indica que ACS esta efectivamente andando (luego de la espera)
+extern bool Flag_TempCompressor;  // false;
+extern bool Flag_Temp_Descarga;   // false;
 
-extern const uint8_t GAP_ACS;           // 2 grados
+extern const uint8_t GAP_ACS;  // 2 grados
 
 extern unsigned long EsperaValv;       // 0;
-extern unsigned long PumpStart;       // 0;
+extern unsigned long PumpStart;        // 0;
+extern unsigned long BuzzerStart;      // 0;
 extern unsigned long Ingreso_E7;       // 0;
 extern unsigned long Ingreso_E71;      // 0;
 extern unsigned long Periodo_Fin_ACS;  // 0;
@@ -113,7 +107,6 @@ extern unsigned long Salto_E1;
 extern unsigned long dont_stuck_pumps_activation;
 extern unsigned long dont_stuck_pumps;
 extern unsigned long Ingreso_E3;
-extern unsigned long LecturaDSB;
 
 extern unsigned long Ingreso_Descanso;  // 0;
 
@@ -133,8 +126,6 @@ extern bool Flag_CaudH;              // false;
 extern bool Flag_PresHI;             // false;
 extern bool Flag_PresLOW;            // false;
 
-extern bool PressOK;                       // false;
-
 extern bool Flag_Temp_Adm;      // false;
 extern volatile bool modoFrio;  // false; //Frio ; // true , Calor ; // false
 extern volatile bool Alarma_Activa;
@@ -145,16 +136,17 @@ extern bool senal_stop;
 extern volatile bool heating_off;
 extern volatile bool Flag_Buzzer;
 
-extern volatile bool Flag_Alarma_EN;
-extern volatile bool Flag_ACS_EN;        // true;
-extern volatile bool Flag_ACS_DT_EN;     // true;
-extern volatile bool Flag_ACS_EN_ELECT;  // false;
+extern volatile bool EnableFlowAlarm;  // Alarmas de caudal
+extern volatile bool EnableACS;
+extern volatile bool EnableACS_DeltaElectrico;
+extern volatile bool EnableElectricACS;
 
 // IMAGENES DE ENTRADAS/SALIDAS
 extern int Valor_DO_Bombas;
 extern int Valor_DO_Calentador;
-extern int Valor_DO_Comp_01;
+extern int Valor_DO_Compressor;
 extern int Valor_DO_VACS;
 extern int Valor_DO_V4V;
+extern int Valor_DO_Buzzer;
 
 #endif
