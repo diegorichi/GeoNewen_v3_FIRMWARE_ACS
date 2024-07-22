@@ -6,7 +6,8 @@ const int DI_Teclado_Abajo = 5;
 const int DI_Teclado_Enter = 6;
 const int DI_Teclado_Atras = 4;
 
-const int InterruptPin = 3;  // Pin de interrupcion para funcionamiento del teclado
+// Pin de interrupcion para funcionamiento del teclado
+const int InterruptPin = 3;  
 
 void keyboardSetup() {
     pinMode(DI_Teclado_Arriba, INPUT);
@@ -14,10 +15,12 @@ void keyboardSetup() {
     pinMode(DI_Teclado_Enter, INPUT);
     pinMode(DI_Teclado_Atras, INPUT);
     pinMode(InterruptPin, INPUT);
+    // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
+    attachInterrupt(1, AtencionTeclado, FALLING);
 }
 
-void AtencionTecladoNew()  // Función de Navegación entre Menús y Modificación de Parámetros
-{
+// Función de Navegación entre Menús y Modificación de Parámetros
+void AtencionTecladoNew() {
     bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
     bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
     bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
@@ -41,8 +44,8 @@ void AtencionTecladoNew()  // Función de Navegación entre Menús y Modificaci�
     menuActivo->refresh();
 }
 
-void AtencionTecladoOld()  // Función de Navegación entre Menús y Modificación de Parámetros
-{
+// Función de Navegación entre Menús y Modificación de Parámetros
+void AtencionTecladoOld() {
     bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
     bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
     bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;

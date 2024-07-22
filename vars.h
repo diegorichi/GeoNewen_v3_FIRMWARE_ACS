@@ -55,12 +55,12 @@ extern int Cont_Press_LOW;        // 0;
 extern int Cont_Temp_Descarga;    // 0;
 
 extern float Temp_Compressor;
-extern float T5_Comp;        // 0;
-extern float T4_Comp;        // 0;
-extern float T3_Comp;        // 0;
-extern float T2_Comp;        // 0;
-extern float T1_Comp;        // 0;
-extern float Temp_comp_acu;  // 0;
+extern float T5_Comp;             // 0;
+extern float T4_Comp;             // 0;
+extern float T3_Comp;             // 0;
+extern float T2_Comp;             // 0;
+extern float T1_Comp;             // 0;
+extern float Temp_CompressorAcu;  // 0;
 
 extern float Temp_ACS;
 extern float T1_ACS;       // 0;
@@ -94,18 +94,17 @@ extern bool Flag_Temp_Descarga;   // false;
 
 extern const uint8_t GAP_ACS;  // 2 grados
 
-extern unsigned long EsperaValv;       // 0;
+extern unsigned long valvulaACSStart;  // 0;
 extern unsigned long PumpStart;        // 0;
 extern unsigned long BuzzerStart;      // 0;
 extern unsigned long Ingreso_E7;       // 0;
 extern unsigned long Ingreso_E71;      // 0;
-extern unsigned long Periodo_Fin_ACS;  // 0;
 
 extern unsigned long Periodo_Refresco;
-extern unsigned long Activacion_Comp;
+extern unsigned long compressorStart;
 extern unsigned long Salto_E1;
-extern unsigned long dont_stuck_pumps_activation;
-extern unsigned long dont_stuck_pumps;
+extern unsigned long dontStuckPumpsStart_activation;
+extern unsigned long dontStuckPumpsStart;
 extern unsigned long Ingreso_E3;
 
 extern unsigned long Ingreso_Descanso;  // 0;
@@ -120,7 +119,7 @@ extern uint8_t Alarma_Eeprom;
 
 // FLAGS     //Banderas de uso general para el funcionamiento del programa
 
-extern bool flag_dtElectrico_final;  // false;
+extern bool deltaACSElectricResult;  // false;
 extern bool Flag_CaudT;              // false;
 extern bool Flag_CaudH;              // false;
 extern bool Flag_PresHI;             // false;

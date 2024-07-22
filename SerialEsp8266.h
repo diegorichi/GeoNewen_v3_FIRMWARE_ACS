@@ -173,7 +173,7 @@ class SerialEsp8266 {
             _espSerial->println(buffer);
         }
         if (what_should_be_pushed == ++i) {
-            dtostrf(Temp_comp_acu, 4, 2, var_number);
+            dtostrf(Temp_CompressorAcu, 4, 2, var_number);
             sprintf(buffer, "status:TEMP_COMP_:%s", var_number);
             _espSerial->println(buffer);
         }

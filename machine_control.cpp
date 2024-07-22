@@ -115,9 +115,9 @@ uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {
 bool heatingCheck() {
     // le damos tiempo a que las bombas funcionen antes controlar
     // para que si viene de calentar agua, circule el agua caliente.
-    return ((millis() - Ingreso_E3) > 30000) && !modoFrio &&
-           ((Temp_out_H > MAX_TEMP_OUT_H_HEATING)     // condicion de corte
-            || (Temp_out_H < MIN_TEMP_OUT_H_HEATING)  // condicion de arranque
+    return ((millis() - Ingreso_E3) > 90000) && !modoFrio &&
+           ((Temp_out_H > MAX_TEMP_OUT_H_HEATING)     // control por temp losa
+            || (Temp_out_H < MIN_TEMP_OUT_H_HEATING)  // condicion de arranque en invierno
             || (Temp_out_T < MIN_TEMP_OUT_T)          // condicion de corte
             || (Temp_Admision < MIN_TEMP_ADMISION)    // condicion de corte
            );
@@ -141,19 +141,21 @@ void takeRestControl() {
 }
 
 void buzzerStop(bool force) {
-    if (
-        (millis() - BuzzerStart > 300 && !(Estado_Maquina == 1 && Valor_DO_Bombas == HIGH)) ||
-        (Estado_Maquina == 1 && Valor_DO_Bombas == LOW) ||
-        force) {
+    // este estado maneja una rutina para que las bombas se usen diariamente.
+    if (Estado_Maquina == 1 && Valor_DO_Bombas == HIGH && !force) return;
+    // este estado maneja el bip con PWM
+    if (Estado_Maquina == 4 && !force) return;
+    if ((millis() - BuzzerStart > 150) || force) {
         Valor_DO_Buzzer = LOW;
         BuzzerStart = 0;
-    }
-    if (Estado_Maquina == 4) {
-        // este estado maneja el bip con PWM
     }
 }
 
 void buzzerStart() {
+    // este estado maneja una rutina para que las bombas se usen diariamente.
+    if (Estado_Maquina == 1 && Valor_DO_Bombas == HIGH) return;
+    // este estado maneja el bip con PWM
+    if (Estado_Maquina == 4) return;
     Valor_DO_Buzzer = HIGH;
     BuzzerStart = millis();
 }

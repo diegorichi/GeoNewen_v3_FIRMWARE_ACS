@@ -12,20 +12,17 @@
 
 SerialEsp8266 esp8266(&Serial2);
 
-void setup() {  // Inicializacion de I/O y variables generales
-
+void setup() {
+    //whatch dog
     wdt_disable();
 
-    keyboardSetup();  // setup de pin modes y demas
+    keyboardSetup();
 
-    setupDigitalInputs();  // setup de los pines de entrada
+    setupDigitalInputs();
 
-    setupDigitalOuputs();  // setup de los pines de salida
+    setupDigitalOuputs();
 
     initializeDigitalOuputs();
-
-    attachInterrupt(1, AtencionTeclado, FALLING);
-    // Asignación de Interrupciones (se define el número de la interrupción, no del pin; la rutina de interrupción y el modo de activación)
 
     lcdCreateSpecialChars();
 
@@ -39,7 +36,8 @@ void setup() {  // Inicializacion de I/O y variables generales
 
     Serial.begin(115200);
 
-    EEPROMLectura();  // Carga parametros guardados en la memoria EEPROM
+    // Carga parametros guardados en la memoria EEPROM
+    EEPROMLectura();  
 
     SetP_ACS_Edit = normalizeAcsTemp(&SetP_ACS);
 
@@ -57,7 +55,7 @@ void mainLoop() {
 
     temperatureMeasurement();
 
-    flowsCalculation();  // Determinación de Caudal
+    flowsCalculation();
 
     esp8266.handleEspSerial();
 
@@ -72,13 +70,10 @@ void mainLoop() {
     // COMPROBACIONES DE SEGURIDAD (Aquí se determinan las posibles causas de alarmas
     //***************************
 
-    // Control de Caudales
     flowControl();
 
-    // Control de Temperaturas
     temperatureControl();
 
-    // Comprobación de Presiones
     presureControl();
 
     // Control de calentamiento ACS auxiliar con cartucho electrico.

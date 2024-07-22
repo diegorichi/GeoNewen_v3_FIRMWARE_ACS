@@ -22,7 +22,6 @@ volatile uint8_t Pulsos_Caud_T;
 volatile uint8_t Pulsos_Caud_H;
 
 const uint8_t DELTA_ACS_ELECTRICO = 7;
-//unsigned long LecturaDSB = 0;
 
 void initializeFlowState() {
     attachInterrupt(4, Caudal1, FALLING);  // Pin 19
@@ -85,11 +84,8 @@ bool delayedTemperatureMeasurement(void*) {
 void temperatureMeasurement() {
     // Se toma una lectura de los sensores DS18B20 cada 5 segundos, demoran aproximadamente 200ms en entregar un resultado, 750ms máx
     // se les envía un comando para que inicien la toma de datos
-    //if ((millis() - LecturaDSB) > 5000) {
-        sensors.requestTemperatures();
-        timer_things.in(200, delayedTemperatureMeasurement);
-    //    LecturaDSB = millis();
-    //}
+    sensors.requestTemperatures();
+    timer_things.in(200, delayedTemperatureMeasurement);
 }
 
 void flowsCalculation() {
@@ -124,7 +120,7 @@ void flowControl() {
 
 void temperatureControl() {
     // Si la temperatura de operación del compresor es muy elevada o muy baja, se lo detiene para evitar daños
-    if (Temp_comp_acu > 80.0) {
+    if (Temp_CompressorAcu > 80.0) {
         Cont_Temp_Compressor++;
         if (Cont_Temp_Compressor > 3) {
             Flag_TempCompressor = true;
@@ -174,19 +170,19 @@ void auxiliaryACSHeatingControl() {
     // Si la temp es menor al seteo, lo apago porque estado = 7 -> generar acs
     // si apago generac ACS no hay delta t final.
     if (((Temp_ACSacu >= (SetP_ACS + DELTA_ACS_ELECTRICO)) && EnableACS) || ((Temp_ACSacu <= (SetP_ACS - GAP_ACS)) && EnableACS) || !EnableACS || !EnableACS_DeltaElectrico) {
-        flag_dtElectrico_final = false;
+        deltaACSElectricResult = false;
     }
 
     // Si la temperatura baja del gap del objetivo, volvemos a prender el calendador
     //  pero solo si es mayor a la seteada, de manera tal que usamos el cartucho solo en el
     // ultimo tramo de ACS.
     if (Temp_ACSacu < (SetP_ACS + DELTA_ACS_ELECTRICO - GAP_ACS) && (Temp_ACSacu > SetP_ACS) && EnableACS && EnableACS_DeltaElectrico) {
-        flag_dtElectrico_final = true;
+        deltaACSElectricResult = true;
     }
 
     // si acs elect apagado -> lo apagamos
     // si acs apagado -> lo apagamos
-    if (EnableElectricACS || (EnableACS && EnableACS_DeltaElectrico && flag_dtElectrico_final)) {
+    if (EnableElectricACS || (EnableACS && EnableACS_DeltaElectrico && deltaACSElectricResult)) {
         Valor_DO_Calentador = HIGH;
     } else {
         Valor_DO_Calentador = LOW;
@@ -219,7 +215,7 @@ void temperatureCalculation() {
     T3_Comp = T2_Comp;
     T2_Comp = T1_Comp;
     T1_Comp = Temp_Compressor;
-    Temp_comp_acu = (T1_Comp + T2_Comp + T3_Comp + T4_Comp + T5_Comp) / 5;
+    Temp_CompressorAcu = (T1_Comp + T2_Comp + T3_Comp + T4_Comp + T5_Comp) / 5;
 
     T3_ACS = T2_ACS;
     T2_ACS = T1_ACS;

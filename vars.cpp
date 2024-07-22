@@ -56,7 +56,7 @@ float T4_Comp = 0;
 float T3_Comp = 0;
 float T2_Comp = 0;
 float T1_Comp = 0;
-float Temp_comp_acu = 0;
+float Temp_CompressorAcu = 0;
 
 float Temp_ACS;
 float T1_ACS = 0;
@@ -87,20 +87,19 @@ float Temp_Descargaacu = 0;
 bool Flag_TempCompressor = false;
 bool Flag_Temp_Descarga = false;
 
-unsigned long EsperaValv = 0;
+unsigned long valvulaACSStart = 0;
 unsigned long PumpStart = 0;
 unsigned long BuzzerStart = 0;
 unsigned long Ingreso_E7 = 0;
 unsigned long Ingreso_E71 = 0;
-unsigned long Periodo_Fin_ACS = 0;
 
-const uint8_t GAP_ACS = 2;
+const uint8_t GAP_ACS = 5;
 
 unsigned long Periodo_Refresco;
-unsigned long Activacion_Comp;
+unsigned long compressorStart;
 unsigned long Salto_E1;
-unsigned long dont_stuck_pumps_activation;
-unsigned long dont_stuck_pumps;
+unsigned long dontStuckPumpsStart_activation;
+unsigned long dontStuckPumpsStart;
 unsigned long Ingreso_E3;
 
 unsigned long Ingreso_Descanso = 0;
@@ -115,7 +114,7 @@ uint8_t Alarma_Eeprom;
 
 // FLAGS     //Banderas de uso general para el funcionamiento del programa
 
-bool flag_dtElectrico_final = false;
+bool deltaACSElectricResult = false;
 bool Flag_CaudT = false;
 bool Flag_CaudH = false;
 bool Flag_PresHI = false;
