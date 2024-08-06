@@ -1,7 +1,5 @@
 #include "menu.h"
 
-#include "Arduino.h"
-
 Menu* menuActivo;
 
 Menu::Menu(String aName, void (*showMenu)(), void (*refreshMenu)(), int _menuActual) {

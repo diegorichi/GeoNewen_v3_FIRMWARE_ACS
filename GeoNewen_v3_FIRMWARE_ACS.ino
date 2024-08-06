@@ -57,7 +57,7 @@ void mainLoop() {
 
     flowsCalculation();
 
-    esp8266.handleEspSerial();
+    //esp8266.handleEspSerial();
 
     wdt_reset();
 
