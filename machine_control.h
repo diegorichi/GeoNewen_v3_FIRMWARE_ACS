@@ -14,6 +14,8 @@ void setupDigitalOuputs();
 
 void initializeDigitalOuputs();
 
+void writeOutput();
+
 void refreshDataToShow();
 
 void calculateStartStopSignal();
