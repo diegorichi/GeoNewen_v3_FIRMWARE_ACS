@@ -58,10 +58,12 @@ void checkFlagsForAlarms() {
 }
 
 void resetAlarms() {
-    Nro_Alarma = 0;
-    Valor_DO_Buzzer = LOW;
-    Flag_Buzzer = false;
-    Alarma_Activa = false;
-    ResetFlags();
-    Estado_Maquina = 0;
+    if (Estado_Maquina == 4) {
+        Nro_Alarma = 0;
+        Valor_DO_Buzzer = LOW;
+        Flag_Buzzer = false;
+        Alarma_Activa = false;
+        ResetFlags();
+        Estado_Maquina = 0;
+    }
 }
