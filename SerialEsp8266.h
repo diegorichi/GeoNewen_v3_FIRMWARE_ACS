@@ -19,6 +19,9 @@ class SerialEsp8266 {
     String espWord = "";
 
     void handleProtocolWithEsp(String command) {
+
+        wdt_reset();
+
         if (command.indexOf("ACS_G:on") >= 0) {
             EnableACS = true;
             EEPROMwrite(EnableACS_Address, EnableACS);
@@ -96,84 +99,111 @@ class SerialEsp8266 {
     void sendStatusToEspSerial() {
         char buffer[26];
         char var_number[6];
+        wdt_reset();
 
         Serial.println("sent to esp");
 
-        sprintf(buffer, "contrl:ACS_GEO___:%s#", true ? "1" : "0");
+        sprintf(buffer, "contrl:ACS_GEO___:%s#", EnableACS ? "1" : "0");
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        sprintf(buffer, "contrl:ACS_DT_ELE:%s#", false ? "1" : "0");
+        delay(100);
+        sprintf(buffer, "contrl:ACS_DT_ELE:%s#", EnableACS_DeltaElectrico ? "1" : "0");
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        sprintf(buffer, "contrl:ACS_ELEC__:%s#", false ? "1" : "0");
+        delay(100);
+        sprintf(buffer, "contrl:ACS_ELEC__:%s#", EnableElectricACS ? "1" : "0");
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        sprintf(buffer, "contrl:MODO_FRIO_:%s#", false ? "1" : "0");
+        delay(100);
+        sprintf(buffer, "contrl:MODO_FRIO_:%s#", modoFrio ? "1" : "0");
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(0, 2, 0, var_number);
+        delay(100);
+
+        wdt_reset();
+
+        dtostrf(Nro_Alarma, 2, 0, var_number);
         sprintf(buffer, "contrl:ALARMA____:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(100, 4, 2, var_number);
+        delay(100);
+        dtostrf(Temp_ACSacu, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_ACS__:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        sprintf(buffer, "status:STATE_MACH:%2d#", 1);
+        delay(100);
+        sprintf(buffer, "status:STATE_MACH:%2d#", Estado_Maquina);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(1023, 4, 0, var_number);
+        delay(100);
+        dtostrf(Caud_Hacu, 4, 0, var_number);
         sprintf(buffer, "status:CAU_HOGAR_:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(23, 4, 2, var_number);
+        delay(100);
+
+        wdt_reset();
+
+        dtostrf(Temp_in_Hacu, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_IN_H_:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(0.7, 4, 2, var_number);
+        delay(100);
+        dtostrf(Temp_out_Hacu, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_OUT_H:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(1254, 4, 0, var_number);
+        delay(100);
+        dtostrf(Caud_Tacu, 4, 0, var_number);
         sprintf(buffer, "status:CAU_TIERRA:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(1.23, 4, 2, var_number);
+        delay(100);
+        dtostrf(Temp_in_T, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_IN_T_:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(-1.6, 4, 2, var_number);
+        delay(100);
+
+        wdt_reset();
+
+        dtostrf(Temp_out_T, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_OUT_T:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(10, 4, 2, var_number);
+        delay(100);
+        dtostrf(Temp_Admision, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_ADM__:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(10, 4, 2, var_number);
+        delay(100);
+        dtostrf(Temp_CompressorAcu, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_COMP_:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
-        dtostrf(10, 4, 2, var_number);
+        delay(100);
+        dtostrf(Temp_Descargaacu, 4, 2, var_number);
         sprintf(buffer, "status:TEMP_DESC_:%s#", var_number);
         _espSerial->print(buffer);
         _espSerial->flush();
         Serial.println(buffer);
+        wdt_reset();
+
     };
 
     // this should be called in main loop"
