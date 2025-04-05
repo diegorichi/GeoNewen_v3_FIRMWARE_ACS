@@ -12,7 +12,7 @@ class SerialEsp8266 {
    private:
     // SoftwareSerial* _espSerial;
     HardwareSerial* _espSerial;
-    unsigned int refresh_period = 120000; // 4 minutos
+    unsigned long refresh_period = 120000; // 4 minutos
 
     unsigned long Periodo_Refresco_Wifi = 0;
 

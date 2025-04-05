@@ -20,29 +20,29 @@ void keyboardSetup() {
 }
 
 // Función de Navegación entre Menús y Modificación de Parámetros
-void AtencionTecladoNew() {
-    bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
-    bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
-    bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
-    bool BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
+// void AtencionTecladoNew() {
+//     bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
+//     bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
+//     bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
+//     bool BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
 
-    if (BotonEnter || BotonAbajo || BotonArriba || BotonAtras) {
-        buzzerStart();
-    }
-    if (BotonEnter) {
-        menuActivo = &menuActivo->enter();
-    }
-    if (BotonAbajo) {
-        menuActivo = &(menuActivo->down());
-    }
-    if (BotonArriba) {
-        menuActivo = &(menuActivo->up());
-    }
-    if (BotonAtras) {
-        menuActivo = &(menuActivo->escape());
-    }
-    menuActivo->refresh();
-}
+//     if (BotonEnter || BotonAbajo || BotonArriba || BotonAtras) {
+//         buzzerStart();
+//     }
+//     if (BotonEnter) {
+//         menuActivo = &menuActivo->enter();
+//     }
+//     if (BotonAbajo) {
+//         menuActivo = &(menuActivo->down());
+//     }
+//     if (BotonArriba) {
+//         menuActivo = &(menuActivo->up());
+//     }
+//     if (BotonAtras) {
+//         menuActivo = &(menuActivo->escape());
+//     }
+//     menuActivo->refresh();
+// }
 
 // Función de Navegación entre Menús y Modificación de Parámetros
 void AtencionTecladoOld() {
