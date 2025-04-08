@@ -93,14 +93,7 @@ void mainLoop() {
     stateMachine71();  // Generacion ACS: Estado con bombas andando y compresor apagado
 
     // IMAGEN DE SALIDAS
-    digitalWrite(DO_Bombas, Valor_DO_Bombas);
-    digitalWrite(DO_Calentador, Valor_DO_Calentador);
-    digitalWrite(DO_Valvula4Vias, Valor_DO_V4V);
-    digitalWrite(DO_Compressor, Valor_DO_Compressor);
-    digitalWrite(DO_ValvulaACS, Valor_DO_VACS);
-    if (Estado_Maquina != 4) {
-        digitalWrite(DO_Buzzer, Valor_DO_Buzzer);
-    }
+    writeOutput();
 
     timer_things.tick();
     wdt_reset();
