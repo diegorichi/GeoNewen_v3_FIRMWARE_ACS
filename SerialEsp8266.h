@@ -43,7 +43,7 @@ char buffer_TEMP_COMP_[26];
 char buffer_TEMP_DESC_[26];
 
 class SerialEsp8266 {
-    static const int MSG_LEN = 20;
+    static const int SLIDING_BUFFER_LEN = 20;
 
    private:
     // SoftwareSerial* _espSerial;
@@ -55,10 +55,10 @@ class SerialEsp8266 {
 
     unsigned long period_refresh_wifi = 0;
 
-    char slidingBuffer[MSG_LEN];
+    char slidingBuffer[SLIDING_BUFFER_LEN];
 
     void clearBuffer() {
-        for (int i = 0; i < MSG_LEN; i++) {
+        for (int i = 0; i < SLIDING_BUFFER_LEN; i++) {
           slidingBuffer[i] = 0;
         }
     }
@@ -218,11 +218,11 @@ class SerialEsp8266 {
                     this->enqueueStatusToSend();
                 } else {
                     // Shift buffer
-                    for (int i = 0; i < MSG_LEN - 1; i++) {
+                    for (int i = 0; i < SLIDING_BUFFER_LEN - 1; i++) {
                         slidingBuffer[i] = slidingBuffer[i + 1];
                     }                    
                     // add char
-                    slidingBuffer[MSG_LEN - 1] = c;
+                    slidingBuffer[SLIDING_BUFFER_LEN - 1] = c;
                 }
             }
         }
