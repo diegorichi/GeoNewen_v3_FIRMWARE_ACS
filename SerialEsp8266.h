@@ -43,6 +43,8 @@ char buffer_TEMP_COMP_[26];
 char buffer_TEMP_DESC_[26];
 
 class SerialEsp8266 {
+    static const int MSG_LEN = 20;
+
    private:
     // SoftwareSerial* _espSerial;
     HardwareSerial* _espSerial;
@@ -51,12 +53,19 @@ class SerialEsp8266 {
 
     unsigned long refresh_period = 300000; // 5min
 
-    unsigned long Periodo_Refresco_Wifi = 0;
+    unsigned long period_refresh_wifi = 0;
 
-    String espWord = "";
+    char slidingBuffer[MSG_LEN];
 
-    void handleProtocolWithEsp(String command) {
+    void clearBuffer() {
+        for (int i = 0; i < MSG_LEN; i++) {
+          slidingBuffer[i] = 0;
+        }
+    }
 
+    void handleProtocolWithEsp() {
+
+        String command = String(slidingBuffer);
         wdt_reset();
         Serial.print("Handle message from esp:");
         Serial.println(command);
@@ -83,16 +92,15 @@ class SerialEsp8266 {
             resetAlarms();
         } else if (command.indexOf("MODO_FRIO:on") >= 0) {
             Estado_Maquina = 0;
-            stateMachine0();
-            Valor_DO_V4V = LOW /* modo frio*/;
-            writeOutput();
-            changeModo();
+            stateMachine0(); //setea para detener la maquina y 
+            // retorna estado_maquina 1, requerido para cambio de modo.
+            // cambio de modo de forma segura.
+            changeModo(true);
         } else if (command.indexOf("MODO_FRIO:off") >= 0) {
             Estado_Maquina = 0;
-            stateMachine0();
-            Valor_DO_V4V = HIGH /* modo frio*/;
-            writeOutput();
-            changeModo();
+            stateMachine0(); //setea para detiener la maquina y 
+            // sale estado_maquina 1, requerido para cambio de modo.
+            changeModo(false);
         } else if (command.indexOf("TEMP_ACS:") >= 0) {
             volatile uint8_t aux = command.substring(9, command.length()).toInt();
             SetP_ACS = normalizeAcsTemp(&aux);
@@ -100,25 +108,6 @@ class SerialEsp8266 {
             EEPROMwrite(SetP_ACS_Address, SetP_ACS);
         }
     };
-
-   public:
-    // SerialEsp(int rx, int tx){
-    //         espSerial = new SoftwareSerial(rx,tx);
-    //         espSerial->begin(9600);
-    // }
-
-    SerialEsp8266(HardwareSerial* serialHardware) {
-        this->_espSerial = serialHardware;
-        this->_espSerial->begin(4800);
-        timerSendToEsp.every(3000, sendToSerial, this->_espSerial);
-    }
-
-    SerialEsp8266(HardwareSerial* serialHardware, long refresh_period_param) {
-        this->_espSerial = serialHardware;
-        this->_espSerial->begin(4800);
-        this->refresh_period = refresh_period_param;
-        timerSendToEsp.every(3000, sendToSerial, this->_espSerial);
-    }
 
     /*
     value from index: 18
@@ -139,11 +128,11 @@ class SerialEsp8266 {
     status:TEMP_COMP_:000000;
     status:TEMP_DESC_:000000
     */
-    void enqueStatusToSend() {
+    void enqueueStatusToSend() {
         char var_number[6];
         wdt_reset();
 
-        Serial.println("enque status to send to esp");
+        Serial.println("enqueue status to send to esp");
 
         sprintf(buffer_ACS_GEO___, "contrl:ACS_GEO___:%s#", EnableACS ? "1" : "0");
         espQueue.enqueue(buffer_ACS_GEO___);
@@ -203,20 +192,43 @@ class SerialEsp8266 {
         dtostrf(Temp_Descargaacu, 4, 2, var_number);
         sprintf(buffer_TEMP_DESC_, "status:TEMP_DESC_:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_DESC_);
-        Serial.println("finished: enque status to send to esp");
+        Serial.println("finished: enqueue status to send to esp");
     };
+
+    public:
+
+    SerialEsp8266(HardwareSerial* serialHardware) {
+        this->_espSerial = serialHardware;
+        this->_espSerial->begin(4800);
+        this->_espSerial->setTimeout(300);
+        this->clearBuffer();
+        timerSendToEsp.every(5000, sendToSerial, this->_espSerial);
+    }
 
     // this should be called in main loop"
     void handleEspSerial() {
         wdt_reset();
         if (_espSerial->available() > 0) {
-            espWord = _espSerial->readStringUntil('#');
-            this->handleProtocolWithEsp(espWord);
-            this->enqueStatusToSend();
+            char c = _espSerial->read();
+
+            if (isAlphaNumeric(c) || c == ':' || c == '_' || c == '#') {
+                if (c == '#') {
+                    this->handleProtocolWithEsp();
+                    this->clearBuffer();
+                    this->enqueueStatusToSend();
+                } else {
+                    // Shift buffer
+                    for (int i = 0; i < MSG_LEN - 1; i++) {
+                        slidingBuffer[i] = slidingBuffer[i + 1];
+                    }                    
+                    // add char
+                    slidingBuffer[MSG_LEN - 1] = c;
+                }
+            }
         }
-        if (((millis() - this->Periodo_Refresco_Wifi) > this->refresh_period)) {
-            this->enqueStatusToSend();
-            this->Periodo_Refresco_Wifi = millis();
+        if (((millis() - this->period_refresh_wifi) > this->refresh_period)) {
+            this->enqueueStatusToSend();
+            this->period_refresh_wifi = millis();
         }
         timerSendToEsp.tick();
     };

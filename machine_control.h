@@ -6,7 +6,7 @@
 #include "measurement_and_calculations.h"
 #include "vars.h"
 
-void changeModo();  // funcion extra para cambio de Modo de Funcionamiento
+void changeModo(bool paramModoFrio);  // funcion extra para cambio de Modo de Funcionamiento
 
 void setupDigitalInputs();
 
