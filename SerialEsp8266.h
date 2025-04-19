@@ -59,7 +59,7 @@ class SerialEsp8266 {
 
     void clearBuffer() {
         for (int i = 0; i < SLIDING_BUFFER_LEN; i++) {
-          slidingBuffer[i] = 0;
+          slidingBuffer[i] = 'a';
         }
     }
 
@@ -102,7 +102,8 @@ class SerialEsp8266 {
             // sale estado_maquina 1, requerido para cambio de modo.
             changeModo(false);
         } else if (command.indexOf("TEMP_ACS:") >= 0) {
-            volatile uint8_t aux = command.substring(9, command.length()).toInt();
+            int start = command.indexOf("TEMP_ACS:") + 9;  // 9 caracteres tiene "TEMP_ACS:"
+            volatile uint8_t aux = command.substring(start, start + 2).toInt();
             SetP_ACS = normalizeAcsTemp(&aux);
             SetP_ACS_Edit = SetP_ACS;
             EEPROMwrite(SetP_ACS_Address, SetP_ACS);
@@ -157,7 +158,7 @@ class SerialEsp8266 {
         sprintf(buffer_STATE_MACH, "status:STATE_MACH:%2d#", Estado_Maquina);
         espQueue.enqueue(buffer_STATE_MACH);
 
-        dtostrf(Caud_Hacu, 4, 0, var_number);
+        dtostrf(Caud_Tacu, 4, 0, var_number); // caudales invertidos check LCD
         sprintf(buffer_CAU_HOGAR_, "status:CAU_HOGAR_:%s#", var_number);
         espQueue.enqueue(buffer_CAU_HOGAR_);
 
@@ -169,15 +170,15 @@ class SerialEsp8266 {
         sprintf(buffer_TEMP_OUT_H, "status:TEMP_OUT_H:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_OUT_H);
 
-        dtostrf(Caud_Tacu, 4, 0, var_number);
+        dtostrf(Caud_Hacu, 4, 0, var_number); // caudales invertidos check LCD
         sprintf(buffer_CAU_TIERRA, "status:CAU_TIERRA:%s#", var_number);
         espQueue.enqueue(buffer_CAU_TIERRA);
 
-        dtostrf(Temp_in_T, 4, 2, var_number);
+        dtostrf(Temp_out_T, 4, 2, var_number); // temp tierra invertidos check LCD
         sprintf(buffer_TEMP_IN_T_, "status:TEMP_IN_T_:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_IN_T_);
 
-        dtostrf(Temp_out_T, 4, 2, var_number);
+        dtostrf(Temp_in_T, 4, 2, var_number); // temp tierra invertidos check LCD
         sprintf(buffer_TEMP_OUT_T, "status:TEMP_OUT_T:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_OUT_T);
 
@@ -202,7 +203,7 @@ class SerialEsp8266 {
         this->_espSerial->begin(4800);
         this->_espSerial->setTimeout(300);
         this->clearBuffer();
-        timerSendToEsp.every(5000, sendToSerial, this->_espSerial);
+        timerSendToEsp.every(2000, sendToSerial, this->_espSerial);
     }
 
     // this should be called in main loop"
@@ -220,7 +221,7 @@ class SerialEsp8266 {
                     // Shift buffer
                     for (int i = 0; i < SLIDING_BUFFER_LEN - 1; i++) {
                         slidingBuffer[i] = slidingBuffer[i + 1];
-                    }                    
+                    }
                     // add char
                     slidingBuffer[SLIDING_BUFFER_LEN - 1] = c;
                 }
