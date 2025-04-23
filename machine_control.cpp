@@ -9,35 +9,23 @@ const float MIN_TEMP_ADMISION = -7.0;
 const uint8_t MAX_ACS = 48;
 const uint8_t MIN_ACS = 30;
 
-void frioCalor()  // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
+void frioCalor(bool paramModoFrio)  // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
     lcd.clear();
     lcd.print(F("POR FAVOR, ESPERE"));
     lcd.setCursor(0, 2);
     lcd.print(F("CAMBIANDO MODO..."));
-    for (unsigned long i = 0; i < 3000000; i++)  // Se espera un cierto tiempo antes de activar la válvula de 4 vías
-    {
-        wdt_reset();
-    }
-    if (modoFrio)  // Se activa la válvula
-    {
-        Valor_DO_V4V = HIGH;
-        modoFrio = false;
-    } else {
-        Valor_DO_V4V = LOW;
-        modoFrio = true;
-    }
 
-    for (unsigned long i = 0; i < 200000; i++) {
-        wdt_reset();
-    }
+    modoFrio = paramModoFrio;
+    Valor_DO_V4V = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
+
     MenuActual = 20;
     MenuDosCero();
 }
 
-void changeModo() {
+void changeModo(bool paramModoFrio) {
     if (Estado_Maquina == 1) {
-        frioCalor();
+        frioCalor(paramModoFrio);
         EEPROMwrite(modoFrio_address, modoFrio);
     }
 }

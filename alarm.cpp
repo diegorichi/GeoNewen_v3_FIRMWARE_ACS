@@ -8,7 +8,7 @@ V   F  F
 F   V  F
 F   F  V
 */
-
+ 
 // Función de identificación de Alarma Activa
 void ConvertFlagToAlarm() {
     Nro_Alarma = 0;

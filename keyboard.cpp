@@ -78,7 +78,7 @@ void AtencionTecladoOld() {
                 MenuCincoCero();
             } break;
             case 20: {
-                changeModo();
+                changeModo(!modoFrio);
             } break;
             case 21: {
                 MenuActual = 210;

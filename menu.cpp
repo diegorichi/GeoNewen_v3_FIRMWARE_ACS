@@ -195,7 +195,7 @@ void initializeAndSetupMenu() {
     // 20
     menuConfiguracionmodoFrio.setUp(&menuConfiguracionACSElectrico);
     menuConfiguracionmodoFrio.setDown(&menuConfiguracionTemperaturaACS);
-    menuConfiguracionmodoFrio.setEnterAction([]() { changeModo(); });
+    menuConfiguracionmodoFrio.setEnterAction([]() { changeModo(!modoFrio); });
     menuConfiguracionmodoFrio.setEscape(&menuConfiguracionSistema);
 
     // 12
