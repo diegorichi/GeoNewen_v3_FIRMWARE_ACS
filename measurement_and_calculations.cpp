@@ -4,15 +4,15 @@
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-uint8_t DI_Temp_in_H[8] = {0x28, 0xDA, 0xB6, 0xF8, 0x1A, 0x19, 0x01, 0x8B};       // n1    ok
-uint8_t DI_Temp_Compresor[8] = {0x28, 0xE5, 0xAC, 0x26, 0x1B, 0x19, 0x01, 0x3C};  // n2    ok
-uint8_t DI_Temp_Admision[8] = {0x28, 0x34, 0x76, 0x57, 0x1A, 0x19, 0x01, 0xA0};   // n10   ok
-uint8_t DI_Temp_out_T[8] = {0x28, 0xD6, 0x3C, 0xE0, 0x1B, 0x19, 0x01, 0x0F};      // n7   ok
+uint8_t DI_Temp_in_H[8] = {0x28, 0xDA, 0xB6, 0xF8, 0x1A, 0x19, 0x01, 0x8B};       // n1
+uint8_t DI_Temp_Compresor[8] = {0x28, 0xE5, 0xAC, 0x26, 0x1B, 0x19, 0x01, 0x3C};  // n2
+uint8_t DI_Temp_Admision[8] = {0x28, 0x34, 0x76, 0x57, 0x1A, 0x19, 0x01, 0xA0};   // n10
+uint8_t DI_Temp_in_T[8] = {0x28, 0xD6, 0x3C, 0xE0, 0x1B, 0x19, 0x01, 0x0F};       // n7
 
 uint8_t DI_Temp_Descarga[8] = {0x28, 0x49, 0x4B, 0x01, 0x1C, 0x19, 0x01, 0x1A};  // n11
 uint8_t DI_Temp_ACS[8] = {0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1};       // n12
 uint8_t DI_Temp_out_H[8] = {0x28, 0x87, 0x9F, 0xE9, 0x1B, 0x19, 0x01, 0xF8};     // n13
-uint8_t DI_Temp_in_T[8] = {0x28, 0x83, 0x69, 0x3D, 0x1B, 0x19, 0x01, 0x11};      // n14
+uint8_t DI_Temp_out_T[8] = {0x28, 0x83, 0x69, 0x3D, 0x1B, 0x19, 0x01, 0x11};     // n14
 
 float FCal = 1.055;  // 1.77;// caudalimetro  sen - hz21wa                    //1.9 caudalimetros  geo v1.0 y 2.0;
 
@@ -24,8 +24,8 @@ volatile uint8_t Pulsos_Caud_H;
 const uint8_t DELTA_ACS_ELECTRICO = 7;
 
 void initializeFlowState() {
-    attachInterrupt(4, Caudal1, FALLING);  // Pin 19
-    attachInterrupt(5, Caudal2, FALLING);  // Pin 18
+    attachInterrupt(4, caudalHogar, FALLING);   // Pin 19
+    attachInterrupt(5, caudalTierra, FALLING);  // Pin 18
 
     Caud_T = 0;
     Caud_H = 0;
@@ -36,12 +36,12 @@ void initializeFlowState() {
 }
 
 // Función de Cuenta de Pulsos de Caudalímetro
-void Caudal1() {
+void caudalTierra() {
     Pulsos_Caud_T++;
 }
 
 // Función de Cuenta de Pulsos de Caudalímetro
-void Caudal2() {
+void caudalHogar() {
     Pulsos_Caud_H++;
 }
 
@@ -98,7 +98,7 @@ void flowsCalculation() {
         Ventana_Caudal_H = millis();
         Pulsos_Caud_H = 0;
         // Las interrupciones se deshabilitan al principio del cálculo para no contabilizar pulsos de más, luego se reestablecen
-        attachInterrupt(4, Caudal1, FALLING);
+        attachInterrupt(4, caudalHogar, FALLING);
     }
 
     if ((millis() - Ventana_Caudal_T) > 1000) {
@@ -106,7 +106,7 @@ void flowsCalculation() {
         Caud_T = ((60000.0 / (millis() - Ventana_Caudal_T)) * Pulsos_Caud_T) * FCal;
         Ventana_Caudal_T = millis();
         Pulsos_Caud_T = 0;
-        attachInterrupt(5, Caudal2, FALLING);
+        attachInterrupt(5, caudalTierra, FALLING);
     }
 }
 
@@ -128,7 +128,7 @@ void temperatureControl() {
     } else
         Cont_Temp_Compressor = 0;
 
-    if (Temp_Descargaacu > 85.0) {
+    if (Temp_DescargaAcu > 85.0) {
         Cont_Temp_Descarga++;
         if (Cont_Temp_Descarga > 3) {
             Flag_Temp_Descarga = true;
@@ -225,5 +225,5 @@ void temperatureCalculation() {
     T3_Des = T2_Des;
     T2_Des = T1_Des;
     T1_Des = Temp_Descarga;
-    Temp_Descargaacu = (T1_Des + T2_Des + T3_Des) / 3;
+    Temp_DescargaAcu = (T1_Des + T2_Des + T3_Des) / 3;
 }

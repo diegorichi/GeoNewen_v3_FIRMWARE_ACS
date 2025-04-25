@@ -87,7 +87,7 @@ extern float Temp_in_Hacu;   // 0;
 extern float T1_Des;            // 0;
 extern float T2_Des;            // 0;
 extern float T3_Des;            // 0;
-extern float Temp_Descargaacu;  // 0;
+extern float Temp_DescargaAcu;  // 0;
 
 extern bool Flag_TempCompressor;  // false;
 extern bool Flag_Temp_Descarga;   // false;

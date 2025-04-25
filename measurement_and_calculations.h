@@ -10,9 +10,9 @@
 
 void initializeFlowState();
 
-void Caudal1();
+void caudalHogar();
 
-void Caudal2();
+void caudalTierra();
 
 void temperatureMeasurement();
 

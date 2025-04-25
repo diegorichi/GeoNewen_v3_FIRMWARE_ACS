@@ -82,7 +82,7 @@ float Temp_in_Hacu = 0;
 float T1_Des = 0;
 float T2_Des = 0;
 float T3_Des = 0;
-float Temp_Descargaacu = 0;
+float Temp_DescargaAcu = 0;
 
 bool Flag_TempCompressor = false;
 bool Flag_Temp_Descarga = false;
