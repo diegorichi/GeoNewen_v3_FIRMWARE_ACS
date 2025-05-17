@@ -52,7 +52,7 @@ void AtencionTecladoOld() {
     bool BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
 
     if (BotonEnter || BotonAbajo || BotonArriba || BotonAtras) {
-        buzzerStart();
+        Flag_Buzzer = true;
     }
 
     if (BotonEnter) {
@@ -164,7 +164,7 @@ void AtencionTecladoOld() {
                 MenuDosNueve();
             } break;
             case 40: {
-                buzzerStop(true);
+                Valor_DO_Buzzer = LOW;
             } break;
         }
     }
@@ -220,7 +220,7 @@ void AtencionTecladoOld() {
                 normalizeAcsTemp(&SetP_ACS_Edit);
             } break;
             case 40: {
-                buzzerStop(true);
+                Valor_DO_Buzzer = LOW;
             } break;
         }
     }

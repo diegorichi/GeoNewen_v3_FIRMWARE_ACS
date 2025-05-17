@@ -140,22 +140,19 @@ void takeRestControl() {
     }
 }
 
-void buzzerStop(bool force) {
-    // este estado maneja una rutina para que las bombas se usen diariamente.
-    if (Estado_Maquina == 1 && Valor_DO_Bombas == HIGH && !force) return;
-    // este estado maneja el bip con PWM
-    if (Estado_Maquina == 4 && !force) return;
-    if ((millis() - BuzzerStart > 150) || force) {
-        Valor_DO_Buzzer = LOW;
-        BuzzerStart = 0;
+void buzzerControl() {
+    if (Estado_Maquina == 4) return;
+    if (Flag_Buzzer) {
+        buzzerBip();
+        Flag_Buzzer = false;
     }
 }
 
-void buzzerStart() {
-    // este estado maneja una rutina para que las bombas se usen diariamente.
-    if (Estado_Maquina == 1 && Valor_DO_Bombas == HIGH) return;
-    // este estado maneja el bip con PWM
-    if (Estado_Maquina == 4) return;
-    Valor_DO_Buzzer = HIGH;
-    BuzzerStart = millis();
+void buzzerStop() {
+    Flag_Buzzer = false;
+    Valor_DO_Buzzer = LOW;
+}
+
+void buzzerBip() {
+    tone(DO_Buzzer, 1500, 300);
 }

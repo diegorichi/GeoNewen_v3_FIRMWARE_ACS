@@ -3,6 +3,7 @@
 #define alarm__
 #include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
+#include "machine_control.h"
 #include "vars.h"
 
 void ConvertFlagToAlarm();  // Función de identificación de Alarma Activa

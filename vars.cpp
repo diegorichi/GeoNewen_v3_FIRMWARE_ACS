@@ -89,7 +89,6 @@ bool Flag_Temp_Descarga = false;
 
 unsigned long valvulaACSStart = 0;
 unsigned long PumpStart = 0;
-unsigned long BuzzerStart = 0;
 unsigned long Ingreso_E7 = 0;
 unsigned long Ingreso_E71 = 0;
 
@@ -141,4 +140,4 @@ int Valor_DO_Calentador;
 int Valor_DO_Compressor;
 int Valor_DO_VACS;
 int Valor_DO_V4V;
-int Valor_DO_Buzzer;
+volatile int Valor_DO_Buzzer;

@@ -96,7 +96,6 @@ extern const uint8_t GAP_ACS;  // 2 grados
 
 extern unsigned long valvulaACSStart;  // 0;
 extern unsigned long PumpStart;        // 0;
-extern unsigned long BuzzerStart;      // 0;
 extern unsigned long Ingreso_E7;       // 0;
 extern unsigned long Ingreso_E71;      // 0;
 
@@ -146,6 +145,6 @@ extern int Valor_DO_Calentador;
 extern int Valor_DO_Compressor;
 extern int Valor_DO_VACS;
 extern int Valor_DO_V4V;
-extern int Valor_DO_Buzzer;
+extern volatile int Valor_DO_Buzzer;
 
 #endif
