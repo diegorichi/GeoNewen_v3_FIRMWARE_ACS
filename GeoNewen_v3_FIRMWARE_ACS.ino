@@ -64,7 +64,7 @@ void mainLoop() {
     // INFORMACIÓN A REFRESCAR (depende del menú en el que nos encontremos)
     refreshDataToShow();
 
-    buzzerStop(false);
+    buzzerControl();
 
     //***************************
     // COMPROBACIONES DE SEGURIDAD (Aquí se determinan las posibles causas de alarmas

@@ -1,6 +1,7 @@
 #ifndef mqtt_cpp
 #define mqtt_cpp
 #include <Arduino.h>
+#include <ArduinoQueue.h>
 #include <SoftwareSerial.h>
 
 #include "alarm.h"
@@ -8,13 +9,11 @@
 #include "stateMachine.h"
 #include "vars.h"
 
-#include <ArduinoQueue.h>
-
 #define QUEUE_SIZE_ITEMS 16
 ArduinoQueue<char*> espQueue(QUEUE_SIZE_ITEMS);
 
 bool sendToSerial(HardwareSerial* espSerial) {
-    if (!espQueue.isEmpty()){
+    if (!espQueue.isEmpty()) {
         wdt_reset();
         char* message = espQueue.dequeue();
         Serial.print("message deque para esp:");
@@ -48,10 +47,10 @@ class SerialEsp8266 {
    private:
     // SoftwareSerial* _espSerial;
     HardwareSerial* _espSerial;
-    
+
     Timer<1, &millis, HardwareSerial*> timerSendToEsp;
 
-    unsigned long refresh_period = 300000; // 5min
+    unsigned long refresh_period = 300000;  // 5min
 
     unsigned long period_refresh_wifi = 0;
 
@@ -59,12 +58,11 @@ class SerialEsp8266 {
 
     void clearBuffer() {
         for (int i = 0; i < SLIDING_BUFFER_LEN; i++) {
-          slidingBuffer[i] = 'a';
+            slidingBuffer[i] = 'a';
         }
     }
 
     void handleProtocolWithEsp() {
-
         String command = String(slidingBuffer);
         wdt_reset();
         Serial.print("Handle message from esp:");
@@ -90,15 +88,16 @@ class SerialEsp8266 {
             EEPROMwrite(EnableElectricACS_Address, EnableElectricACS);
         } else if (command.indexOf("ALARM:reset") >= 0) {
             resetAlarms();
+            Estado_Maquina = 0;
         } else if (command.indexOf("MODO_FRIO:on") >= 0) {
             Estado_Maquina = 0;
-            stateMachine0(); //setea para detener la maquina y 
+            stateMachine0();  // setea para detener la maquina y
             // retorna estado_maquina 1, requerido para cambio de modo.
             // cambio de modo de forma segura.
             changeModo(true);
         } else if (command.indexOf("MODO_FRIO:off") >= 0) {
             Estado_Maquina = 0;
-            stateMachine0(); //setea para detiener la maquina y 
+            stateMachine0();  // setea para detiener la maquina y
             // sale estado_maquina 1, requerido para cambio de modo.
             changeModo(false);
         } else if (command.indexOf("TEMP_ACS:") >= 0) {
@@ -158,7 +157,7 @@ class SerialEsp8266 {
         sprintf(buffer_STATE_MACH, "status:STATE_MACH:%2d#", Estado_Maquina);
         espQueue.enqueue(buffer_STATE_MACH);
 
-        dtostrf(Caud_Tacu, 4, 0, var_number); // caudales invertidos check LCD
+        dtostrf(Caud_Hacu, 4, 0, var_number);
         sprintf(buffer_CAU_HOGAR_, "status:CAU_HOGAR_:%s#", var_number);
         espQueue.enqueue(buffer_CAU_HOGAR_);
 
@@ -170,15 +169,15 @@ class SerialEsp8266 {
         sprintf(buffer_TEMP_OUT_H, "status:TEMP_OUT_H:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_OUT_H);
 
-        dtostrf(Caud_Hacu, 4, 0, var_number); // caudales invertidos check LCD
+        dtostrf(Caud_Tacu, 4, 0, var_number);
         sprintf(buffer_CAU_TIERRA, "status:CAU_TIERRA:%s#", var_number);
         espQueue.enqueue(buffer_CAU_TIERRA);
 
-        dtostrf(Temp_out_T, 4, 2, var_number); // temp tierra invertidos check LCD
+        dtostrf(Temp_in_T, 4, 2, var_number);
         sprintf(buffer_TEMP_IN_T_, "status:TEMP_IN_T_:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_IN_T_);
 
-        dtostrf(Temp_in_T, 4, 2, var_number); // temp tierra invertidos check LCD
+        dtostrf(Temp_out_T, 4, 2, var_number);
         sprintf(buffer_TEMP_OUT_T, "status:TEMP_OUT_T:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_OUT_T);
 
@@ -190,14 +189,13 @@ class SerialEsp8266 {
         sprintf(buffer_TEMP_COMP_, "status:TEMP_COMP_:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_COMP_);
 
-        dtostrf(Temp_Descargaacu, 4, 2, var_number);
+        dtostrf(Temp_DescargaAcu, 4, 2, var_number);
         sprintf(buffer_TEMP_DESC_, "status:TEMP_DESC_:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_DESC_);
         Serial.println("finished: enqueue status to send to esp");
     };
 
-    public:
-
+   public:
     SerialEsp8266(HardwareSerial* serialHardware) {
         this->_espSerial = serialHardware;
         this->_espSerial->begin(4800);

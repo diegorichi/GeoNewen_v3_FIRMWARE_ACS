@@ -82,12 +82,6 @@ void RefreshMenuCero() {
     } else {
         lcd.print(F("C"));
     }
-
-    lcd.setCursor(0, 1);
-    lcd.print(F("NW"));
-
-    lcd.setCursor(0, 2);
-    lcd.print(F("NE"));
 }
 
 // Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
@@ -103,7 +97,7 @@ void RefreshMenuUnoCero() {
     lcd.setCursor(15, 2);
     lcd.print(Temp_Admision, 1);
     lcd.setCursor(5, 3);
-    lcd.print(Temp_Descargaacu, 1);
+    lcd.print(Temp_DescargaAcu, 1);
     lcd.setCursor(15, 3);
     lcd.print(Temp_ACSacu, 1);
 }
@@ -116,21 +110,21 @@ void RefreshMenuUnoUno() {
     } else {
         lcd.print(F("CALOR"));
     }
-    lcd.setCursor(15, 3);
-    lcd.print(F("    "));
-    lcd.setCursor(15, 3);
-    lcd.print(Caud_Tacu);
     lcd.setCursor(5, 1);
     lcd.print(Temp_in_Hacu, 1);
     lcd.setCursor(15, 1);
     lcd.print(Temp_out_Hacu, 1);
     lcd.setCursor(5, 2);
-    lcd.print(Temp_out_T, 1);
-    lcd.setCursor(15, 2);
     lcd.print(Temp_in_T, 1);
+    lcd.setCursor(15, 2);
+    lcd.print(Temp_out_T, 1);
     lcd.setCursor(5, 3);
     lcd.print(F("    "));
     lcd.setCursor(5, 3);
+    lcd.print(Caud_Tacu);
+    lcd.setCursor(15, 3);
+    lcd.print(F("    "));
+    lcd.setCursor(15, 3);
     lcd.print(Caud_Hacu);
 }
 

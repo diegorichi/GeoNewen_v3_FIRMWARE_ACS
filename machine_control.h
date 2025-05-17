@@ -27,8 +27,10 @@ bool longPeriodRunningCheck();
 
 void takeRestControl();
 
-void buzzerStart();
+void buzzerControl();
 
-void buzzerStop(bool force);
+void buzzerStop();
+
+void buzzerBip();
 
 #endif
