@@ -88,6 +88,7 @@ class SerialEsp8266 {
             EEPROMwrite(EnableElectricACS_Address, EnableElectricACS);
         } else if (command.indexOf("ALARM:reset") >= 0) {
             resetAlarms();
+            Estado_Maquina = 0;
         } else if (command.indexOf("MODO_FRIO:on") >= 0) {
             Estado_Maquina = 0;
             stateMachine0();  // setea para detener la maquina y
