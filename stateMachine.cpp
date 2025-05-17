@@ -181,11 +181,9 @@ void stateMachine7() {
             PumpStart = millis();
         }
 
-        if ((millis() - Ingreso_E7) > 30000) {
+        if ((millis() - Ingreso_E7) > 20000) {
             checkFlagsForAlarms();
-            if (Temp_in_H >= Temp_ACS - 2) {
-                Valor_DO_Compressor = HIGH;
-            }
+            Valor_DO_Compressor = HIGH;
         }
 
         // se le da energia al ACS de a saltos para evitar pasar de presion y temperatura el circuito de gas
