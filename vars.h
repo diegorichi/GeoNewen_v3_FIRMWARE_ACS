@@ -126,11 +126,13 @@ extern bool Flag_PresLOW;            // false;
 
 extern bool Flag_Temp_Adm;      // false;
 extern volatile bool modoFrio;  // false; //Frio ; // true , Calor ; // false
+extern volatile bool EnableHeatGeo; //true: habilita calefa geo (ACS geo independiente)
 extern volatile bool Alarma_Activa;
 extern bool Flag_Marcha_ON;  // control de salto e1
 extern bool senal_start;     // senal de marcha, segun modoFrio
 // se trabaja con 1 termostato.
 extern bool senal_stop;
+extern bool thermostatOn;
 extern volatile bool heating_off;
 extern volatile bool Flag_Buzzer;
 

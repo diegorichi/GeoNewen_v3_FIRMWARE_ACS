@@ -25,6 +25,7 @@ void EEPROMLectura()  // Función de lectura de valores almacenados en memoria E
 
     EnableFlowAlarm = EEPROM.read(EnableFlowAlarm_Address);
     EnableACS = EEPROM.read(EnableACS_Address);
+    EnableHeatGeo = EEPROM.read(EnableHeatGeo_Address);
     EnableACS_DeltaElectrico = EEPROM.read(EnableACS_DeltaElectrico_Address);
     EnableElectricACS = EEPROM.read(EnableElectricACS_Address);
     modoFrio = EEPROM.read(modoFrio_address);

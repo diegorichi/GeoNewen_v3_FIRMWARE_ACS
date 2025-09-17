@@ -121,11 +121,13 @@ bool Flag_PresLOW = false;
 
 bool Flag_Temp_Adm = false;
 volatile bool modoFrio = false;  // Frio = true , Calor = false
+volatile bool EnableHeatGeo = true; // enciende/apaga geo (el estado_maquina=3)
 volatile bool Alarma_Activa;
 bool Flag_Marcha_ON;
 bool senal_start;  // senal de marcha, segun modoFrio
 // se trabaja con 1 termostato.
 bool senal_stop;
+bool thermostatOn;
 volatile bool heating_off = false;
 volatile bool Flag_Buzzer;
 

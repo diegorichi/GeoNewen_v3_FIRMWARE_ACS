@@ -14,6 +14,7 @@ const int EnableFlowAlarm_Address = 15;
 const int EnableACS_DeltaElectrico_Address = 19;
 const int EnableACS_Address = 21;
 const int EnableElectricACS_Address = 23;
+const int EnableHeatGeo_Address = 24;
 
 uint8_t EEPROMreaduint8_t(int address);
 

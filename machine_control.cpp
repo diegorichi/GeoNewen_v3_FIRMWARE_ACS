@@ -92,14 +92,28 @@ void calculateStartStopSignal() {
     di marcha on == LOW -> arrancar
     di marcha on == HIGH -> parar
 
-  digitalRead(DI_Marcha_on) == HIGH
-  modoFrio
+  senal_stop = modoFrio && digitalRead(DI_Marcha_on) == HIGH
+  senal_start = modoFrio && !digitalRead(DI_Marcha_on) == HIGH
 
+  senal_stop = !modoFrio && !digitalRead(DI_Marcha_on) == HIGH
+  senal_start = !modoFrio && digitalRead(DI_Marcha_on) == HIGH
+  
   */
 
-    senal_start = ((digitalRead(DI_Marcha_on) == HIGH) && !modoFrio) || ((digitalRead(DI_Marcha_on) == LOW) && modoFrio);
+    //EnableHeatGeo bool to check if we should "start" heating
+    //thermostat = (digitalRead(DI_Marcha_on) == HIGH) 
+    //modoFrio
 
-    senal_stop = ((digitalRead(DI_Marcha_on) == LOW) && !modoFrio) || ((digitalRead(DI_Marcha_on) == HIGH) && modoFrio);
+    thermostatOn = digitalRead(DI_Marcha_on) == HIGH;
+
+    senal_stop  =  ((modoFrio  && thermostatOn) || (!modoFrio && !thermostatOn)
+                    && EnableHeatGeo);
+    senal_start =  !senal_stop;
+
+
+    // senal_start = ((digitalRead(DI_Marcha_on) == HIGH) && !modoFrio) || ((digitalRead(DI_Marcha_on) == LOW) && modoFrio);
+
+    // senal_stop = ((digitalRead(DI_Marcha_on) == LOW) && !modoFrio) || ((digitalRead(DI_Marcha_on) == HIGH) && modoFrio);
 }
 
 uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {

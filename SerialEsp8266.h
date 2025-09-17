@@ -24,6 +24,7 @@ bool sendToSerial(HardwareSerial* espSerial) {
     return true;
 }
 
+char buffer_HEAT_GEO__[26];
 char buffer_ACS_GEO___[26];
 char buffer_ACS_DT_ELE[26];
 char buffer_ACS_ELEC__[26];
@@ -31,6 +32,8 @@ char buffer_MODO_FRIO_[26];
 char buffer_ALARMA____[26];
 char buffer_TEMP_ACS__[26];
 char buffer_STATE_MACH[26];
+char buffer_THERMOSTAT[26];
+char buffer_START_SIGN[26];
 char buffer_CAU_HOGAR_[26];
 char buffer_TEMP_IN_H_[26];
 char buffer_TEMP_OUT_H[26];
@@ -68,7 +71,13 @@ class SerialEsp8266 {
         Serial.print("Handle message from esp:");
         Serial.println(command);
 
-        if (command.indexOf("ACS_G:on") >= 0) {
+        if (command.indexOf("HEAT_GEO:on") >= 0) {
+            EnableHeatGeo = true;
+            EEPROMwrite(EnableHeatGeo_Address, EnableHeatGeo);
+        } else if (command.indexOf("HEAT_GEO:off") >= 0) {
+            EnableHeatGeo = false;
+            EEPROMwrite(EnableHeatGeo_Address, EnableHeatGeo);
+        } else if (command.indexOf("ACS_G:on") >= 0) {
             EnableACS = true;
             EEPROMwrite(EnableACS_Address, EnableACS);
         } else if (command.indexOf("ACS_G:off") >= 0) {
@@ -111,12 +120,14 @@ class SerialEsp8266 {
 
     /*
     value from index: 18
+    contrl:HEAT_GEO__:1;
     contrl:ACS_GEO___:1;
     contrl:ACS_DT_ELE:1,
     contrl:ACS_ELEC__:1;
     status:TEMP_ACS__:000000;
     contrl:MODO_FRIO_:0;
     status:STATE_____:0000;
+    status:ST___START:0000;
     status:CAU_HOGAR_:0000;
     status:TEMP_IN_H_:000000;
     status:TEMP_OUT_H:000000;
@@ -133,6 +144,9 @@ class SerialEsp8266 {
         wdt_reset();
 
         Serial.println("enqueue status to send to esp");
+
+        sprintf(buffer_HEAT_GEO__, "contrl:HEAT_GEO__:%s#", EnableHeatGeo ? "1" : "0");
+        espQueue.enqueue(buffer_HEAT_GEO__);
 
         sprintf(buffer_ACS_GEO___, "contrl:ACS_GEO___:%s#", EnableACS ? "1" : "0");
         espQueue.enqueue(buffer_ACS_GEO___);
@@ -156,6 +170,12 @@ class SerialEsp8266 {
 
         sprintf(buffer_STATE_MACH, "status:STATE_MACH:%2d#", Estado_Maquina);
         espQueue.enqueue(buffer_STATE_MACH);
+
+        sprintf(buffer_THERMOSTAT, "status:THERMOSTAT:%s#", thermostatOn  ? "1" : "0");
+        espQueue.enqueue(buffer_THERMOSTAT);
+
+        sprintf(buffer_START_SIGN, "status:START_SIGN:%s#", senal_start ? "1" : "0");
+        espQueue.enqueue(buffer_START_SIGN);
 
         dtostrf(Caud_Hacu, 4, 0, var_number);
         sprintf(buffer_CAU_HOGAR_, "status:CAU_HOGAR_:%s#", var_number);
