@@ -16,7 +16,9 @@ void frioCalor(bool paramModoFrio)  // Función de cambio de Modo de Funcionamie
     lcd.setCursor(0, 2);
     lcd.print(F("CAMBIANDO MODO..."));
 
+    noInterrupts();
     modoFrio = paramModoFrio;
+    interrupts();
     Valor_DO_V4V = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
 
     MenuActual = 20;
