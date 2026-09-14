@@ -21,6 +21,10 @@ unsigned long Ventana_Caudal_T;
 volatile uint8_t Pulsos_Caud_T;
 volatile uint8_t Pulsos_Caud_H;
 
+unsigned long UltimoPedidoTemperatura = 0;
+bool ConversionTemperaturaPendiente = false;
+const unsigned long TEMPERATURE_REQUEST_INTERVAL_MS = 1000;
+
 const uint8_t DELTA_ACS_ELECTRICO = 7;
 
 void initializeFlowState() {
@@ -43,6 +47,12 @@ void caudalTierra() {
 // Función de Cuenta de Pulsos de Caudalímetro
 void caudalHogar() {
     Pulsos_Caud_H++;
+}
+
+void initializeTemperatureMeasurement() {
+    sensors.begin();
+    sensors.setWaitForConversion(false);
+    UltimoPedidoTemperatura = millis() - TEMPERATURE_REQUEST_INTERVAL_MS;
 }
 
 bool delayedTemperatureMeasurement(void*) {
@@ -82,10 +92,21 @@ bool delayedTemperatureMeasurement(void*) {
 }
 
 void temperatureMeasurement() {
-    // Se toma una lectura de los sensores DS18B20 cada 5 segundos, demoran aproximadamente 200ms en entregar un resultado, 750ms máx
-    // se les envía un comando para que inicien la toma de datos
-    sensors.requestTemperatures();
-    timer_things.in(200, delayedTemperatureMeasurement);
+    unsigned long ahora = millis();
+
+    if (ConversionTemperaturaPendiente) {
+        if (sensors.isConversionComplete()) {
+            delayedTemperatureMeasurement(nullptr);
+            ConversionTemperaturaPendiente = false;
+        }
+        return;
+    }
+
+    if (ahora - UltimoPedidoTemperatura >= TEMPERATURE_REQUEST_INTERVAL_MS) {
+        sensors.requestTemperatures();
+        UltimoPedidoTemperatura = ahora;
+        ConversionTemperaturaPendiente = true;
+    }
 }
 
 void flowsCalculation() {

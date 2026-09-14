@@ -27,6 +27,7 @@ void setup() {
     lcdCreateSpecialChars();
 
     initializeFlowState();
+    initializeTemperatureMeasurement();
 
     initializeStateMachine();
 
@@ -58,6 +59,8 @@ void mainLoop() {
     flowsCalculation();
 
     esp8266.handleEspSerial();
+
+    procesarTeclado();
 
     wdt_reset();
 
@@ -95,7 +98,6 @@ void mainLoop() {
     // IMAGEN DE SALIDAS
     writeOutput();
 
-    timer_things.tick();
     wdt_reset();
 }
 

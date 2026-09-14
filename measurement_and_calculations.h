@@ -14,6 +14,8 @@ void caudalHogar();
 
 void caudalTierra();
 
+void initializeTemperatureMeasurement();
+
 void temperatureMeasurement();
 
 void flowsCalculation();

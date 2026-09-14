@@ -9,6 +9,8 @@ const int DI_Teclado_Atras = 4;
 // Pin de interrupcion para funcionamiento del teclado
 const int InterruptPin = 3;  
 
+volatile bool tecladoPendiente = false;
+
 void keyboardSetup() {
     pinMode(DI_Teclado_Arriba, INPUT);
     pinMode(DI_Teclado_Abajo, INPUT);
@@ -90,7 +92,7 @@ void AtencionTecladoOld() {
             } break;
             case 23: {
                 EnableFlowAlarm = !EnableFlowAlarm;
-                EEPROMwrite(EnableACS_Address, EnableFlowAlarm);
+                EEPROMwrite(EnableFlowAlarm_Address, EnableFlowAlarm);
             } break;
             case 24: {
                 heating_off = !heating_off;
@@ -310,5 +312,17 @@ void AtencionTecladoOld() {
 }
 
 void AtencionTeclado() {
+    tecladoPendiente = true;
+}
+
+void procesarTeclado() {
+    if (!tecladoPendiente) {
+        return;
+    }
+
+    noInterrupts();
+    tecladoPendiente = false;
+    interrupts();
+
     AtencionTecladoOld();
 }

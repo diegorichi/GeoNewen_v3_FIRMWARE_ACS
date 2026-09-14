@@ -9,6 +9,8 @@
 
 void keyboardSetup();  // setup de pin modes y demas
 
-void AtencionTeclado();  // Función de Navegación entre Menús y Modificación de Parámetros
+void AtencionTeclado();  // ISR: solo registra que hubo una interrupción
+
+void procesarTeclado();  // Navegación fuera del contexto de interrupción
 
 #endif
