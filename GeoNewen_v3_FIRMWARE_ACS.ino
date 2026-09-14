@@ -16,6 +16,9 @@ void setup() {
     //whatch dog
     wdt_disable();
 
+    GEO_LOG_BEGIN(115200);
+    GEO_LOG_PRINTLN(F("Geo setup iniciado"));
+
     keyboardSetup();
 
     setupDigitalInputs();
@@ -35,8 +38,6 @@ void setup() {
     ResetFlags();
 
     Timer1.initialize(100000);
-
-    Serial.begin(115200);
 
     // Carga parametros guardados en la memoria EEPROM
     EEPROMLectura();  
@@ -107,5 +108,32 @@ void mainLoop() {
 /***************/
 
 void loop() {
+#if GEO_DEBUG_SERIAL
+    static unsigned long ultimoLogLoop = 0;
+    static unsigned long maxLoopUs = 0;
+    static int maxSerial2Pendientes = 0;
+    unsigned long inicioLoop = micros();
+    int serial2Pendientes = Serial2.available();
+    if (serial2Pendientes > maxSerial2Pendientes) {
+        maxSerial2Pendientes = serial2Pendientes;
+    }
+#endif
+
     mainLoop();
+
+#if GEO_DEBUG_SERIAL
+    unsigned long duracionLoop = micros() - inicioLoop;
+    if (duracionLoop > maxLoopUs) {
+        maxLoopUs = duracionLoop;
+    }
+    if (millis() - ultimoLogLoop >= 1000) {
+        ultimoLogLoop = millis();
+        GEO_LOG_PRINT(F("diag loop_max_us="));
+        GEO_LOG_PRINT(maxLoopUs);
+        GEO_LOG_PRINT(F(" serial2_max_pending="));
+        GEO_LOG_PRINTLN(maxSerial2Pendientes);
+        maxLoopUs = 0;
+        maxSerial2Pendientes = 0;
+    }
+#endif
 }  // Fin del loop

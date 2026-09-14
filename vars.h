@@ -4,6 +4,19 @@
 #include <TimerOne.h>  //Librería para el control de salidas PWM
 #include <avr/wdt.h>  //Libreria para uso de watchdog de Arduino
 
+// Poner en 0 para una compilacion de produccion sin logs por USB.
+#define GEO_DEBUG_SERIAL 1
+
+#if GEO_DEBUG_SERIAL
+#define GEO_LOG_BEGIN(baud) Serial.begin(baud)
+#define GEO_LOG_PRINT(...) Serial.print(__VA_ARGS__)
+#define GEO_LOG_PRINTLN(...) Serial.println(__VA_ARGS__)
+#else
+#define GEO_LOG_BEGIN(baud) do { } while (0)
+#define GEO_LOG_PRINT(...) do { } while (0)
+#define GEO_LOG_PRINTLN(...) do { } while (0)
+#endif
+
 /**************************/
 /*DECLARACION DE VARIABLES*/
 /**************************/

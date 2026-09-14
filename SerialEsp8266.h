@@ -17,11 +17,11 @@ bool sendToSerial(HardwareSerial* espSerial) {
     if (!espQueue.isEmpty()) {
         wdt_reset();
         char* message = espQueue.dequeue();
-        Serial.print("message deque para esp:");
-        Serial.println(message);
+        GEO_LOG_PRINT("message deque para esp:");
+        GEO_LOG_PRINTLN(message);
         espSerial->print(message);
     }
-    Serial.println("returning new schedule in a few segs");
+    GEO_LOG_PRINTLN("returning new schedule in a few segs");
     return true;
 }
 
@@ -67,8 +67,8 @@ class SerialEsp8266 {
     void handleProtocolWithEsp() {
         String command = String(slidingBuffer);
         wdt_reset();
-        Serial.print("Handle message from esp:");
-        Serial.println(command);
+        GEO_LOG_PRINT("Handle message from esp:");
+        GEO_LOG_PRINTLN(command);
 
         if (command.indexOf("ACS_G:on") >= 0) {
             EnableACS = true;
@@ -134,7 +134,7 @@ class SerialEsp8266 {
         char var_number[6];
         wdt_reset();
 
-        Serial.println("enqueue status to send to esp");
+        GEO_LOG_PRINTLN("enqueue status to send to esp");
 
         sprintf(buffer_ACS_GEO___, "contrl:ACS_GEO___:%s#", EnableACS ? "1" : "0");
         espQueue.enqueue(buffer_ACS_GEO___);
@@ -194,7 +194,7 @@ class SerialEsp8266 {
         dtostrf(Temp_DescargaAcu, 4, 2, var_number);
         sprintf(buffer_TEMP_DESC_, "status:TEMP_DESC_:%s#", var_number);
         espQueue.enqueue(buffer_TEMP_DESC_);
-        Serial.println("finished: enqueue status to send to esp");
+        GEO_LOG_PRINTLN("finished: enqueue status to send to esp");
     };
 
    public:
@@ -209,7 +209,7 @@ class SerialEsp8266 {
     // this should be called in main loop"
     void handleEspSerial() {
         wdt_reset();
-        if (_espSerial->available() > 0) {
+        while (_espSerial->available() > 0) {
             char c = _espSerial->read();
 
             if (isAlphaNumeric(c) || c == ':' || c == '_' || c == '#') {
