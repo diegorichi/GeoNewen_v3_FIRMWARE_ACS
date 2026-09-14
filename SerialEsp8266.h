@@ -2,6 +2,7 @@
 #define mqtt_cpp
 #include <Arduino.h>
 #include <ArduinoQueue.h>
+#include <arduino-timer.h>
 #include <SoftwareSerial.h>
 
 #include "alarm.h"
@@ -54,12 +55,13 @@ class SerialEsp8266 {
 
     unsigned long period_refresh_wifi = 0;
 
-    char slidingBuffer[SLIDING_BUFFER_LEN];
+    char slidingBuffer[SLIDING_BUFFER_LEN + 1];
 
     void clearBuffer() {
         for (int i = 0; i < SLIDING_BUFFER_LEN; i++) {
             slidingBuffer[i] = 'a';
         }
+        slidingBuffer[SLIDING_BUFFER_LEN] = '\0';
     }
 
     void handleProtocolWithEsp() {

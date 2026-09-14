@@ -125,6 +125,10 @@ void stateMachine3() {
         // Condiciones de Apagado del Compresor
         checkFlagsForAlarms();
 
+        if (Estado_Maquina == 4) {
+            return;
+        }
+
         takeRestControl();
     }
 }

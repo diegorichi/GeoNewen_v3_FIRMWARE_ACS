@@ -4,8 +4,6 @@
 /*DECLARACION DE VARIABLES*/
 /**************************/
 
-Timer<1, millis> timer_things;
-
 // PINES DIGITALES
 
 // 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 }; //n5

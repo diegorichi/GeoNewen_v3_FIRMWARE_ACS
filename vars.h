@@ -2,9 +2,7 @@
 #ifndef vars__
 #define vars__
 #include <TimerOne.h>  //Librería para el control de salidas PWM
-#include <arduino-timer.h>
 #include <avr/wdt.h>  //Libreria para uso de watchdog de Arduino
-extern Timer<1, millis> timer_things;
 
 /**************************/
 /*DECLARACION DE VARIABLES*/

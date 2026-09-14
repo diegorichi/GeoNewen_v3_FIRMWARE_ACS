@@ -17,9 +17,6 @@ bool EEPROMbool(int address) {
 
 void EEPROMLectura()  // Función de lectura de valores almacenados en memoria EEPROM
 {
-    uint8_t lowByte = EEPROM.read(SetP_ACS_Address + 1);  // Se leen los 2 bytes que componen la variable int por separado
-    uint8_t highByte = EEPROM.read(SetP_ACS_Address);
-    SetP_ACS = ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
     SetP_ACS = EEPROM.read(SetP_ACS_Address);
     SetP_ACS_Edit = SetP_ACS;
 
@@ -28,4 +25,5 @@ void EEPROMLectura()  // Función de lectura de valores almacenados en memoria E
     EnableACS_DeltaElectrico = EEPROM.read(EnableACS_DeltaElectrico_Address);
     EnableElectricACS = EEPROM.read(EnableElectricACS_Address);
     modoFrio = EEPROM.read(modoFrio_address);
+    heating_off = EEPROMbool(heating_off_address);
 }
