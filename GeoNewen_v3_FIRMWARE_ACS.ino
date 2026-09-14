@@ -24,6 +24,7 @@ void setup() {
 
     initializeDigitalOuputs();
 
+    beginLcd();
     lcdCreateSpecialChars();
 
     initializeFlowState();

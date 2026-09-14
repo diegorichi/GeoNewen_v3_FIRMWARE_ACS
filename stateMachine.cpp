@@ -93,6 +93,11 @@ void stateMachine2() {
             return;
         }
 
+        checkFlagsForAlarms();
+        if (Estado_Maquina == 4) {
+            return;
+        }
+
         if (Valor_DO_Bombas == LOW) {
             Valor_DO_Bombas = HIGH;
             PumpStart = millis();
@@ -116,16 +121,16 @@ void stateMachine2() {
 // Este es el estado final del sistema, donde se controlan las condiciones de alarma
 void stateMachine3() {
     if (Estado_Maquina == 3) {
-        /* Si hay que generar ACS, pasamos por es estado 0 */
-        if ((heating_off || senal_stop) || GENERATE_ACS) {
-            Estado_Maquina = 0;
-            return;
-        }
-
-        // Condiciones de Apagado del Compresor
+        // Las alarmas tienen prioridad sobre apagado, descanso y generación de ACS.
         checkFlagsForAlarms();
 
         if (Estado_Maquina == 4) {
+            return;
+        }
+
+        /* Si hay que generar ACS, pasamos por este estado 0 */
+        if ((heating_off || senal_stop) || GENERATE_ACS) {
+            Estado_Maquina = 0;
             return;
         }
 
@@ -178,6 +183,11 @@ void stateMachine7() {
             return;
         }
 
+        if ((Temp_ACS >= SetP_ACS) || !EnableACS) {
+            Estado_Maquina = 0;
+            return;
+        }
+
         if (millis() - valvulaACSStart > 15000) {
             // solo prendo las bombas si paso el tiempo para abrir las valuvlas
             Valor_DO_Bombas = HIGH;  // se mantiene HIGH hasta que se va a estado 0 (puede pasar por 71 u 8)
@@ -186,6 +196,9 @@ void stateMachine7() {
 
         if ((millis() - Ingreso_E7) > 20000) {
             checkFlagsForAlarms();
+            if (Estado_Maquina == 4) {
+                return;
+            }
             Valor_DO_Compressor = HIGH;
         }
 
@@ -195,10 +208,6 @@ void stateMachine7() {
             Ingreso_E71 = millis();
         }
 
-        // termino el ciclo en modo calor y vuelve a 0
-        if ((Temp_ACS >= SetP_ACS) || !EnableACS) {
-            Estado_Maquina = 0;
-        }
     }
 }
 

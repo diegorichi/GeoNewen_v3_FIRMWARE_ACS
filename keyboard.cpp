@@ -10,6 +10,7 @@ const int DI_Teclado_Atras = 4;
 const int InterruptPin = 3;  
 
 volatile bool tecladoPendiente = false;
+const unsigned long KEYBOARD_DEBOUNCE_MS = 150;
 
 void keyboardSetup() {
     pinMode(DI_Teclado_Arriba, INPUT);
@@ -316,6 +317,8 @@ void AtencionTeclado() {
 }
 
 void procesarTeclado() {
+    static unsigned long ultimoEvento = 0;
+
     if (!tecladoPendiente) {
         return;
     }
@@ -324,5 +327,11 @@ void procesarTeclado() {
     tecladoPendiente = false;
     interrupts();
 
+    unsigned long ahora = millis();
+    if (ahora - ultimoEvento < KEYBOARD_DEBOUNCE_MS) {
+        return;
+    }
+
+    ultimoEvento = ahora;
     AtencionTecladoOld();
 }

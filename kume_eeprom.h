@@ -17,8 +17,6 @@ const int EnableElectricACS_Address = 23;
 
 uint8_t EEPROMreaduint8_t(int address);
 
-bool EEPROMbool(int address);
-
 void EEPROMwrite(int address, bool flag);
 
 void EEPROMwrite(int address, uint8_t number);

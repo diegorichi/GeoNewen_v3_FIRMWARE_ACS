@@ -12,6 +12,8 @@ extern LiquidCrystal lcd;  //(30, 32, 34, 36, 38, 40, 42, 44, 46, 48); //Se defi
 
 void lcdCreateSpecialChars();
 
+void beginLcd();
+
 void lcdRefreshValues();
 
 // Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
