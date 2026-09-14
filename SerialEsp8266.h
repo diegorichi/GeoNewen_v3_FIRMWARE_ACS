@@ -10,18 +10,30 @@
 #include "stateMachine.h"
 #include "vars.h"
 
-#define QUEUE_SIZE_ITEMS 16
-ArduinoQueue<char*> espQueue(QUEUE_SIZE_ITEMS);
+constexpr uint8_t QUEUE_SIZE_ITEMS = 32;
+constexpr uint8_t ESP_MESSAGE_SIZE = 26;
+
+struct EspMessage {
+    char text[ESP_MESSAGE_SIZE];
+};
+
+ArduinoQueue<EspMessage> espQueue(QUEUE_SIZE_ITEMS);
+
+bool enqueueEspMessage(const char* message) {
+    EspMessage item{};
+    strncpy(item.text, message, ESP_MESSAGE_SIZE - 1);
+    item.text[ESP_MESSAGE_SIZE - 1] = '\0';
+    return espQueue.enqueue(item);
+}
 
 bool sendToSerial(HardwareSerial* espSerial) {
     if (!espQueue.isEmpty()) {
         wdt_reset();
-        char* message = espQueue.dequeue();
-        Serial.print("message deque para esp:");
-        Serial.println(message);
-        espSerial->print(message);
+        EspMessage message = espQueue.dequeue();
+        GEO_LOG_PRINT("message deque para esp:");
+        GEO_LOG_PRINTLN(message.text);
+        espSerial->print(message.text);
     }
-    Serial.println("returning new schedule in a few segs");
     return true;
 }
 
@@ -56,19 +68,22 @@ class SerialEsp8266 {
     unsigned long period_refresh_wifi = 0;
 
     char slidingBuffer[SLIDING_BUFFER_LEN + 1];
+    uint8_t slidingBufferIndex = 0;
+    bool slidingBufferOverflow = false;
 
     void clearBuffer() {
-        for (int i = 0; i < SLIDING_BUFFER_LEN; i++) {
-            slidingBuffer[i] = 'a';
+        for (int i = 0; i <= SLIDING_BUFFER_LEN; i++) {
+            slidingBuffer[i] = '\0';
         }
-        slidingBuffer[SLIDING_BUFFER_LEN] = '\0';
+        slidingBufferIndex = 0;
+        slidingBufferOverflow = false;
     }
 
     void handleProtocolWithEsp() {
         String command = String(slidingBuffer);
         wdt_reset();
-        Serial.print("Handle message from esp:");
-        Serial.println(command);
+        GEO_LOG_PRINT("Handle message from esp:");
+        GEO_LOG_PRINTLN(command);
 
         if (command.indexOf("ACS_G:on") >= 0) {
             EnableACS = true;
@@ -134,67 +149,67 @@ class SerialEsp8266 {
         char var_number[6];
         wdt_reset();
 
-        Serial.println("enqueue status to send to esp");
+        GEO_LOG_PRINTLN("enqueue status to send to esp");
 
         sprintf(buffer_ACS_GEO___, "contrl:ACS_GEO___:%s#", EnableACS ? "1" : "0");
-        espQueue.enqueue(buffer_ACS_GEO___);
+        enqueueEspMessage(buffer_ACS_GEO___);
 
         sprintf(buffer_ACS_DT_ELE, "contrl:ACS_DT_ELE:%s#", EnableACS_DeltaElectrico ? "1" : "0");
-        espQueue.enqueue(buffer_ACS_DT_ELE);
+        enqueueEspMessage(buffer_ACS_DT_ELE);
 
         sprintf(buffer_ACS_ELEC__, "contrl:ACS_ELEC__:%s#", EnableElectricACS ? "1" : "0");
-        espQueue.enqueue(buffer_ACS_ELEC__);
+        enqueueEspMessage(buffer_ACS_ELEC__);
 
         sprintf(buffer_MODO_FRIO_, "contrl:MODO_FRIO_:%s#", modoFrio ? "1" : "0");
-        espQueue.enqueue(buffer_MODO_FRIO_);
+        enqueueEspMessage(buffer_MODO_FRIO_);
 
         dtostrf(Nro_Alarma, 2, 0, var_number);
         sprintf(buffer_ALARMA____, "contrl:ALARMA____:%s#", var_number);
-        espQueue.enqueue(buffer_ALARMA____);
+        enqueueEspMessage(buffer_ALARMA____);
 
         dtostrf(Temp_ACSacu, 4, 2, var_number);
         sprintf(buffer_TEMP_ACS__, "status:TEMP_ACS__:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_ACS__);
+        enqueueEspMessage(buffer_TEMP_ACS__);
 
         sprintf(buffer_STATE_MACH, "status:STATE_MACH:%2d#", Estado_Maquina);
-        espQueue.enqueue(buffer_STATE_MACH);
+        enqueueEspMessage(buffer_STATE_MACH);
 
         dtostrf(Caud_Hacu, 4, 0, var_number);
         sprintf(buffer_CAU_HOGAR_, "status:CAU_HOGAR_:%s#", var_number);
-        espQueue.enqueue(buffer_CAU_HOGAR_);
+        enqueueEspMessage(buffer_CAU_HOGAR_);
 
         dtostrf(Temp_in_Hacu, 4, 2, var_number);
         sprintf(buffer_TEMP_IN_H_, "status:TEMP_IN_H_:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_IN_H_);
+        enqueueEspMessage(buffer_TEMP_IN_H_);
 
         dtostrf(Temp_out_Hacu, 4, 2, var_number);
         sprintf(buffer_TEMP_OUT_H, "status:TEMP_OUT_H:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_OUT_H);
+        enqueueEspMessage(buffer_TEMP_OUT_H);
 
         dtostrf(Caud_Tacu, 4, 0, var_number);
         sprintf(buffer_CAU_TIERRA, "status:CAU_TIERRA:%s#", var_number);
-        espQueue.enqueue(buffer_CAU_TIERRA);
+        enqueueEspMessage(buffer_CAU_TIERRA);
 
         dtostrf(Temp_in_T, 4, 2, var_number);
         sprintf(buffer_TEMP_IN_T_, "status:TEMP_IN_T_:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_IN_T_);
+        enqueueEspMessage(buffer_TEMP_IN_T_);
 
         dtostrf(Temp_out_T, 4, 2, var_number);
         sprintf(buffer_TEMP_OUT_T, "status:TEMP_OUT_T:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_OUT_T);
+        enqueueEspMessage(buffer_TEMP_OUT_T);
 
         dtostrf(Temp_Admision, 4, 2, var_number);
         sprintf(buffer_TEMP_ADM__, "status:TEMP_ADM__:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_ADM__);
+        enqueueEspMessage(buffer_TEMP_ADM__);
 
         dtostrf(Temp_CompressorAcu, 4, 2, var_number);
         sprintf(buffer_TEMP_COMP_, "status:TEMP_COMP_:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_COMP_);
+        enqueueEspMessage(buffer_TEMP_COMP_);
 
         dtostrf(Temp_DescargaAcu, 4, 2, var_number);
         sprintf(buffer_TEMP_DESC_, "status:TEMP_DESC_:%s#", var_number);
-        espQueue.enqueue(buffer_TEMP_DESC_);
-        Serial.println("finished: enqueue status to send to esp");
+        enqueueEspMessage(buffer_TEMP_DESC_);
+        GEO_LOG_PRINTLN("finished: enqueue status to send to esp");
     };
 
    public:
@@ -203,27 +218,30 @@ class SerialEsp8266 {
         this->_espSerial->begin(4800);
         this->_espSerial->setTimeout(300);
         this->clearBuffer();
-        timerSendToEsp.every(2000, sendToSerial, this->_espSerial);
+        timerSendToEsp.every(100, sendToSerial, this->_espSerial);
     }
 
     // this should be called in main loop"
     void handleEspSerial() {
         wdt_reset();
-        if (_espSerial->available() > 0) {
+        while (_espSerial->available() > 0) {
             char c = _espSerial->read();
 
             if (isAlphaNumeric(c) || c == ':' || c == '_' || c == '#') {
                 if (c == '#') {
-                    this->handleProtocolWithEsp();
-                    this->clearBuffer();
-                    this->enqueueStatusToSend();
-                } else {
-                    // Shift buffer
-                    for (int i = 0; i < SLIDING_BUFFER_LEN - 1; i++) {
-                        slidingBuffer[i] = slidingBuffer[i + 1];
+                    if (!slidingBufferOverflow && slidingBufferIndex > 0) {
+                        this->handleProtocolWithEsp();
+                        this->enqueueStatusToSend();
                     }
-                    // add char
-                    slidingBuffer[SLIDING_BUFFER_LEN - 1] = c;
+                    this->clearBuffer();
+                } else {
+                    if (slidingBufferIndex < SLIDING_BUFFER_LEN) {
+                        slidingBuffer[slidingBufferIndex++] = c;
+                        slidingBuffer[slidingBufferIndex] = '\0';
+                    } else {
+                        // Descarta la trama completa hasta encontrar '#'.
+                        slidingBufferOverflow = true;
+                    }
                 }
             }
         }
