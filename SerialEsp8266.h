@@ -11,7 +11,7 @@
 #include "vars.h"
 
 constexpr uint8_t QUEUE_SIZE_ITEMS = 32;
-constexpr uint8_t ESP_MESSAGE_SIZE = 26;
+constexpr uint8_t ESP_MESSAGE_SIZE = 64;
 
 struct EspMessage {
     char text[ESP_MESSAGE_SIZE];
@@ -55,7 +55,7 @@ char buffer_TEMP_COMP_[26];
 char buffer_TEMP_DESC_[26];
 
 class SerialEsp8266 {
-    static const int SLIDING_BUFFER_LEN = 20;
+    static const int SLIDING_BUFFER_LEN = 48;
 
    private:
     // SoftwareSerial* _espSerial;
@@ -63,13 +63,15 @@ class SerialEsp8266 {
 
     Timer<1, &millis, HardwareSerial*> timerSendToEsp;
 
-    unsigned long refresh_period = 300000;  // 5min
+    unsigned long refresh_period = 240000;  // 4min
 
     unsigned long period_refresh_wifi = 0;
 
     char slidingBuffer[SLIDING_BUFFER_LEN + 1];
     uint8_t slidingBufferIndex = 0;
     bool slidingBufferOverflow = false;
+    uint16_t nextStatusSequence = 1;
+    uint16_t lastCommandSequence = 0;
 
     void clearBuffer() {
         for (int i = 0; i <= SLIDING_BUFFER_LEN; i++) {
@@ -126,6 +128,18 @@ class SerialEsp8266 {
         }
     };
 
+    void sendCommandAck(const String& sequence) {
+        _espSerial->print("ack:cmd:");
+        _espSerial->print(sequence);
+        _espSerial->print('#');
+    }
+
+    void enqueueStatusFrame(const char* payload) {
+        char frame[ESP_MESSAGE_SIZE];
+        snprintf(frame, sizeof(frame), "status:%u:%s", nextStatusSequence++, payload);
+        enqueueEspMessage(frame);
+    }
+
     /*
     value from index: 18
     contrl:ACS_GEO___:1;
@@ -152,63 +166,63 @@ class SerialEsp8266 {
         GEO_LOG_PRINTLN("enqueue status to send to esp");
 
         sprintf(buffer_ACS_GEO___, "contrl:ACS_GEO___:%s#", EnableACS ? "1" : "0");
-        enqueueEspMessage(buffer_ACS_GEO___);
+        enqueueStatusFrame(buffer_ACS_GEO___);
 
         sprintf(buffer_ACS_DT_ELE, "contrl:ACS_DT_ELE:%s#", EnableACS_DeltaElectrico ? "1" : "0");
-        enqueueEspMessage(buffer_ACS_DT_ELE);
+        enqueueStatusFrame(buffer_ACS_DT_ELE);
 
         sprintf(buffer_ACS_ELEC__, "contrl:ACS_ELEC__:%s#", EnableElectricACS ? "1" : "0");
-        enqueueEspMessage(buffer_ACS_ELEC__);
+        enqueueStatusFrame(buffer_ACS_ELEC__);
 
         sprintf(buffer_MODO_FRIO_, "contrl:MODO_FRIO_:%s#", modoFrio ? "1" : "0");
-        enqueueEspMessage(buffer_MODO_FRIO_);
+        enqueueStatusFrame(buffer_MODO_FRIO_);
 
         dtostrf(Nro_Alarma, 2, 0, var_number);
         sprintf(buffer_ALARMA____, "contrl:ALARMA____:%s#", var_number);
-        enqueueEspMessage(buffer_ALARMA____);
+        enqueueStatusFrame(buffer_ALARMA____);
 
         dtostrf(Temp_ACSacu, 4, 2, var_number);
         sprintf(buffer_TEMP_ACS__, "status:TEMP_ACS__:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_ACS__);
+        enqueueStatusFrame(buffer_TEMP_ACS__);
 
         sprintf(buffer_STATE_MACH, "status:STATE_MACH:%2d#", Estado_Maquina);
-        enqueueEspMessage(buffer_STATE_MACH);
+        enqueueStatusFrame(buffer_STATE_MACH);
 
         dtostrf(Caud_Hacu, 4, 0, var_number);
         sprintf(buffer_CAU_HOGAR_, "status:CAU_HOGAR_:%s#", var_number);
-        enqueueEspMessage(buffer_CAU_HOGAR_);
+        enqueueStatusFrame(buffer_CAU_HOGAR_);
 
         dtostrf(Temp_in_Hacu, 4, 2, var_number);
         sprintf(buffer_TEMP_IN_H_, "status:TEMP_IN_H_:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_IN_H_);
+        enqueueStatusFrame(buffer_TEMP_IN_H_);
 
         dtostrf(Temp_out_Hacu, 4, 2, var_number);
         sprintf(buffer_TEMP_OUT_H, "status:TEMP_OUT_H:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_OUT_H);
+        enqueueStatusFrame(buffer_TEMP_OUT_H);
 
         dtostrf(Caud_Tacu, 4, 0, var_number);
         sprintf(buffer_CAU_TIERRA, "status:CAU_TIERRA:%s#", var_number);
-        enqueueEspMessage(buffer_CAU_TIERRA);
+        enqueueStatusFrame(buffer_CAU_TIERRA);
 
         dtostrf(Temp_in_T, 4, 2, var_number);
         sprintf(buffer_TEMP_IN_T_, "status:TEMP_IN_T_:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_IN_T_);
+        enqueueStatusFrame(buffer_TEMP_IN_T_);
 
         dtostrf(Temp_out_T, 4, 2, var_number);
         sprintf(buffer_TEMP_OUT_T, "status:TEMP_OUT_T:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_OUT_T);
+        enqueueStatusFrame(buffer_TEMP_OUT_T);
 
         dtostrf(Temp_Admision, 4, 2, var_number);
         sprintf(buffer_TEMP_ADM__, "status:TEMP_ADM__:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_ADM__);
+        enqueueStatusFrame(buffer_TEMP_ADM__);
 
         dtostrf(Temp_CompressorAcu, 4, 2, var_number);
         sprintf(buffer_TEMP_COMP_, "status:TEMP_COMP_:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_COMP_);
+        enqueueStatusFrame(buffer_TEMP_COMP_);
 
         dtostrf(Temp_DescargaAcu, 4, 2, var_number);
         sprintf(buffer_TEMP_DESC_, "status:TEMP_DESC_:%s#", var_number);
-        enqueueEspMessage(buffer_TEMP_DESC_);
+        enqueueStatusFrame(buffer_TEMP_DESC_);
         GEO_LOG_PRINTLN("finished: enqueue status to send to esp");
     };
 
@@ -230,8 +244,27 @@ class SerialEsp8266 {
             if (isAlphaNumeric(c) || c == ':' || c == '_' || c == '#') {
                 if (c == '#') {
                     if (!slidingBufferOverflow && slidingBufferIndex > 0) {
-                        this->handleProtocolWithEsp();
-                        this->enqueueStatusToSend();
+                        String command = String(slidingBuffer);
+                        if (command.startsWith("cmd:")) {
+                            int separator = command.indexOf(':', 4);
+                            if (separator > 4) {
+                                String sequence = command.substring(4, separator);
+                                String payload = command.substring(separator + 1);
+                                if (sequence.toInt() != lastCommandSequence) {
+                                    payload.toCharArray(slidingBuffer, SLIDING_BUFFER_LEN + 1);
+                                    this->handleProtocolWithEsp();
+                                    lastCommandSequence = sequence.toInt();
+                                    this->enqueueStatusToSend();
+                                } else {
+                                    GEO_LOG_PRINT("Comando duplicado, solo ACK: ");
+                                    GEO_LOG_PRINTLN(sequence);
+                                }
+                                this->sendCommandAck(sequence);
+                            }
+                        } else if (command.startsWith("ack:status:")) {
+                            GEO_LOG_PRINT("ACK status recibido: ");
+                            GEO_LOG_PRINTLN(command.substring(11));
+                        }
                     }
                     this->clearBuffer();
                 } else {
