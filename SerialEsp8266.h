@@ -12,12 +12,20 @@
 
 constexpr uint8_t QUEUE_SIZE_ITEMS = 32;
 constexpr uint8_t ESP_MESSAGE_SIZE = 64;
+constexpr unsigned long STATUS_ACK_TIMEOUT_MS = 2000;
+constexpr uint8_t STATUS_MAX_ATTEMPTS = 3;
 
 struct EspMessage {
     char text[ESP_MESSAGE_SIZE];
 };
 
 ArduinoQueue<EspMessage> espQueue(QUEUE_SIZE_ITEMS);
+
+EspMessage pendingEspMessage{};
+uint16_t pendingStatusSequence = 0;
+uint8_t pendingStatusAttempts = 0;
+unsigned long pendingStatusSentAt = 0;
+bool pendingStatusActive = false;
 
 bool enqueueEspMessage(const char* message) {
     EspMessage item{};
@@ -27,13 +35,51 @@ bool enqueueEspMessage(const char* message) {
 }
 
 bool sendToSerial(HardwareSerial* espSerial) {
-    if (!espQueue.isEmpty()) {
-        wdt_reset();
-        EspMessage message = espQueue.dequeue();
-        GEO_LOG_PRINT("message deque para esp:");
-        GEO_LOG_PRINTLN(message.text);
-        espSerial->print(message.text);
+    wdt_reset();
+
+    if (pendingStatusActive) {
+        if (millis() - pendingStatusSentAt < STATUS_ACK_TIMEOUT_MS) {
+            return true;
+        }
+
+        if (pendingStatusAttempts >= STATUS_MAX_ATTEMPTS) {
+            GEO_LOG_PRINT("status descartado sin ACK: ");
+            GEO_LOG_PRINTLN(pendingStatusSequence);
+            pendingStatusActive = false;
+            return true;
+        }
+
+        GEO_LOG_PRINT("reintentando status (intento ");
+        GEO_LOG_PRINT(pendingStatusAttempts + 1);
+        GEO_LOG_PRINT("): ");
+        GEO_LOG_PRINTLN(pendingEspMessage.text);
+        espSerial->print(pendingEspMessage.text);
+        pendingStatusAttempts++;
+        pendingStatusSentAt = millis();
+        return true;
     }
+
+    if (!espQueue.isEmpty()) {
+        pendingEspMessage = espQueue.dequeue();
+        String message = String(pendingEspMessage.text);
+        int separator = message.indexOf(':', 7);
+
+        if (!message.startsWith("status:") || separator <= 7) {
+            GEO_LOG_PRINT("trama descartada antes de enviar: ");
+            GEO_LOG_PRINTLN(message);
+            return true;
+        }
+
+        pendingStatusSequence = message.substring(7, separator).toInt();
+        pendingStatusAttempts = 1;
+        pendingStatusActive = true;
+        pendingStatusSentAt = millis();
+
+        GEO_LOG_PRINT("message deque para esp:");
+        GEO_LOG_PRINTLN(pendingEspMessage.text);
+        espSerial->print(pendingEspMessage.text);
+    }
+
     return true;
 }
 
@@ -262,8 +308,13 @@ class SerialEsp8266 {
                                 this->sendCommandAck(sequence);
                             }
                         } else if (command.startsWith("ack:status:")) {
+                            uint16_t sequence = command.substring(11).toInt();
                             GEO_LOG_PRINT("ACK status recibido: ");
-                            GEO_LOG_PRINTLN(command.substring(11));
+                            GEO_LOG_PRINTLN(sequence);
+
+                            if (pendingStatusActive && sequence == pendingStatusSequence) {
+                                pendingStatusActive = false;
+                            }
                         }
                     }
                     this->clearBuffer();
