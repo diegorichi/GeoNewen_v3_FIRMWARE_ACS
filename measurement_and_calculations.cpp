@@ -18,8 +18,10 @@ float FCal = 1.055;  // 1.77;// caudalimetro  sen - hz21wa                    //
 
 unsigned long Ventana_Caudal_H;
 unsigned long Ventana_Caudal_T;
-volatile uint8_t Pulsos_Caud_T;
-volatile uint8_t Pulsos_Caud_H;
+// Los caudalímetros pueden superar 255 pulsos dentro de una ventana de un
+// segundo. uint8_t se desborda y hace perder pulsos en ciertos casos
+volatile uint16_t Pulsos_Caud_T;
+volatile uint16_t Pulsos_Caud_H;
 
 unsigned long UltimoPedidoTemperatura = 0;
 bool ConversionTemperaturaPendiente = false;

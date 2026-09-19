@@ -23,31 +23,6 @@ void keyboardSetup() {
 }
 
 // Función de Navegación entre Menús y Modificación de Parámetros
-// void AtencionTecladoNew() {
-//     bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
-//     bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
-//     bool BotonEnter = digitalRead(DI_Teclado_Enter) == LOW ? true : false;
-//     bool BotonAtras = digitalRead(DI_Teclado_Atras) == LOW ? true : false;
-
-//     if (BotonEnter || BotonAbajo || BotonArriba || BotonAtras) {
-//         buzzerStart();
-//     }
-//     if (BotonEnter) {
-//         menuActivo = &menuActivo->enter();
-//     }
-//     if (BotonAbajo) {
-//         menuActivo = &(menuActivo->down());
-//     }
-//     if (BotonArriba) {
-//         menuActivo = &(menuActivo->up());
-//     }
-//     if (BotonAtras) {
-//         menuActivo = &(menuActivo->escape());
-//     }
-//     menuActivo->refresh();
-// }
-
-// Función de Navegación entre Menús y Modificación de Parámetros
 void AtencionTecladoOld() {
     bool BotonArriba = digitalRead(DI_Teclado_Arriba) == LOW ? true : false;
     bool BotonAbajo = digitalRead(DI_Teclado_Abajo) == LOW ? true : false;
@@ -122,6 +97,10 @@ void AtencionTecladoOld() {
 
     if (BotonAbajo) {
         switch (MenuActual) {
+            case 5: {
+                MenuActual = 1;
+                MenuUno();
+            } break;
             case 1: {
                 MenuActual = 2;
                 MenuDos();
@@ -166,6 +145,10 @@ void AtencionTecladoOld() {
                 MenuActual = 29;
                 MenuDosNueve();
             } break;
+            case 29: {
+                MenuActual = 20;
+                MenuDosCero();
+            } break;
             case 40: {
                 Valor_DO_Buzzer = LOW;
             } break;
@@ -174,6 +157,10 @@ void AtencionTecladoOld() {
 
     if (BotonArriba) {
         switch (MenuActual) {
+            case 1: {
+                MenuActual = 5;
+                MenuCinco();
+            } break;
             case 5: {
                 MenuActual = 4;
                 MenuCuatro();
@@ -217,6 +204,10 @@ void AtencionTecladoOld() {
             case 21: {
                 MenuActual = 20;
                 MenuDosCero();
+            } break;
+            case 20: {
+                MenuActual = 29;
+                MenuDosNueve();
             } break;
             case 210: {
                 SetP_ACS_Edit = SetP_ACS_Edit + 1;

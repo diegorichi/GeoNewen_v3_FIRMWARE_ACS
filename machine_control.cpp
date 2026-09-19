@@ -66,9 +66,9 @@ void writeOutput() {
         digitalWrite(DO_Valvula4Vias, Valor_DO_V4V);
         digitalWrite(DO_Compressor, Valor_DO_Compressor);
         digitalWrite(DO_ValvulaACS, Valor_DO_VACS);
-        if (Estado_Maquina != 4) {
-            digitalWrite(DO_Buzzer, Valor_DO_Buzzer);
-        }    
+        // El buzzer se controla con tone() para los avisos breves y con
+        // Timer1.pwm() durante una alarma. No escribir el pin aquí: esa
+        // escritura interrumpe el tono en cada vuelta del loop.
 }
 
 void refreshDataToShow() {
@@ -76,8 +76,6 @@ void refreshDataToShow() {
         temperatureCalculation();
 
         lcdRefreshValues();
-
-        // menuActivo->refresh();
 
         Periodo_Refresco = millis();
     }
@@ -151,8 +149,11 @@ void buzzerControl() {
 void buzzerStop() {
     Flag_Buzzer = false;
     Valor_DO_Buzzer = LOW;
+    noTone(DO_Buzzer);
+    Timer1.disablePwm(DO_Buzzer);
+    digitalWrite(DO_Buzzer, LOW);
 }
 
 void buzzerBip() {
-    tone(DO_Buzzer, 1500, 300);
+    tone(DO_Buzzer, 1500, 150);
 }

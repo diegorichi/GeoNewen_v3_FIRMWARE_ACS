@@ -46,9 +46,6 @@ void setup() {
 
     MenuActual = 0;
     MenuCero();
-    // initializeAndSetupMenu();
-
-    // menuActivo->show();
 
     wdt_enable(WDTO_8S);
 }

@@ -3,6 +3,7 @@
 #define vars__
 #include <TimerOne.h>  //Librería para el control de salidas PWM
 #include <avr/wdt.h>  //Libreria para uso de watchdog de Arduino
+#include <stdint.h>
 
 // Poner en 0 para una compilacion de produccion sin logs por USB.
 #define GEO_DEBUG_SERIAL 1
