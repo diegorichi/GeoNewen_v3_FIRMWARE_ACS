@@ -52,8 +52,6 @@ void ResetFlags() {
 void checkFlagsForAlarms() {
     if (Flag_TempCompressor || !PressOK || Flag_CaudT || Flag_CaudH || Flag_Temp_Adm || Flag_Temp_Descarga) {
         Estado_Maquina = 4;
-        drawActiveAlarmScreen();
-        MenuActual = MENU_ALARM_ACTIVE;
     }
 }
 

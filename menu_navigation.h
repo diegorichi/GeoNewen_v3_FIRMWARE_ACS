@@ -21,6 +21,7 @@ enum MenuId : uint8_t {
     MENU_ALARM_ACTIVE,
     MENU_ALARM_LOG,
     MENU_ALARM_LOG_VIEW,
+    MENU_MODE_CHANGING,
     MENU_NONE
 };
 
@@ -32,6 +33,7 @@ enum MenuButton : uint8_t {
 };
 
 void processMenuButton(MenuButton button);
+void navigateTo(MenuId id);
 void refreshCurrentMenu();
 
 #endif

@@ -1,12 +1,12 @@
 
 #ifndef machine_control__
 #define machine_control__
-#include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
 #include "measurement_and_calculations.h"
 #include "vars.h"
 
 void changeModo(bool paramModoFrio);  // funcion extra para cambio de Modo de Funcionamiento
+bool isModeChangeLocked();
 
 void setupDigitalInputs();
 

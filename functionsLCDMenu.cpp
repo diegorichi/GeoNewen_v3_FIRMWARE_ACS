@@ -314,6 +314,13 @@ void drawModeScreen() {
     showNavigation();
 }
 
+void drawModeChangingScreen() {
+    beginLcd();
+    lcd.print(F("POR FAVOR, ESPERE"));
+    lcd.setCursor(0, 2);
+    lcd.print(F("CAMBIANDO MODO..."));
+}
+
 // Configuracion de temp de ACS
 void drawAcsConfigurationScreen() {
     beginLcd();

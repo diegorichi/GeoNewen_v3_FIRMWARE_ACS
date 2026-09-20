@@ -66,6 +66,7 @@ void drawMonitorScreen2();  // 2º Ventana de Monitor
 void drawConfigurationMenu();  // Menu de Configuración del Sistema
 
 void drawModeScreen();  // Menú de Cambio de Modo de Funcionamiento
+void drawModeChangingScreen();
 
 void drawAcsConfigurationScreen();  // Configuracion de temp de ACS
 

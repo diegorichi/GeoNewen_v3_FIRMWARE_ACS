@@ -1,7 +1,6 @@
 
 #ifndef alarm__
 #define alarm__
-#include "functionsLCDMenu.h"
 #include "kume_eeprom.h"
 #include "machine_control.h"
 #include "vars.h"

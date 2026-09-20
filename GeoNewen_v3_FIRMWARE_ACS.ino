@@ -1,4 +1,5 @@
 #include "SerialEsp8266.h"
+#include "ui_controller.h"
 #include "functionsLCDMenu.h"
 #include "keyboard.h"
 #include "kume_eeprom.h"
@@ -44,8 +45,7 @@ void setup() {
 
     SetP_ACS_Edit = normalizeAcsTemp(&SetP_ACS);
 
-    MenuActual = MENU_HOME;
-    drawHomeScreen();
+    navigateTo(MENU_HOME);
 
     wdt_enable(WDTO_8S);
 }
@@ -93,6 +93,8 @@ void mainLoop() {
     stateMachine6();   // Estado de descanso
     stateMachine7();   // Generacion ACS
     stateMachine71();  // Generacion ACS: Estado con bombas andando y compresor apagado
+
+    processUiEvents();
 
     // IMAGEN DE SALIDAS
     writeOutput();

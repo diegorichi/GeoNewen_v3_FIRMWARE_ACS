@@ -8,26 +8,29 @@ const float MIN_TEMP_OUT_T = -6.0;
 const float MIN_TEMP_ADMISION = -7.0;
 const uint8_t MAX_ACS = 48;
 const uint8_t MIN_ACS = 30;
+const unsigned long MODE_CHANGE_LOCKOUT_MS = 3000;
+
+unsigned long lastModeChangeAt = 0;
 
 void frioCalor(bool paramModoFrio)  // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
-    lcd.clear();
-    lcd.print(F("POR FAVOR, ESPERE"));
-    lcd.setCursor(0, 2);
-    lcd.print(F("CAMBIANDO MODO..."));
-
     modoFrio = paramModoFrio;
     Valor_DO_V4V = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
 
-    MenuActual = MENU_MODE;
-    drawModeScreen();
 }
 
 void changeModo(bool paramModoFrio) {
-    if (Estado_Maquina == 1) {
-        frioCalor(paramModoFrio);
-        EEPROMwrite(modoFrio_address, modoFrio);
+    if (Estado_Maquina != 1 || paramModoFrio == modoFrio || isModeChangeLocked()) {
+        return;
     }
+
+    frioCalor(paramModoFrio);
+    EEPROMwrite(modoFrio_address, modoFrio);
+    lastModeChangeAt = millis();
+}
+
+bool isModeChangeLocked() {
+    return lastModeChangeAt != 0 && millis() - lastModeChangeAt < MODE_CHANGE_LOCKOUT_MS;
 }
 
 void setupDigitalInputs() {
