@@ -14,6 +14,10 @@ void processUiEvents() {
         navigateTo(MENU_ALARM_ACTIVE);
     }
 
+    if (!alarmIsActive && alarmWasActive && MenuActual == MENU_ALARM_ACTIVE) {
+        navigateTo(MENU_ALARM_MONITOR);
+    }
+
     if (!alarmIsActive) {
         if (modeChangeIsLocked && !modeChangeWasLocked) {
             navigateTo(MENU_MODE_CHANGING);
