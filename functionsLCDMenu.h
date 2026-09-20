@@ -17,76 +17,76 @@ void beginLcd();
 void lcdRefreshValues();
 
 // Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
-void RefreshMenuCero();
+void refreshHomeScreen();
 
 // Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
-void RefreshMenuUnoCero();
+void refreshMonitorScreen1();
 
 // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
-void RefreshMenuUnoUno();
+void refreshMonitorScreen2();
 
 // Modo Frio / Calor
-void RefreshMenuDosCero();
+void refreshModeScreen();
 
 // Editar valor ACS
-void RefreshMenuDosUnoCero();
+void refreshAcsEditScreen();
 
 // Alarmas
-void RefreshMenuDosTres();
+void refreshFlowAlarmScreen();
 
 // Funcionamiento Auto/Manual
-void RefreshMenuDosCuatro();
+void refreshHeatingScreen();
 
 // Activacion/desactivacion de ACS
-void RefreshMenuDosOcho();
+void refreshAcsEnableScreen();
 
 // Activacion/desactivacion de Delta ACS Electrico
-void RefreshMenuDosOchoUno();
+void refreshAcsDeltaScreen();
 
 // Activacion/desactivacion de ACS electrico
-void RefreshMenuDosNueve();
+void refreshAcsElectricScreen();
 
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-void RefreshAlarma(uint8_t _nro_Alarma);
+void refreshAlarmMessage(uint8_t _nro_Alarma);
 
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-void RefreshMenuCuatroCero();
+void refreshActiveAlarmScreen();
 
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-void RefreshMenuCincoCero();
+void refreshAlarmHistoryScreen();
 
-void MenuCero();  // Pantalla de Inicio/Bienvenida
+void drawHomeScreen();  // Pantalla de Inicio/Bienvenida
 
-void MenuUno();  // Menú de Monitor de Temps y Consumo de Energía
+void drawMonitorMenu();  // Menú de Monitor de Temps y Consumo de Energía
 
-void MenuUnoCero();  // 1º Ventana de Monitor
+void drawMonitorScreen1();  // 1º Ventana de Monitor
 
-void MenuUnoUno();  // 2º Ventana de Monitor
+void drawMonitorScreen2();  // 2º Ventana de Monitor
 
-void MenuDos();  // Menu de Configuración del Sistema
+void drawConfigurationMenu();  // Menu de Configuración del Sistema
 
-void MenuDosCero();  // Menú de Cambio de Modo de Funcionamiento
+void drawModeScreen();  // Menú de Cambio de Modo de Funcionamiento
 
-void MenuDosUno();  // Configuracion de temp de ACS
+void drawAcsConfigurationScreen();  // Configuracion de temp de ACS
 
-void MenuDosUnoCero();  // Seteo de temp de ACS
+void drawAcsEditScreen();  // Seteo de temp de ACS
 
-void MenuDosTres();  // Habilitacion alarmas de caudal
+void drawFlowAlarmScreen();  // Habilitacion alarmas de caudal
 
-void MenuDosCuatro();  // Cambio a modo manual o automatico
+void drawHeatingScreen();  // Cambio a modo manual o automatico
 
-void MenuCuatro();  // Menú de Visualización de Alarmas
+void drawAlarmMenu();  // Menú de Visualización de Alarmas
 
-void MenuCuatroCero();  // Visualización de Alarmas Activas
+void drawActiveAlarmScreen();  // Visualización de Alarmas Activas
 
-void MenuCinco();  // Registro de alarmas
+void drawAlarmHistoryMenu();  // Registro de alarmas
 
-void MenuCincoCero();  // Registro de alarmas
+void drawAlarmHistoryScreen();  // Registro de alarmas
 
-void MenuDosOcho();  // Habilitacion de Generacion de ACS
+void drawAcsEnableScreen();  // Habilitacion de Generacion de ACS
 
-void MenuDosOchoUno();  // Habilitacion de Delta de ACS
+void drawAcsDeltaScreen();  // Habilitacion de Delta de ACS
 
-void MenuDosNueve();  // ACS electrico
+void drawAcsElectricScreen();  // ACS electrico
 
 #endif

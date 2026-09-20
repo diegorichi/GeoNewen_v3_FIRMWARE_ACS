@@ -1,6 +1,7 @@
 
 #ifndef vars__
 #define vars__
+#include "menu_navigation.h"
 #include <TimerOne.h>  //Librería para el control de salidas PWM
 #include <avr/wdt.h>  //Libreria para uso de watchdog de Arduino
 #include <stdint.h>
@@ -120,7 +121,7 @@ extern unsigned long Ingreso_E3;
 
 extern unsigned long Ingreso_Descanso;  // 0;
 
-extern volatile int MenuActual;  //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
+extern volatile MenuId MenuActual;
 
 extern volatile uint8_t Nro_Alarma;     // 0;
 extern volatile uint8_t SetP_ACS;       // 0;

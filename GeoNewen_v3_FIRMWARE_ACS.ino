@@ -44,8 +44,8 @@ void setup() {
 
     SetP_ACS_Edit = normalizeAcsTemp(&SetP_ACS);
 
-    MenuActual = 0;
-    MenuCero();
+    MenuActual = MENU_HOME;
+    drawHomeScreen();
 
     wdt_enable(WDTO_8S);
 }

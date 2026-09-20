@@ -101,7 +101,7 @@ unsigned long Ingreso_E3;
 
 unsigned long Ingreso_Descanso = 0;
 
-volatile int MenuActual;  //"volatile" se debe indicar para variables que se modifican en las rutinas de interrupción
+volatile MenuId MenuActual = MENU_HOME;
 
 volatile uint8_t Nro_Alarma = 0;
 volatile uint8_t SetP_ACS = 0;

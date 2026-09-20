@@ -19,8 +19,8 @@ void frioCalor(bool paramModoFrio)  // Función de cambio de Modo de Funcionamie
     modoFrio = paramModoFrio;
     Valor_DO_V4V = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
 
-    MenuActual = 20;
-    MenuDosCero();
+    MenuActual = MENU_MODE;
+    drawModeScreen();
 }
 
 void changeModo(bool paramModoFrio) {

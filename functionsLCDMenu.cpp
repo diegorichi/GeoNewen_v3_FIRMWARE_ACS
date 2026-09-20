@@ -28,45 +28,11 @@ void lcdCreateSpecialChars() {
 }
 
 void lcdRefreshValues() {
-    if (MenuActual == 0)  // Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
-        RefreshMenuCero();
-
-    if (MenuActual == 10)  // Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
-        RefreshMenuUnoCero();
-
-    if (MenuActual == 11)  // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
-        RefreshMenuUnoUno();
-
-    if (MenuActual == 20)  // Modo Frio / Calor
-        RefreshMenuDosCero();
-
-    if (MenuActual == 210)  // Editar valor ACS
-        RefreshMenuDosUnoCero();
-
-    if (MenuActual == 23)  // Alarmas
-        RefreshMenuDosTres();
-
-    if (MenuActual == 24)  // Funcionamiento Auto/Manual
-        RefreshMenuDosCuatro();
-
-    if (MenuActual == 28)  // Activacion/desactivacion de ACS
-        RefreshMenuDosOcho();
-
-    if (MenuActual == 281)  // Activacion/desactivacion de delta ACS electrico
-        RefreshMenuDosOchoUno();
-
-    if (MenuActual == 29)  // Activacion/desactivacion de ACS electrico
-        RefreshMenuDosNueve();
-
-    if (MenuActual == 40)  // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-        RefreshMenuCuatroCero();
-
-    if (MenuActual == 50)  // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-        RefreshMenuCincoCero();
+    refreshCurrentMenu();
 }
 
 // Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
-void RefreshMenuCero() {
+void refreshHomeScreen() {
     lcd.setCursor(19, 2);
     lcd.print(Estado_Maquina);
 
@@ -85,7 +51,7 @@ void RefreshMenuCero() {
 }
 
 // Este menú es la primer ventana del monitor de temperaturas y consumo eléctrico
-void RefreshMenuUnoCero() {
+void refreshMonitorScreen1() {
     lcd.setCursor(5, 0);
     if (modoFrio) {
         lcd.print(F("FRIO "));
@@ -103,7 +69,7 @@ void RefreshMenuUnoCero() {
 }
 
 // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
-void RefreshMenuUnoUno() {
+void refreshMonitorScreen2() {
     lcd.setCursor(5, 0);
     if (modoFrio) {
         lcd.print(F("FRIO "));
@@ -129,7 +95,7 @@ void RefreshMenuUnoUno() {
 }
 
 // Modo Frio / Calor
-void RefreshMenuDosCero() {
+void refreshModeScreen() {
     lcd.setCursor(12, 2);
     if (modoFrio) {
         lcd.print(F("FRIO "));
@@ -139,7 +105,7 @@ void RefreshMenuDosCero() {
 }
 
 // Editar valor ACS
-void RefreshMenuDosUnoCero() {
+void refreshAcsEditScreen() {
     lcd.setCursor(14, 1);
     lcd.print(SetP_ACS);
     lcd.setCursor(13, 2);
@@ -147,7 +113,7 @@ void RefreshMenuDosUnoCero() {
 }
 
 // Alarmas
-void RefreshMenuDosTres() {
+void refreshFlowAlarmScreen() {
     lcd.setCursor(8, 2);
     if (EnableFlowAlarm) {
         lcd.print(F("ON "));
@@ -156,7 +122,7 @@ void RefreshMenuDosTres() {
 }
 
 // Funcionamiento Auto/Manual
-void RefreshMenuDosCuatro() {
+void refreshHeatingScreen() {
     lcd.setCursor(10, 2);
     if (!heating_off) {
         lcd.print(F("ENCENDIDO"));
@@ -165,7 +131,7 @@ void RefreshMenuDosCuatro() {
 }
 
 // Activacion/desactivacion de ACS
-void RefreshMenuDosOcho() {
+void refreshAcsEnableScreen() {
     lcd.setCursor(15, 1);
     if (EnableACS) {
         lcd.print(F("ON "));
@@ -174,7 +140,7 @@ void RefreshMenuDosOcho() {
 }
 
 // Activacion/desactivacion de delta de ACS electrico final
-void RefreshMenuDosOchoUno() {
+void refreshAcsDeltaScreen() {
     lcd.setCursor(12, 1);
     if (EnableACS_DeltaElectrico) {
         lcd.print(F("ON "));
@@ -189,7 +155,7 @@ void RefreshMenuDosOchoUno() {
 }
 
 // Activacion/desactivacion de ACS electrico
-void RefreshMenuDosNueve() {
+void refreshAcsElectricScreen() {
     lcd.setCursor(15, 1);
     if (EnableElectricACS) {
         lcd.print(F("ON "));
@@ -204,7 +170,7 @@ void RefreshMenuDosNueve() {
 }
 
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-void RefreshAlarma(uint8_t _nro_Alarma) {
+void refreshAlarmMessage(uint8_t _nro_Alarma) {
     lcd.setCursor(0, 1);
     switch (_nro_Alarma) {
         case 0: {
@@ -247,13 +213,13 @@ void RefreshAlarma(uint8_t _nro_Alarma) {
 }
 
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-void RefreshMenuCuatroCero() {
-    RefreshAlarma(Nro_Alarma);
+void refreshActiveAlarmScreen() {
+    refreshAlarmMessage(Nro_Alarma);
 }
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
-void RefreshMenuCincoCero() {
+void refreshAlarmHistoryScreen() {
     Alarma_Eeprom = EEPROMreaduint8_t(Alarma_Address);
-    RefreshAlarma(Alarma_Eeprom);
+    refreshAlarmMessage(Alarma_Eeprom);
 }
 
 /**********************************/
@@ -273,7 +239,7 @@ void showNavigation() {
 }
 
 // Pantalla de Inicio/Bienvenida
-void MenuCero() {
+void drawHomeScreen() {
     beginLcd();
     lcd.print(F("     KUME NEWEN     "));
     lcd.setCursor(0, 1);
@@ -285,7 +251,7 @@ void MenuCero() {
 }
 
 // Menú de Monitor de Temps y Consumo de Energía
-void MenuUno() {
+void drawMonitorMenu() {
     beginLcd();
     lcd.print(F("MONITOR DE TEMPS"));
     lcd.setCursor(0, 1);
@@ -294,7 +260,7 @@ void MenuUno() {
 }
 
 // 1º Ventana de Monitor
-void MenuUnoCero() {
+void drawMonitorScreen1() {
     beginLcd();
     lcd.print(F("MODO:            "));
     lcd.setCursor(0, 2);
@@ -309,7 +275,7 @@ void MenuUnoCero() {
 }
 
 // 2º Ventana de Monitor
-void MenuUnoUno() {
+void drawMonitorScreen2() {
     beginLcd();
     lcd.print(F("MODO:            "));
     lcd.setCursor(0, 1);
@@ -328,7 +294,7 @@ void MenuUnoUno() {
 }
 
 // Menu de Configuración del Sistema
-void MenuDos() {
+void drawConfigurationMenu() {
     beginLcd();
     lcd.print(F("CONFIGURACION DEL   "));
     lcd.setCursor(0, 1);
@@ -338,7 +304,7 @@ void MenuDos() {
 }
 
 // Menú de Cambio de Modo de Funcionamiento
-void MenuDosCero() {
+void drawModeScreen() {
     beginLcd();
     lcd.print(F("MODO FRIO/CALOR     "));
     lcd.setCursor(0, 2);
@@ -349,7 +315,7 @@ void MenuDosCero() {
 }
 
 // Configuracion de temp de ACS
-void MenuDosUno() {
+void drawAcsConfigurationScreen() {
     beginLcd();
     lcd.print(F("CONFIGURACION DE    "));
     lcd.setCursor(0, 1);
@@ -360,7 +326,7 @@ void MenuDosUno() {
 }
 
 // Seteo de temp de ACS
-void MenuDosUnoCero() {
+void drawAcsEditScreen() {
     beginLcd();
     lcd.print(F("MODIFIQUE VALOR     "));
     lcd.setCursor(0, 1);
@@ -373,7 +339,7 @@ void MenuDosUnoCero() {
 }
 
 // Habilitacion alarmas de caudal
-void MenuDosTres() {
+void drawFlowAlarmScreen() {
     beginLcd();
     lcd.print(F("HABILITACION DE     "));
     lcd.setCursor(0, 1);
@@ -386,7 +352,7 @@ void MenuDosTres() {
 }
 
 // Apagar la caldera
-void MenuDosCuatro() {
+void drawHeatingScreen() {
     beginLcd();
     lcd.print(F("ENCENDIDO/APAGADO "));
     lcd.setCursor(0, 2);
@@ -397,7 +363,7 @@ void MenuDosCuatro() {
 }
 
 // Habilitacion de Generacion de ACS
-void MenuDosOcho() {
+void drawAcsEnableScreen() {
     beginLcd();
     lcd.print(F("HABILITACION DE     "));
     lcd.setCursor(0, 1);
@@ -408,7 +374,7 @@ void MenuDosOcho() {
 }
 
 // Habilitacion de Delta electrico
-void MenuDosOchoUno() {
+void drawAcsDeltaScreen() {
     beginLcd();
     lcd.print(F("ACS CON DELTA ELECT "));
     lcd.setCursor(0, 1);
@@ -419,7 +385,7 @@ void MenuDosOchoUno() {
 }
 
 // ACS electrico
-void MenuDosNueve() {
+void drawAcsElectricScreen() {
     beginLcd();
     lcd.print(F("HABILITACION DE     "));
     lcd.setCursor(0, 1);
@@ -430,14 +396,14 @@ void MenuDosNueve() {
 }
 
 // Menú de Visualización de Alarmas
-void MenuCuatro() {
+void drawAlarmMenu() {
     beginLcd();
     lcd.print(F("MONITOR DE ALARMAS"));
     showNavigation();
 }
 
 // Visualización de Alarmas Activas
-void MenuCuatroCero() {
+void drawActiveAlarmScreen() {
     beginLcd();
     lcd.print(F("ALARMA ACTIVA:"));
     lcd.setCursor(0, 3);
@@ -445,13 +411,13 @@ void MenuCuatroCero() {
 }
 
 // REGISTRO DE ALARMAS
-void MenuCinco() {
+void drawAlarmHistoryMenu() {
     beginLcd();
     lcd.print(F("REGISTRO DE ALARMAS"));
     showNavigation();
 }
 
-void MenuCincoCero() {
+void drawAlarmHistoryScreen() {
     beginLcd();
     lcd.print(F("ULTIMA ALARMA ACTIVA"));
     lcd.setCursor(0, 3);
