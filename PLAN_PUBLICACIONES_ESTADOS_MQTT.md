@@ -1,5 +1,15 @@
 # Plan: publicaciones inmediatas de estados MEGA → ESP → MQTT
 
+## Estado actual — 2026-10-02
+
+- `heating_off` todavía no está implementado en el ESP.
+- Actualmente se manejan dos valores de temperatura ACS: temperatura actual y
+  temperatura deseada/seteada.
+- La temperatura deseada viaja a la MEGA y se guarda; al publicarse se expone
+  como temperatura seteada.
+- Falta separar y publicar explícitamente los tres conceptos: temperatura ACS
+  actual, temperatura ACS deseada y temperatura ACS seteada.
+
 ## Objetivo
 
 Hacer que los cambios relevantes de la MEGA lleguen inmediatamente a la nube,
