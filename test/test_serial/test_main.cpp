@@ -1,5 +1,6 @@
 #include <unity.h>
 #include "SerialEsp8266.h"
+#include "../protocol_cases.h"
 
 unsigned long fake_millis_now = 0;
 int fake_digital_inputs[64] = {};
@@ -179,6 +180,23 @@ void test_non_numeric_status_sequence_is_not_sent(void) {
     TEST_ASSERT_FALSE(pendingStatusActive);
 }
 
+void test_protocol_cases_cover_real_mega_handlers(void) {
+    resetFixtures();
+    SerialEsp8266 esp(&Serial);
+
+    strcpy(Serial.input, MEGA_PROTOCOL_CASES[0].frame);
+    Serial.inputLength = strlen(Serial.input);
+    esp.handleEspSerial();
+    TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:1#"));
+
+    resetFixtures();
+    SerialEsp8266 invalidEsp(&Serial);
+    strcpy(Serial.input, MEGA_PROTOCOL_CASES[5].frame);
+    Serial.inputLength = strlen(Serial.input);
+    invalidEsp.handleEspSerial();
+    TEST_ASSERT_EQUAL(0, Serial.outputLength);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_valid_command_updates_state_and_sends_ack);
@@ -191,5 +209,6 @@ int main(void) {
     RUN_TEST(test_status_snapshot_contains_all_expected_frames);
     RUN_TEST(test_wrong_status_ack_does_not_clear_pending);
     RUN_TEST(test_non_numeric_status_sequence_is_not_sent);
+    RUN_TEST(test_protocol_cases_cover_real_mega_handlers);
     return UNITY_END();
 }

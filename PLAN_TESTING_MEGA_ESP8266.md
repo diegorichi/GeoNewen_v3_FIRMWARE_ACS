@@ -942,6 +942,54 @@ sensores físicos queda como siguiente etapa de hardware/integración.
 
 Plan `PLAN_TESTING_MEGA_ESP8266.md` completado dentro del alcance sin hardware.
 
+## Ejecución verificada: 2026-10-07
+
+Se repitió la validación con el estado actual de ambos repositorios:
+
+- MEGA: `pio test -e native`: 75/75 exitosos.
+- ESP8266: `pio test -e native`: 21/21 exitosos.
+- MEGA: `pio run -e megaatmega2560`: `SUCCESS`.
+- ESP8266: `pio run -e nodemcu`: `SUCCESS`.
+- `git diff --check`: sin errores.
+
+La ejecución requirió reconstruir un cache temporal de PlatformIO a partir de
+paquetes ya instalados porque el cache indicado inicialmente no estaba completo.
+Eso no modifica el firmware ni constituye evidencia de hardware.
+
+## Estado real de cierre
+
+El alcance local sin hardware queda verificado. El plan general todavía no está
+completo: no hay puertos seriales de las placas ni broker de test disponible en
+este entorno. Siguen pendientes y no se deben marcar como ejecutados:
+
+- contrato común MEGA–ESP y simulador extremo a extremo;
+- broker MQTT de test, Wi-Fi, NTP, TLS, LittleFS/certificados y OTA;
+- comunicación serial física, entradas, sensores, teclado, LCD y salidas;
+- watchdog y medición del loop con periféricos conectados.
+
+Estado: `parcial`, con el software local cerrado y la validación física bloqueada
+por falta de placas/periféricos y broker accesibles.
+
+## Ejecución adicional sin hardware: 2026-10-07
+
+Se completó la parte reproducible sin placas:
+
+- MEGA native: 76/76 tests exitosos.
+- ESP8266 native: 22/22 tests exitosos.
+- Casos de protocolo equivalentes, definidos y ejecutados dentro de cada
+  repositorio, sin imports ni tests cruzados.
+- Simulador host: 4/4 tests exitosos para comando, ACK, status, ACK de status,
+  duplicados y tramas inválidas.
+- Builds de MEGA y ESP8266: `SUCCESS` después de los cambios.
+
+La cobertura detectó y corrigió un defecto real del ESP8266: aceptaba una
+secuencia no numérica en `status:x:...` y enviaba ACK. Ahora descarta esa trama.
+
+No se marca como cerrado el broker real, porque no hay Mosquitto/EMQX instalado
+ni un broker de test disponible. Eso no requiere hardware, pero requiere
+instalar y ejecutar el broker antes de validar conexión, publicación y
+reconexión reales.
+
 ## Decisión posterior a la primera ejecución
 
 La primera implementación de la Etapa 1 modificó lógica productiva para hacerla
