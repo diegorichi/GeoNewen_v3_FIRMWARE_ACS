@@ -45,7 +45,7 @@ void stateMachine1() {
         }
 
         // rutina para activar las bombas una vez por dia durante 10 segundos, para evitar daños por inactividad (86400000)
-        if ((millis() - dontStuckPumpsStart) > 86400000) {
+        if ((millis() - dontStuckPumpsStart) > 86400000 && dontStuckPumpsStart_activation == 0) {
             buzzerBip();
             Valor_DO_Bombas = HIGH;
             dontStuckPumpsStart_activation = millis();
@@ -53,6 +53,7 @@ void stateMachine1() {
         if ((millis() - dontStuckPumpsStart_activation) > 10000) {
             Valor_DO_Bombas = LOW;
             dontStuckPumpsStart = millis();
+            dontStuckPumpsStart_activation = 0;
         }
 
         if ((millis() - valvulaACSStart) > 15000) {

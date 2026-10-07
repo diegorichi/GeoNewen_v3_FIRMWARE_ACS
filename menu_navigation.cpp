@@ -77,6 +77,9 @@ void processMenuButton(MenuButton button) {
     if (button == BUTTON_BACK) target = entry->back;
 
     if (target != MENU_NONE) {
+        if (MenuActual == MENU_ACS_EDIT && button == BUTTON_BACK) {
+            SetP_ACS_Edit = SetP_ACS;
+        }
         navigateTo(target);
         return;
     }

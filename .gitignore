@@ -6,3 +6,6 @@
 *.elf
 *.hex
 *.a
+.pio/**/examples/
+.pio/**/Unity/
+__pycache__/

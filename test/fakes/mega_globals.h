@@ -1,0 +1,36 @@
+#pragma once
+const int DI_Caud_T = 18, DI_Caud_H = 19, DI_Marcha_on = 33;
+const int DI_Pres_HI = 35, DI_Pres_LOW = 37;
+const int DO_Calentador = 23, DO_Compressor = 25, DO_Bombas = 27;
+const int DO_Valvula4Vias = 29, DO_ValvulaACS = 31;
+const int DO_Triac_01 = 11, DO_Buzzer = 12;
+
+volatile int Estado_Maquina;
+int Caud_T, C1_T, C2_T, C3_T, Caud_Tacu;
+int Caud_H, C1_H, C2_H, C3_H, Caud_Hacu;
+int Cont_Temp_Des, Cont_Temp_Compressor, Cont_Press_HI;
+int Cont_Press_LOW, Cont_Temp_Descarga;
+float Temp_Compressor, T5_Comp, T4_Comp, T3_Comp, T2_Comp, T1_Comp, Temp_CompressorAcu;
+float Temp_ACS, T1_ACS, T2_ACS, T3_ACS, Temp_ACSacu;
+float Temp_out_H, Temp_in_H, Temp_out_T, Temp_in_T, Temp_Descarga, Temp_Admision;
+float T1_OH, T2_OH, T3_OH, Temp_out_Hacu;
+float T1_IH, T2_IH, T3_IH, Temp_in_Hacu;
+float T1_Des, T2_Des, T3_Des, Temp_DescargaAcu;
+bool Flag_TempCompressor, Flag_Temp_Descarga;
+unsigned long valvulaACSStart, PumpStart, Ingreso_E7, Ingreso_E71;
+const uint8_t GAP_ACS = 5;
+unsigned long Periodo_Refresco, compressorStart, Salto_E1;
+unsigned long dontStuckPumpsStart_activation, dontStuckPumpsStart, Ingreso_E3;
+unsigned long Ingreso_Descanso;
+volatile MenuId MenuActual;
+volatile uint8_t Nro_Alarma, SetP_ACS, SetP_ACS_Edit;
+uint8_t Alarma_Eeprom;
+bool deltaACSElectricResult, Flag_CaudT, Flag_CaudH;
+bool Flag_PresHI, Flag_PresLOW, Flag_Temp_Adm;
+volatile bool modoFrio, Alarma_Activa, heating_off, Flag_Buzzer;
+bool Flag_Marcha_ON, senal_start, senal_stop;
+volatile bool EnableFlowAlarm, EnableACS, EnableACS_DeltaElectrico;
+volatile bool EnableElectricACS;
+int Valor_DO_Bombas, Valor_DO_Calentador, Valor_DO_Compressor;
+int Valor_DO_VACS, Valor_DO_V4V;
+volatile int Valor_DO_Buzzer;

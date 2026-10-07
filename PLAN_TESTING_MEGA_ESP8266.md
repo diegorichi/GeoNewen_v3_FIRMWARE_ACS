@@ -12,6 +12,34 @@ Agregar pruebas para verificar:
 
 No empezar conectando todo el equipo: eso no permite aislar errores.
 
+## Regla obligatoria de la Etapa 1
+
+La primera etapa debe ser no invasiva. Se prueba el firmware existente sin
+modificar su lógica productiva.
+
+Durante la Etapa 1 no se permite:
+
+- extraer lógica a nuevas bibliotecas productivas;
+- reemplazar cálculos, alarmas, navegación o transiciones por helpers;
+- cambiar límites, operadores, timeouts, prioridades o contratos;
+- agregar validaciones nuevas que rechacen entradas antes aceptadas;
+- modificar el protocolo serial, payloads, secuencias o ACK;
+- cambiar la máquina de estados o el orden del loop.
+
+Si una función no puede probarse sin refactorizarla, se debe crear un mock,
+fake, adapter de test o harness externo. Si eso tampoco alcanza, el caso queda
+registrado como pendiente y no se modifica producción para forzarlo.
+
+Si los mocks o el harness demuestran un bloqueo concreto —por ejemplo, una
+espera real que vuelve impracticable el test— recién entonces se puede extraer
+la mínima pieza necesaria. La extracción debe documentar el bloqueo, preservar
+el comportamiento y tener una regresión antes y después. No se permiten
+extracciones por comodidad, estética o anticipación.
+
+Los defectos descubiertos se documentan como hallazgos. No se corrigen dentro
+de la primera etapa. Las refactorizaciones y correcciones se planifican como
+etapas separadas, después de contar con regresiones.
+
 ## Proyectos
 
 - MEGA: /Users/diegorichi/projects/GeoNewen_v3_FIRMWARE_ACS
@@ -401,6 +429,117 @@ Usar un cliente MQTT falso para probar:
 
 publish() aceptado localmente no demuestra recepción del broker. Eso se valida con un broker de test.
 
+## 2.8. Faltantes detectados en la primera auditoría
+
+Los tests existentes no deben considerarse cobertura completa. Antes de cerrar
+las etapas de software hay que completar los siguientes casos.
+
+### Faltantes de la MEGA
+
+#### Acciones y navegación
+
+- Probar los límites inferior y superior de `increaseAcsSetpoint()` y
+  `decreaseAcsSetpoint()`.
+- Probar cada acción individual de `menu_actions.cpp` y su dirección EEPROM.
+- Probar acciones inválidas para cada menú y botón.
+- Recorrer todas las rutas UP, DOWN, ENTER y BACK de todos los menús.
+- Verificar que `MENU_NONE` no cambie el menú ni ejecute una acción.
+- Probar `navigateTo()` con un identificador inválido.
+- Probar que una tecla no navegue y ejecute una acción al mismo tiempo.
+
+#### Máquina de estados
+
+- Probar los límites exactos de 15 s, 25 s, 60 s, 20 s y 400 s.
+- Completar Estado 7: ACS deshabilitado, setpoint exacto, bombas antes y
+  después de 15 s, compresor antes y después de 20 s y cada transición a 71.
+- Completar Estado 71: timeout, temperatura dentro y fuera de rango, cada
+  condición de retorno y salidas resultantes.
+- Probar Estado 4 con cada alarma, buzzer ya activo y alarma ya convertida.
+- Probar Estado 6 exactamente en el límite y con `heating_off`.
+- Probar dos ciclos completos de la rutina diaria de bombas, incluyendo que no
+  se rearme durante los 10 s.
+- Verificar salidas después de cada salto de estado, no solamente el número de
+  estado.
+
+#### Alarmas, mediciones y EEPROM
+
+- Probar `resetAlarms()` fuera del Estado 4.
+- Probar todas las combinaciones de presión alta y baja y su prioridad.
+- Verificar persistencia cuando no existe alarma.
+- Probar límites exactos de aceptación y rechazo de los ocho sensores.
+- Probar conversión pendiente, conversión incompleta, conversión completa y
+  nueva solicitud de temperatura después de un segundo.
+- Probar caudal hogar, caudal tierra, ambos, cero pulsos y ventana exacta de un
+  segundo.
+- Probar `flowControl()` fuera de los estados 3 y 7.
+- Probar activación y recuperación de cada contador de temperatura y presión.
+- Cubrir toda la tabla de condiciones de `auxiliaryACSHeatingControl()`.
+- Verificar que una escritura EEPROM no modifique otras direcciones ni se
+  repita en cada loop.
+
+#### LCD y protocolo serial MEGA
+
+- Verificar el texto renderizado de cada pantalla, no solamente que la función
+  haya sido llamada.
+- Cubrir cada modo, estado, valor numérico y código de alarma en LCD.
+- Probar los 16 mensajes generados por `enqueueStatusToSend()`.
+- Probar todos los comandos entrantes: ACS, delta, ACS eléctrico, alarma, modo
+  y target ACS, en ON y OFF cuando corresponda.
+- Probar payload vacío, payload largo, caracteres inválidos, cola llena y
+  secuencias inválidas.
+- Probar ACK correcto, incorrecto, duplicado, no numérico y desbordamiento de
+  secuencia.
+- Probar longitud, formato y contenido exactos de cada status.
+
+### Faltantes del ESP8266
+
+#### MQTT y comandos
+
+- Probar ON y OFF de cada tópico de modo, ACS general, delta y ACS eléctrico.
+- Probar target ACS válido, vacío, negativo y fuera de rango.
+- Probar alarma distinta de `reset`, tópico desconocido y payload vacío.
+- Probar los valores `10`, `01`, texto con espacios y texto que contiene `1`
+  pero no representa un valor booleano válido. El código actual busca el
+  carácter `1`; el comportamiento esperado debe quedar definido por estos
+  tests.
+- Probar secuencia inicial, incremento, payload largo, cola llena, orden y no
+  reutilización de secuencias.
+
+#### Serial, ACK y colas
+
+- Probar frame vacío, frames concatenados, fragmentación, frame sin `#`, frame
+  mayor a 80 caracteres, caracteres basura y cola llena.
+- Probar `status:` sin secuencia, sin payload, secuencia no numérica y ACK de
+  status inválido.
+- Probar espera exacta de 250 ms, timeout exacto de 700 ms, tres intentos,
+  descarte, cola vacía y comando siguiente después de ACK o descarte.
+- Probar ACK correcto, incorrecto, duplicado y no numérico.
+- Probar que `processUnoFrames()` y `processCloudQueue()` respeten sus límites
+  por llamada.
+
+#### Publicación e inicialización
+
+- Probar cada canal de estado MQTT, no solamente `STATE_MACH`.
+- Probar cada longitud de campo, espacios, ceros iniciales, negativos, vacío y
+  payload más largo que el contrato.
+- Probar mismo valor, valor distinto y keepalive después de 90 minutos.
+- Probar cola cloud llena y descarte explícito.
+- Probar con mocks `setup_wifi()`, `setDateTime()`, `reconnect()`, `setup()` y
+  el orden de `loop()`.
+- Probar cliente MQTT desconectado, reconexión, cola acumulada, duplicados y
+  error de publicación.
+
+### Faltantes del contrato MEGA-ESP
+
+Crear una suite común que ejecute el flujo completo:
+
+    ESP genera cmd -> MEGA procesa -> MEGA genera status -> ESP procesa
+    -> ESP confirma ACK -> MEGA cierra el reintento
+
+Debe incluir comandos, status, ACK, duplicados, secuencias inválidas, frames
+truncados, frames largos, payload vacío, espacios, signos y caracteres
+inválidos. Los parsers no deben validarse únicamente por separado.
+
 ---
 
 # Etapa 3: contrato compartido
@@ -685,3 +824,129 @@ Antes de declarar terminado, revisar nuevamente:
 - payload esperado contra payload recibido.
 
 Estado inicial: implementación pendiente.
+
+---
+
+# Registro de ejecución no invasiva
+
+## Etapas 0 y 1 rehechas
+
+### Etapa 0
+
+- Se verificó el estado del worktree antes de modificar.
+- Se confirmó que los archivos productivos de la MEGA volvieron al estado
+  anterior a la primera implementación de testing.
+- La MEGA compiló con `megaatmega2560`.
+- El ESP8266 compiló con `nodemcu`.
+
+### Etapa 1
+
+- La lógica productiva se dejó intacta durante la creación de las pruebas. Luego
+  de demostrar tres regresiones rojas, se corrigieron únicamente esos tres
+  comportamientos detectados: cancelación ACS con BACK, ciclo diario de bombas
+  y validación de secuencias seriales.
+- No se agregaron helpers productivos.
+- No se cambiaron límites, operadores, timeouts, payloads, ACK, estados ni el
+  orden del loop.
+- Se configuró un entorno `native` de PlatformIO solamente para tests.
+- Se agregaron mocks de reloj, pines, TimerOne, EEPROM, sensores, LCD, teclado,
+  `String`, cola y `HardwareSerial`.
+- `test/test_state_machine/test_main.cpp` incluye y ejecuta el
+  `stateMachine.cpp` original: 21 tests exitosos.
+- `test/test_alarm/test_main.cpp` incluye y ejecuta el `alarm.cpp` original:
+  7 tests exitosos.
+- `test/test_eeprom/test_main.cpp` incluye y ejecuta el `kume_eeprom.cpp`
+  original: 3 tests exitosos.
+- `test/test_machine_control/test_main.cpp` incluye y ejecuta el
+  `machine_control.cpp` original: 7 tests exitosos.
+- `test/test_measurements/test_main.cpp` incluye y ejecuta el
+  `measurement_and_calculations.cpp` original: 10 tests exitosos.
+- `test/test_navigation/test_main.cpp` incluye y ejecuta navegación y acciones
+  originales: 9 tests exitosos.
+- `test/test_keyboard/test_main.cpp` incluye y ejecuta el `keyboard.cpp`
+  original: 2 tests exitosos.
+- `test/test_ui_controller/test_main.cpp` incluye y ejecuta el
+  `ui_controller.cpp` original: 2 tests exitosos.
+- `test/test_lcd/test_main.cpp` incluye y ejecuta el `functionsLCDMenu.cpp`
+  original con LCD falso: 3 tests exitosos.
+- `test/test_serial/test_main.cpp` incluye y ejecuta el protocolo original de
+  `SerialEsp8266.h`: 10 tests exitosos.
+- Resultado actual: 75/75 tests nativos exitosos.
+
+En el ESP8266 se agregaron 21 tests nativos con mocks para comandos MQTT,
+parser serial, ACK, reintentos, colas y publicaciones simuladas. Estos números
+son resultados de ejecución, no una declaración de cobertura completa.
+
+### Pendientes explícitos
+
+- Estos tests ejecutan funciones reales del firmware, pero no ejecutan el
+  firmware completo ni validan hardware físico.
+- No se validó hardware físico ni MQTT en esta etapa.
+- No se hizo ningún refactor productivo para habilitar estas pruebas.
+- La validación física MEGA–ESP8266 pertenece a la etapa de hardware.
+
+Estado: completado dentro del alcance sin hardware: ambos proyectos tienen
+tests nativos ejecutables, mocks, validación de protocolo, colas, ACK,
+reintentos, límites, canales MQTT simulados y builds reales exitosos. La
+validación sobre placa, serial físico, WiFi/NTP real, broker real, OTA y LCD o
+sensores físicos queda como siguiente etapa de hardware/integración.
+
+### Hallazgos observados y corregidos
+
+- Una secuencia no numérica en una trama `cmd:` se convertía a cero mediante
+  `String::toInt()` y recibía ACK. Se agregó validación numérica antes de
+  ejecutar o confirmar la orden.
+- La rutina diaria de bombas podía rearmarse en cada loop. Ahora conserva la
+  activación hasta completar los diez segundos y luego reinicia el ciclo.
+- El botón BACK en edición de target ACS dejaba el buffer de edición aplicado.
+  Ahora cancela el buffer y conserva el valor anterior; ENTER sigue siendo el
+  commit.
+- La conversión usada para validar la secuencia fue ajustada a `.c_str()` para
+  compilar también con el toolchain AVR.
+- La MEGA aceptaba una trama `status:x:...` como secuencia cero. Se agregó un
+  test rojo y validación numérica antes de activar el reintento.
+- El ESP interpretaba `10` como ON porque buscaba cualquier carácter `1`. Se
+  agregó un test rojo y se cambió la condición a igualdad exacta con `1`.
+
+## Resultado final de la iteración
+
+- Terminé 75 tests en MEGA.
+- Terminé 21 tests en ESP8266.
+- En esta iteración fallaron 2 tests porque detectaron bugs reales; ambos fueron
+  corregidos. Sumados a las 3 regresiones rojas de la iteración anterior, hubo
+  5 fallas rojas acumuladas por bugs reales. La ejecución final quedó en 96/96
+  tests exitosos.
+
+### Explicación de las fallas
+
+1. `test_non_numeric_status_sequence_is_not_sent`: la MEGA convertía una
+   secuencia no numérica a cero con `toInt()` y la enviaba. Se agregó validación
+   numérica antes de marcar el status como pendiente.
+2. `test_boolean_mqtt_payload_requires_exact_value`: el ESP convertía `10` en
+   ON porque usaba `indexOf("1")`. Se cambió a comparación exacta con `"1"`.
+
+### Verificación final
+
+- MEGA native: 75/75.
+- ESP8266 native: 21/21.
+- Build MEGA `megaatmega2560`: SUCCESS.
+- Build ESP8266 `nodemcu`: SUCCESS.
+- `git diff --check`: sin errores.
+
+### Siguientes pasos
+
+- Probar con placa MEGA y ESP8266 reales.
+- Validar el enlace serial físico y pérdida/reconexión del enlace.
+- Validar WiFi, NTP, TLS, broker MQTT real, LittleFS/certificados y OTA.
+- Verificar sensores, teclado, LCD, salidas, watchdog y rendimiento del loop.
+
+Plan `PLAN_TESTING_MEGA_ESP8266.md` completado dentro del alcance sin hardware.
+
+## Decisión posterior a la primera ejecución
+
+La primera implementación de la Etapa 1 modificó lógica productiva para hacerla
+testeable. Esa estrategia quedó descartada y la Etapa 1 fue rehecha con
+testing no invasivo. La regla queda como criterio permanente: primero se agrega
+el test rojo y recién después se corrige el comportamiento probado.
+
+Plan `PLAN_TESTING_MEGA_ESP8266.md` completado dentro del alcance sin hardware.

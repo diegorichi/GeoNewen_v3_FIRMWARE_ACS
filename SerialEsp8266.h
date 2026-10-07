@@ -70,7 +70,17 @@ bool sendToSerial(HardwareSerial* espSerial) {
             return true;
         }
 
-        pendingStatusSequence = message.substring(7, separator).toInt();
+        String sequence = message.substring(7, separator);
+        const char* sequenceText = sequence.c_str();
+        for (const char* character = sequenceText; *character != '\0'; ++character) {
+            if (!isDigit(*character)) {
+                GEO_LOG_PRINT("trama descartada antes de enviar: ");
+                GEO_LOG_PRINTLN(message);
+                return true;
+            }
+        }
+
+        pendingStatusSequence = sequence.toInt();
         pendingStatusAttempts = 1;
         pendingStatusActive = true;
         pendingStatusSentAt = millis();
@@ -295,17 +305,27 @@ class SerialEsp8266 {
                             int separator = command.indexOf(':', 4);
                             if (separator > 4) {
                                 String sequence = command.substring(4, separator);
-                                String payload = command.substring(separator + 1);
-                                if (sequence.toInt() != lastCommandSequence) {
-                                    payload.toCharArray(slidingBuffer, SLIDING_BUFFER_LEN + 1);
-                                    this->handleProtocolWithEsp();
-                                    lastCommandSequence = sequence.toInt();
-                                    this->enqueueStatusToSend();
-                                } else {
-                                    GEO_LOG_PRINT("Comando duplicado, solo ACK: ");
-                                    GEO_LOG_PRINTLN(sequence);
+                                const char* sequenceText = sequence.c_str();
+                                bool validSequence = sequenceText[0] != '\0';
+                                for (const char* character = sequenceText; *character != '\0'; ++character) {
+                                    if (!isDigit(*character)) {
+                                        validSequence = false;
+                                        break;
+                                    }
                                 }
-                                this->sendCommandAck(sequence);
+                                if (validSequence) {
+                                    String payload = command.substring(separator + 1);
+                                    if (sequence.toInt() != lastCommandSequence) {
+                                        payload.toCharArray(slidingBuffer, SLIDING_BUFFER_LEN + 1);
+                                        this->handleProtocolWithEsp();
+                                        lastCommandSequence = sequence.toInt();
+                                        this->enqueueStatusToSend();
+                                    } else {
+                                        GEO_LOG_PRINT("Comando duplicado, solo ACK: ");
+                                        GEO_LOG_PRINTLN(sequence);
+                                    }
+                                    this->sendCommandAck(sequence);
+                                }
                             }
                         } else if (command.startsWith("ack:status:")) {
                             uint16_t sequence = command.substring(11).toInt();

@@ -1,5 +1,17 @@
 # Plan: menú indexado y legible
 
+## Estado: cerrado — validado completamente en producción
+
+La prueba completa en producción fue realizada y el plan queda cerrado.
+
+Se considera validado:
+
+- navegación por todos los menús y saltos circulares;
+- botones arriba, abajo, enter y atrás;
+- edición de temperatura ACS;
+- alarmas, EEPROM y refresco de pantalla;
+- ausencia de referencias numéricas de `MenuActual` fuera de la capa de navegación.
+
 ## Objetivo
 
 Mantener la navegación actual, eliminar los números mágicos (`210`, `281`, etc.) y centralizar las transiciones sin usar la implementación OO descartada.
