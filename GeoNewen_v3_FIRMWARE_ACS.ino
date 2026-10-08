@@ -43,7 +43,7 @@ void setup() {
     // Carga parametros guardados en la memoria EEPROM
     EEPROMLectura();  
 
-    SetP_ACS_Edit = normalizeAcsTemp(&SetP_ACS);
+    acsSetpointEdit = normalizeAcsTemp(&acsSetpoint);
 
     navigateTo(MENU_HOME);
 
@@ -96,6 +96,10 @@ void mainLoop() {
 
     processUiEvents();
 
+    // Los estados discretos disparan una instantanea. Los valores continuos
+    // se incluyen, pero no provocan publicaciones por si mismos.
+    esp8266.detectAndEnqueueChangedStatus();
+
     // IMAGEN DE SALIDAS
     writeOutput();
 
@@ -127,9 +131,9 @@ void loop() {
     }
     if (millis() - ultimoLogLoop >= 1000) {
         ultimoLogLoop = millis();
-        GEO_LOG_PRINT(F("diag loop_max_us="));
+        GEO_LOG_PRINT(F("diag loopMaxUs="));
         GEO_LOG_PRINT(maxLoopUs);
-        GEO_LOG_PRINT(F(" serial2_max_pending="));
+        GEO_LOG_PRINT(F(" serial2MaxPending="));
         GEO_LOG_PRINTLN(maxSerial2Pendientes);
         maxLoopUs = 0;
         maxSerial2Pendientes = 0;

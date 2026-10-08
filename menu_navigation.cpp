@@ -53,19 +53,19 @@ void navigateTo(MenuId id) {
         return;
     }
 
-    MenuActual = id;
+    menuActual = id;
     entry->draw();
 }
 
 void refreshCurrentMenu() {
-    const MenuEntry* entry = findMenuEntry(MenuActual);
+    const MenuEntry* entry = findMenuEntry(menuActual);
     if (entry != nullptr && entry->refresh != nullptr) {
         entry->refresh();
     }
 }
 
 void processMenuButton(MenuButton button) {
-    const MenuEntry* entry = findMenuEntry(MenuActual);
+    const MenuEntry* entry = findMenuEntry(menuActual);
     if (entry == nullptr) {
         return;
     }
@@ -77,8 +77,8 @@ void processMenuButton(MenuButton button) {
     if (button == BUTTON_BACK) target = entry->back;
 
     if (target != MENU_NONE) {
-        if (MenuActual == MENU_ACS_EDIT && button == BUTTON_BACK) {
-            SetP_ACS_Edit = SetP_ACS;
+        if (menuActual == MENU_ACS_EDIT && button == BUTTON_BACK) {
+            acsSetpointEdit = acsSetpoint;
         }
         navigateTo(target);
         return;

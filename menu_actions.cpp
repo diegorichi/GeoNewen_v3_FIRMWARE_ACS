@@ -6,17 +6,17 @@
 #include "vars.h"
 
 void decreaseAcsSetpoint() {
-    SetP_ACS_Edit = SetP_ACS_Edit - 1;
-    normalizeAcsTemp(&SetP_ACS_Edit);
+    acsSetpointEdit = acsSetpointEdit - 1;
+    normalizeAcsTemp(&acsSetpointEdit);
 }
 
 void increaseAcsSetpoint() {
-    SetP_ACS_Edit = SetP_ACS_Edit + 1;
-    normalizeAcsTemp(&SetP_ACS_Edit);
+    acsSetpointEdit = acsSetpointEdit + 1;
+    normalizeAcsTemp(&acsSetpointEdit);
 }
 
 void stopAlarmBuzzer() {
-    Valor_DO_Buzzer = LOW;
+    valorDoBuzzer = LOW;
 }
 
 void toggleMode() {
@@ -24,33 +24,33 @@ void toggleMode() {
 }
 
 void saveAcsSetpoint() {
-    SetP_ACS = SetP_ACS_Edit;
-    EEPROMwrite(SetP_ACS_Address, SetP_ACS);
+    acsSetpoint = acsSetpointEdit;
+    eepromWrite(acsSetpointAddress, acsSetpoint);
 }
 
 void toggleFlowAlarm() {
-    EnableFlowAlarm = !EnableFlowAlarm;
-    EEPROMwrite(EnableFlowAlarm_Address, EnableFlowAlarm);
+    enableFlowAlarm = !enableFlowAlarm;
+    eepromWrite(enableFlowAlarmAddress, enableFlowAlarm);
 }
 
 void toggleHeating() {
-    heating_off = !heating_off;
-    EEPROMwrite(heating_off_address, heating_off);
+    heatingOff = !heatingOff;
+    eepromWrite(heatingOffAddress, heatingOff);
 }
 
 void toggleAcs() {
-    EnableACS = !EnableACS;
-    EEPROMwrite(EnableACS_Address, EnableACS);
+    enableAcs = !enableAcs;
+    eepromWrite(enableAcsAddress, enableAcs);
 }
 
 void toggleAcsDelta() {
-    EnableACS_DeltaElectrico = !EnableACS_DeltaElectrico;
-    EEPROMwrite(EnableACS_DeltaElectrico_Address, EnableACS_DeltaElectrico);
+    enableAcsDeltaElectrico = !enableAcsDeltaElectrico;
+    eepromWrite(enableAcsDeltaElectricoAddress, enableAcsDeltaElectrico);
 }
 
 void toggleAcsElectric() {
-    EnableElectricACS = !EnableElectricACS;
-    EEPROMwrite(EnableElectricACS_Address, EnableElectricACS);
+    enableElectricAcs = !enableElectricAcs;
+    eepromWrite(enableElectricAcsAddress, enableElectricAcs);
 }
 
 void resetActiveAlarms() {
@@ -58,7 +58,7 @@ void resetActiveAlarms() {
 }
 
 void clearAlarmHistory() {
-    EEPROMwrite(Alarma_Address, (uint8_t)0);
+    eepromWrite(alarmaAddress, (uint8_t)0);
 }
 
 MenuAction menuActionFor(MenuId id, MenuButton button) {

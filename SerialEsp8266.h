@@ -93,22 +93,26 @@ bool sendToSerial(HardwareSerial* espSerial) {
     return true;
 }
 
-char buffer_ACS_GEO___[26];
-char buffer_ACS_DT_ELE[26];
-char buffer_ACS_ELEC__[26];
-char buffer_MODO_FRIO_[26];
-char buffer_ALARMA____[26];
-char buffer_TEMP_ACS__[26];
-char buffer_STATE_MACH[26];
-char buffer_CAU_HOGAR_[26];
-char buffer_TEMP_IN_H_[26];
-char buffer_TEMP_OUT_H[26];
-char buffer_CAU_TIERRA[26];
-char buffer_TEMP_IN_T_[26];
-char buffer_TEMP_OUT_T[26];
-char buffer_TEMP_ADM__[26];
-char buffer_TEMP_COMP_[26];
-char buffer_TEMP_DESC_[26];
+char bufferAcsGeo[26];
+char bufferAcsDtEle[26];
+char bufferAcsElec[26];
+char bufferHeatingOff[26];
+char bufferThermostat[26];
+char bufferModoFrio[26];
+char bufferAlarma[26];
+char bufferTempAcs[26];
+char bufferTempAcsDes[26];
+char bufferTempAcsSet[26];
+char bufferStateMach[26];
+char bufferCauHogar[26];
+char bufferTempInH[26];
+char bufferTempOutH[26];
+char bufferCauTierra[26];
+char bufferTempInT[26];
+char bufferTempOutT[26];
+char bufferTempAdm[26];
+char bufferTempComp[26];
+char bufferTempDesc[26];
 
 class SerialEsp8266 {
     static const int SLIDING_BUFFER_LEN = 48;
@@ -119,15 +123,26 @@ class SerialEsp8266 {
 
     Timer<1, &millis, HardwareSerial*> timerSendToEsp;
 
-    unsigned long refresh_period = 240000;  // 4min
+    unsigned long refreshPeriod = 240000;  // 4min
 
-    unsigned long period_refresh_wifi = 0;
+    unsigned long periodRefreshWifi = 0;
 
     char slidingBuffer[SLIDING_BUFFER_LEN + 1];
     uint8_t slidingBufferIndex = 0;
     bool slidingBufferOverflow = false;
     uint16_t nextStatusSequence = 1;
     uint16_t lastCommandSequence = 0;
+
+    bool statusSnapshotInitialized = false;
+    int lastPublishedMachineState = 0;
+    bool lastPublishedThermostatState = false;
+    bool lastPublishedAcsEnabled = false;
+    bool lastPublishedAcsDeltaEnabled = false;
+    bool lastPublishedAcsElectricEnabled = false;
+    bool lastPublishedHeatingOff = false;
+    bool lastPublishedColdMode = false;
+    uint8_t lastPublishedAcsDesired = 0;
+    uint8_t lastPublishedAcsSet = 0;
 
     void clearBuffer() {
         for (int i = 0; i <= SLIDING_BUFFER_LEN; i++) {
@@ -143,44 +158,52 @@ class SerialEsp8266 {
         GEO_LOG_PRINT("Handle message from esp:");
         GEO_LOG_PRINTLN(command);
 
-        if (command.indexOf("ACS_G:on") >= 0) {
-            EnableACS = true;
-            EEPROMwrite(EnableACS_Address, EnableACS);
+        if (command.indexOf("STATUS:publish") >= 0) {
+            enqueueStatusToSend();
+        } else if (command.indexOf("ACS_G:on") >= 0) {
+            enableAcs = true;
+            eepromWrite(enableAcsAddress, enableAcs);
         } else if (command.indexOf("ACS_G:off") >= 0) {
-            EnableACS = false;
-            EEPROMwrite(EnableACS_Address, EnableACS);
+            enableAcs = false;
+            eepromWrite(enableAcsAddress, enableAcs);
         } else if (command.indexOf("ACS_DT_E:on") >= 0) {
-            EnableACS_DeltaElectrico = true;
-            EEPROMwrite(EnableACS_DeltaElectrico_Address, EnableACS_DeltaElectrico);
+            enableAcsDeltaElectrico = true;
+            eepromWrite(enableAcsDeltaElectricoAddress, enableAcsDeltaElectrico);
         } else if (command.indexOf("ACS_DT_E:off") >= 0) {
-            EnableACS_DeltaElectrico = false;
-            EEPROMwrite(EnableACS_DeltaElectrico_Address, EnableACS_DeltaElectrico);
+            enableAcsDeltaElectrico = false;
+            eepromWrite(enableAcsDeltaElectricoAddress, enableAcsDeltaElectrico);
         } else if (command.indexOf("ACS_E:on") >= 0) {
-            EnableElectricACS = true;
-            EEPROMwrite(EnableElectricACS_Address, EnableElectricACS);
+            enableElectricAcs = true;
+            eepromWrite(enableElectricAcsAddress, enableElectricAcs);
         } else if (command.indexOf("ACS_E:off") >= 0) {
-            EnableElectricACS = false;
-            EEPROMwrite(EnableElectricACS_Address, EnableElectricACS);
+            enableElectricAcs = false;
+            eepromWrite(enableElectricAcsAddress, enableElectricAcs);
+        } else if (command.indexOf("HEATING_OFF:on") >= 0) {
+            heatingOff = true;
+            eepromWrite(heatingOffAddress, heatingOff);
+        } else if (command.indexOf("HEATING_OFF:off") >= 0) {
+            heatingOff = false;
+            eepromWrite(heatingOffAddress, heatingOff);
         } else if (command.indexOf("ALARM:reset") >= 0) {
             resetAlarms();
-            Estado_Maquina = 0;
+            estadoMaquina = 0;
         } else if (command.indexOf("MODO_FRIO:on") >= 0) {
-            Estado_Maquina = 0;
+            estadoMaquina = 0;
             stateMachine0();  // setea para detener la maquina y
             // retorna estado_maquina 1, requerido para cambio de modo.
             // cambio de modo de forma segura.
             changeModo(true);
         } else if (command.indexOf("MODO_FRIO:off") >= 0) {
-            Estado_Maquina = 0;
+            estadoMaquina = 0;
             stateMachine0();  // setea para detiener la maquina y
             // sale estado_maquina 1, requerido para cambio de modo.
             changeModo(false);
         } else if (command.indexOf("TEMP_ACS:") >= 0) {
             int start = command.indexOf("TEMP_ACS:") + 9;  // 9 caracteres tiene "TEMP_ACS:"
             volatile uint8_t aux = command.substring(start, start + 2).toInt();
-            SetP_ACS = normalizeAcsTemp(&aux);
-            SetP_ACS_Edit = SetP_ACS;
-            EEPROMwrite(SetP_ACS_Address, SetP_ACS);
+            acsSetpoint = normalizeAcsTemp(&aux);
+            acsSetpointEdit = acsSetpoint;
+            eepromWrite(acsSetpointAddress, acsSetpoint);
         }
     };
 
@@ -201,7 +224,11 @@ class SerialEsp8266 {
     contrl:ACS_GEO___:1;
     contrl:ACS_DT_ELE:1,
     contrl:ACS_ELEC__:1;
+    contrl:HEATING_OFF:1;
+    contrl:TERMOSTATO:1;
     status:TEMP_ACS__:000000;
+    status:TEMP_ACS_DES:00;
+    status:TEMP_ACS_SET:00;
     contrl:MODO_FRIO_:0;
     status:STATE_____:0000;
     status:CAU_HOGAR_:0000;
@@ -216,71 +243,108 @@ class SerialEsp8266 {
     status:TEMP_DESC_:000000
     */
     void enqueueStatusToSend() {
-        char var_number[6];
+        char varNumber[6];
         wdt_reset();
 
         GEO_LOG_PRINTLN("enqueue status to send to esp");
 
-        sprintf(buffer_ACS_GEO___, "contrl:ACS_GEO___:%s#", EnableACS ? "1" : "0");
-        enqueueStatusFrame(buffer_ACS_GEO___);
+        sprintf(bufferAcsGeo, "contrl:ACS_GEO___:%s#", enableAcs ? "1" : "0");
+        enqueueStatusFrame(bufferAcsGeo);
 
-        sprintf(buffer_ACS_DT_ELE, "contrl:ACS_DT_ELE:%s#", EnableACS_DeltaElectrico ? "1" : "0");
-        enqueueStatusFrame(buffer_ACS_DT_ELE);
+        sprintf(bufferAcsDtEle, "contrl:ACS_DT_ELE:%s#", enableAcsDeltaElectrico ? "1" : "0");
+        enqueueStatusFrame(bufferAcsDtEle);
 
-        sprintf(buffer_ACS_ELEC__, "contrl:ACS_ELEC__:%s#", EnableElectricACS ? "1" : "0");
-        enqueueStatusFrame(buffer_ACS_ELEC__);
+        sprintf(bufferAcsElec, "contrl:ACS_ELEC__:%s#", enableElectricAcs ? "1" : "0");
+        enqueueStatusFrame(bufferAcsElec);
 
-        sprintf(buffer_MODO_FRIO_, "contrl:MODO_FRIO_:%s#", modoFrio ? "1" : "0");
-        enqueueStatusFrame(buffer_MODO_FRIO_);
+        sprintf(bufferHeatingOff, "contrl:HEATING_OFF:%s#", heatingOff ? "1" : "0");
+        enqueueStatusFrame(bufferHeatingOff);
 
-        dtostrf(Nro_Alarma, 2, 0, var_number);
-        sprintf(buffer_ALARMA____, "contrl:ALARMA____:%s#", var_number);
-        enqueueStatusFrame(buffer_ALARMA____);
+        sprintf(bufferThermostat, "contrl:TERMOSTATO:%s#", senalStart ? "1" : "0");
+        enqueueStatusFrame(bufferThermostat);
 
-        dtostrf(Temp_ACSacu, 4, 2, var_number);
-        sprintf(buffer_TEMP_ACS__, "status:TEMP_ACS__:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_ACS__);
+        sprintf(bufferModoFrio, "contrl:MODO_FRIO_:%s#", modoFrio ? "1" : "0");
+        enqueueStatusFrame(bufferModoFrio);
 
-        sprintf(buffer_STATE_MACH, "status:STATE_MACH:%2d#", Estado_Maquina);
-        enqueueStatusFrame(buffer_STATE_MACH);
+        dtostrf(nroAlarma, 2, 0, varNumber);
+        sprintf(bufferAlarma, "contrl:ALARMA____:%s#", varNumber);
+        enqueueStatusFrame(bufferAlarma);
 
-        dtostrf(Caud_Hacu, 4, 0, var_number);
-        sprintf(buffer_CAU_HOGAR_, "status:CAU_HOGAR_:%s#", var_number);
-        enqueueStatusFrame(buffer_CAU_HOGAR_);
+        dtostrf(tempAcsAcu, 4, 2, varNumber);
+        sprintf(bufferTempAcs, "status:TEMP_ACS__:%s#", varNumber);
+        enqueueStatusFrame(bufferTempAcs);
 
-        dtostrf(Temp_in_Hacu, 4, 2, var_number);
-        sprintf(buffer_TEMP_IN_H_, "status:TEMP_IN_H_:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_IN_H_);
+        sprintf(bufferTempAcsDes, "status:TEMP_ACS_DES:%02u#", acsSetpointEdit);
+        enqueueStatusFrame(bufferTempAcsDes);
 
-        dtostrf(Temp_out_Hacu, 4, 2, var_number);
-        sprintf(buffer_TEMP_OUT_H, "status:TEMP_OUT_H:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_OUT_H);
+        sprintf(bufferTempAcsSet, "status:TEMP_ACS_SET:%02u#", acsSetpoint);
+        enqueueStatusFrame(bufferTempAcsSet);
 
-        dtostrf(Caud_Tacu, 4, 0, var_number);
-        sprintf(buffer_CAU_TIERRA, "status:CAU_TIERRA:%s#", var_number);
-        enqueueStatusFrame(buffer_CAU_TIERRA);
+        sprintf(bufferStateMach, "status:STATE_MACH:%2d#", estadoMaquina);
+        enqueueStatusFrame(bufferStateMach);
 
-        dtostrf(Temp_in_T, 4, 2, var_number);
-        sprintf(buffer_TEMP_IN_T_, "status:TEMP_IN_T_:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_IN_T_);
+        dtostrf(caudHacu, 4, 0, varNumber);
+        sprintf(bufferCauHogar, "status:CAU_HOGAR_:%s#", varNumber);
+        enqueueStatusFrame(bufferCauHogar);
 
-        dtostrf(Temp_out_T, 4, 2, var_number);
-        sprintf(buffer_TEMP_OUT_T, "status:TEMP_OUT_T:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_OUT_T);
+        dtostrf(tempInHacu, 4, 2, varNumber);
+        sprintf(bufferTempInH, "status:TEMP_IN_H_:%s#", varNumber);
+        enqueueStatusFrame(bufferTempInH);
 
-        dtostrf(Temp_Admision, 4, 2, var_number);
-        sprintf(buffer_TEMP_ADM__, "status:TEMP_ADM__:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_ADM__);
+        dtostrf(tempOutHacu, 4, 2, varNumber);
+        sprintf(bufferTempOutH, "status:TEMP_OUT_H:%s#", varNumber);
+        enqueueStatusFrame(bufferTempOutH);
 
-        dtostrf(Temp_CompressorAcu, 4, 2, var_number);
-        sprintf(buffer_TEMP_COMP_, "status:TEMP_COMP_:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_COMP_);
+        dtostrf(caudTacu, 4, 0, varNumber);
+        sprintf(bufferCauTierra, "status:CAU_TIERRA:%s#", varNumber);
+        enqueueStatusFrame(bufferCauTierra);
 
-        dtostrf(Temp_DescargaAcu, 4, 2, var_number);
-        sprintf(buffer_TEMP_DESC_, "status:TEMP_DESC_:%s#", var_number);
-        enqueueStatusFrame(buffer_TEMP_DESC_);
+        dtostrf(tempInT, 4, 2, varNumber);
+        sprintf(bufferTempInT, "status:TEMP_IN_T_:%s#", varNumber);
+        enqueueStatusFrame(bufferTempInT);
+
+        dtostrf(tempOutT, 4, 2, varNumber);
+        sprintf(bufferTempOutT, "status:TEMP_OUT_T:%s#", varNumber);
+        enqueueStatusFrame(bufferTempOutT);
+
+        dtostrf(tempAdmision, 4, 2, varNumber);
+        sprintf(bufferTempAdm, "status:TEMP_ADM__:%s#", varNumber);
+        enqueueStatusFrame(bufferTempAdm);
+
+        dtostrf(tempCompressorAcu, 4, 2, varNumber);
+        sprintf(bufferTempComp, "status:TEMP_COMP_:%s#", varNumber);
+        enqueueStatusFrame(bufferTempComp);
+
+        dtostrf(tempDescargaAcu, 4, 2, varNumber);
+        sprintf(bufferTempDesc, "status:TEMP_DESC_:%s#", varNumber);
+        enqueueStatusFrame(bufferTempDesc);
         GEO_LOG_PRINTLN("finished: enqueue status to send to esp");
     };
+
+    bool discreteStatusChanged() {
+        const bool changed = !statusSnapshotInitialized ||
+            lastPublishedMachineState != estadoMaquina ||
+            lastPublishedThermostatState != senalStart ||
+            lastPublishedAcsEnabled != enableAcs ||
+            lastPublishedAcsDeltaEnabled != enableAcsDeltaElectrico ||
+            lastPublishedAcsElectricEnabled != enableElectricAcs ||
+            lastPublishedHeatingOff != heatingOff ||
+            lastPublishedColdMode != modoFrio ||
+            lastPublishedAcsDesired != acsSetpointEdit ||
+            lastPublishedAcsSet != acsSetpoint;
+
+        lastPublishedMachineState = estadoMaquina;
+        lastPublishedThermostatState = senalStart;
+        lastPublishedAcsEnabled = enableAcs;
+        lastPublishedAcsDeltaEnabled = enableAcsDeltaElectrico;
+        lastPublishedAcsElectricEnabled = enableElectricAcs;
+        lastPublishedHeatingOff = heatingOff;
+        lastPublishedColdMode = modoFrio;
+        lastPublishedAcsDesired = acsSetpointEdit;
+        lastPublishedAcsSet = acsSetpoint;
+        statusSnapshotInitialized = true;
+        return changed;
+    }
 
    public:
     SerialEsp8266(HardwareSerial* serialHardware) {
@@ -319,7 +383,6 @@ class SerialEsp8266 {
                                         payload.toCharArray(slidingBuffer, SLIDING_BUFFER_LEN + 1);
                                         this->handleProtocolWithEsp();
                                         lastCommandSequence = sequence.toInt();
-                                        this->enqueueStatusToSend();
                                     } else {
                                         GEO_LOG_PRINT("Comando duplicado, solo ACK: ");
                                         GEO_LOG_PRINTLN(sequence);
@@ -349,12 +412,18 @@ class SerialEsp8266 {
                 }
             }
         }
-        if (((millis() - this->period_refresh_wifi) > this->refresh_period)) {
+        if (((millis() - this->periodRefreshWifi) > this->refreshPeriod)) {
             this->enqueueStatusToSend();
-            this->period_refresh_wifi = millis();
+            this->periodRefreshWifi = millis();
         }
         timerSendToEsp.tick();
     };
+
+    void detectAndEnqueueChangedStatus() {
+        if (discreteStatusChanged()) {
+            enqueueStatusToSend();
+        }
+    }
 };
 
 #endif

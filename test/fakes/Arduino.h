@@ -14,8 +14,8 @@
 #define B00100 4
 #define B01110 14
 #define B11111 31
-extern unsigned long fake_millis_now;
-extern int fake_digital_inputs[64];
+extern unsigned long fakeMillisNow;
+extern int fakeDigitalInputs[64];
 class String {
 public:
     char value[128] = {};

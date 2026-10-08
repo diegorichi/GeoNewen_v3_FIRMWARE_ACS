@@ -8,134 +8,134 @@
 
 // 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 }; //n5
 
-const int DI_Caud_T = 18;     // Entrada de caudalimetro tierra
-const int DI_Caud_H = 19;     // Entrada de caudalimetro hogar
-const int DI_Marcha_on = 33;  // Entrada de señal de Marcha
-const int DI_Pres_HI = 35;    // Preostato de alta
-const int DI_Pres_LOW = 37;   // Presotato de baja
+const int diCaudT = 18;     // Entrada de caudalimetro tierra
+const int diCaudH = 19;     // Entrada de caudalimetro hogar
+const int diMarchaOn = 33;  // Entrada de señal de Marcha
+const int diPresHi = 35;    // Preostato de alta
+const int diPresLow = 37;   // Presotato de baja
 
-const int DO_Calentador = 23;    // Calentador
-const int DO_Compressor = 25;    // Compresor
-const int DO_Bombas = 27;        // Bombas
-const int DO_Valvula4Vias = 29;  // Valvula 4 Vias
-const int DO_ValvulaACS = 31;    // Valvula ACS
+const int doCalentador = 23;    // Calentador
+const int doCompressor = 25;    // Compresor
+const int doBombas = 27;        // Bombas
+const int doValvula4Vias = 29;  // Valvula 4 Vias
+const int doValvulaAcs = 31;    // Valvula ACS
 
-const int DO_Triac_01 = 11;  // Triacs, Pin salida PWM (no se puede modificar)
-const int DO_Buzzer = 12;    // Pin de salida de buzzer
+const int doTriac01 = 11;  // Triacs, Pin salida PWM (no se puede modificar)
+const int doBuzzer = 12;    // Pin de salida de buzzer
 
-volatile int Estado_Maquina = 0;
+volatile int estadoMaquina = 0;
 
 // VARIABLES DEL PROGRAMA
 
-int Caud_T;
-int C1_T = 0;
-int C2_T = 0;
-int C3_T = 0;
-int Caud_Tacu = 0;
+int caudT;
+int c1T = 0;
+int c2T = 0;
+int c3T = 0;
+int caudTacu = 0;
 
-int Caud_H;
-int C1_H = 0;
-int C2_H = 0;
-int C3_H = 0;
-int Caud_Hacu = 0;
+int caudH;
+int c1H = 0;
+int c2H = 0;
+int c3H = 0;
+int caudHacu = 0;
 
-int Cont_Temp_Des = 0;
+int contTempDes = 0;
 
 // Contadores auxiliares de alarmas
 
-int Cont_Temp_Compressor = 0;
-int Cont_Press_HI = 0;
-int Cont_Press_LOW = 0;
-int Cont_Temp_Descarga = 0;
+int contTempCompressor = 0;
+int contPressHi = 0;
+int contPressLow = 0;
+int contTempDescarga = 0;
 
-float Temp_Compressor;
-float T5_Comp = 0;
-float T4_Comp = 0;
-float T3_Comp = 0;
-float T2_Comp = 0;
-float T1_Comp = 0;
-float Temp_CompressorAcu = 0;
+float tempCompressor;
+float t5Comp = 0;
+float t4Comp = 0;
+float t3Comp = 0;
+float t2Comp = 0;
+float t1Comp = 0;
+float tempCompressorAcu = 0;
 
-float Temp_ACS;
-float T1_ACS = 0;
-float T2_ACS = 0;
-float T3_ACS = 0;
-float Temp_ACSacu = 0;
+float tempAcs;
+float t1Acs = 0;
+float t2Acs = 0;
+float t3Acs = 0;
+float tempAcsAcu = 0;
 
-float Temp_out_H;
-float Temp_in_H;
-float Temp_out_T;
-float Temp_in_T;
-float Temp_Descarga;
-float Temp_Admision;
+float tempOutH;
+float tempInH;
+float tempOutT;
+float tempInT;
+float tempDescarga;
+float tempAdmision;
 
-float T1_OH = 0;
-float T2_OH = 0;
-float T3_OH = 0;
-float Temp_out_Hacu = 0;
-float T1_IH = 0;
-float T2_IH = 0;
-float T3_IH = 0;
-float Temp_in_Hacu = 0;
-float T1_Des = 0;
-float T2_Des = 0;
-float T3_Des = 0;
-float Temp_DescargaAcu = 0;
+float t1Oh = 0;
+float t2Oh = 0;
+float t3Oh = 0;
+float tempOutHacu = 0;
+float t1Ih = 0;
+float t2Ih = 0;
+float t3Ih = 0;
+float tempInHacu = 0;
+float t1Des = 0;
+float t2Des = 0;
+float t3Des = 0;
+float tempDescargaAcu = 0;
 
-bool Flag_TempCompressor = false;
-bool Flag_Temp_Descarga = false;
+bool flagTempCompressor = false;
+bool flagTempDescarga = false;
 
-unsigned long valvulaACSStart = 0;
-unsigned long PumpStart = 0;
-unsigned long Ingreso_E7 = 0;
-unsigned long Ingreso_E71 = 0;
+unsigned long valvulaAcsStart = 0;
+unsigned long pumpStart = 0;
+unsigned long ingresoE7 = 0;
+unsigned long ingresoE71 = 0;
 
 const uint8_t GAP_ACS = 5;
 
-unsigned long Periodo_Refresco;
+unsigned long periodoRefresco;
 unsigned long compressorStart;
-unsigned long Salto_E1;
-unsigned long dontStuckPumpsStart_activation;
+unsigned long saltoE1;
+unsigned long dontStuckPumpsStartActivation;
 unsigned long dontStuckPumpsStart;
-unsigned long Ingreso_E3;
+unsigned long ingresoE3;
 
-unsigned long Ingreso_Descanso = 0;
+unsigned long ingresoDescanso = 0;
 
-volatile MenuId MenuActual = MENU_HOME;
+volatile MenuId menuActual = MENU_HOME;
 
-volatile uint8_t Nro_Alarma = 0;
-volatile uint8_t SetP_ACS = 0;
-volatile uint8_t SetP_ACS_Edit = 0;
+volatile uint8_t nroAlarma = 0;
+volatile uint8_t acsSetpoint = 0;
+volatile uint8_t acsSetpointEdit = 0;
 
-uint8_t Alarma_Eeprom;
+uint8_t alarmaEeprom;
 
 // FLAGS     //Banderas de uso general para el funcionamiento del programa
 
-bool deltaACSElectricResult = false;
-bool Flag_CaudT = false;
-bool Flag_CaudH = false;
-bool Flag_PresHI = false;
-bool Flag_PresLOW = false;
+bool deltaAcsElectricResult = false;
+bool flagCaudT = false;
+bool flagCaudH = false;
+bool flagPresHi = false;
+bool flagPresLow = false;
 
-bool Flag_Temp_Adm = false;
+bool flagTempAdm = false;
 volatile bool modoFrio = false;  // Frio = true , Calor = false
-volatile bool Alarma_Activa;
-bool Flag_Marcha_ON;
-bool senal_start;  // senal de marcha, segun modoFrio
+volatile bool alarmaActiva;
+bool flagMarchaOn;
+bool senalStart;  // senal de marcha, segun modoFrio
 // se trabaja con 1 termostato.
-bool senal_stop;
-volatile bool heating_off = false;
-volatile bool Flag_Buzzer;
+bool senalStop;
+volatile bool heatingOff = false;
+volatile bool flagBuzzer;
 
-volatile bool EnableACS = true;
-volatile bool EnableACS_DeltaElectrico = true;
-volatile bool EnableFlowAlarm;
-volatile bool EnableElectricACS = false;
+volatile bool enableAcs = true;
+volatile bool enableAcsDeltaElectrico = true;
+volatile bool enableFlowAlarm;
+volatile bool enableElectricAcs = false;
 
 // IMAGENES DE ENTRADAS/SALIDAS
-int Valor_DO_Bombas;
-int Valor_DO_Calentador;
-int Valor_DO_Compressor;
-int Valor_DO_VACS;
-int Valor_DO_V4V;
-volatile int Valor_DO_Buzzer;
+int valorDoBombas;
+int valorDoCalentador;
+int valorDoCompressor;
+int valorDoVacs;
+int valorDoV4v;
+volatile int valorDoBuzzer;

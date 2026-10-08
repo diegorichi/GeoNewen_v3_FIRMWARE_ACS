@@ -15,17 +15,17 @@ unsigned long lastModeChangeAt = 0;
 void frioCalor(bool paramModoFrio)  // Función de cambio de Modo de Funcionamiento  (Bromberg: modo frio = valvula de 4 vias APAGADA)
 {
     modoFrio = paramModoFrio;
-    Valor_DO_V4V = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
+    valorDoV4v = modoFrio ? LOW /* modo frio*/ : HIGH /* modo calor*/;
 
 }
 
 void changeModo(bool paramModoFrio) {
-    if (Estado_Maquina != 1 || paramModoFrio == modoFrio || isModeChangeLocked()) {
+    if (estadoMaquina != 1 || paramModoFrio == modoFrio || isModeChangeLocked()) {
         return;
     }
 
     frioCalor(paramModoFrio);
-    EEPROMwrite(modoFrio_address, modoFrio);
+    eepromWrite(modoFrioAddress, modoFrio);
     lastModeChangeAt = millis();
 }
 
@@ -34,53 +34,53 @@ bool isModeChangeLocked() {
 }
 
 void setupDigitalInputs() {
-    pinMode(DI_Marcha_on, INPUT);
-    pinMode(DI_Pres_HI, INPUT);
-    pinMode(DI_Pres_LOW, INPUT);
-    pinMode(DI_Caud_T, INPUT);
-    pinMode(DI_Caud_H, INPUT);
+    pinMode(diMarchaOn, INPUT);
+    pinMode(diPresHi, INPUT);
+    pinMode(diPresLow, INPUT);
+    pinMode(diCaudT, INPUT);
+    pinMode(diCaudH, INPUT);
 }
 
 void setupDigitalOuputs() {
-    pinMode(DO_Compressor, OUTPUT);
-    pinMode(DO_ValvulaACS, OUTPUT);
-    pinMode(DO_Bombas, OUTPUT);
-    pinMode(DO_Calentador, OUTPUT);
-    pinMode(DO_Valvula4Vias, OUTPUT);
+    pinMode(doCompressor, OUTPUT);
+    pinMode(doValvulaAcs, OUTPUT);
+    pinMode(doBombas, OUTPUT);
+    pinMode(doCalentador, OUTPUT);
+    pinMode(doValvula4Vias, OUTPUT);
 
-    pinMode(DO_Triac_01, OUTPUT);
-    pinMode(DO_Buzzer, OUTPUT);
+    pinMode(doTriac01, OUTPUT);
+    pinMode(doBuzzer, OUTPUT);
 }
 
 void initializeDigitalOuputs() {
-    digitalWrite(DO_Compressor, LOW);
-    digitalWrite(DO_ValvulaACS, LOW);  // Inicia con paso a loza encendida
-    digitalWrite(DO_Valvula4Vias, LOW);
-    digitalWrite(DO_Bombas, LOW);
-    digitalWrite(DO_Calentador, LOW);
-    digitalWrite(DO_Triac_01, LOW);
-    digitalWrite(DO_Buzzer, LOW);
+    digitalWrite(doCompressor, LOW);
+    digitalWrite(doValvulaAcs, LOW);  // Inicia con paso a loza encendida
+    digitalWrite(doValvula4Vias, LOW);
+    digitalWrite(doBombas, LOW);
+    digitalWrite(doCalentador, LOW);
+    digitalWrite(doTriac01, LOW);
+    digitalWrite(doBuzzer, LOW);
 }
 
 void writeOutput() {
         // IMAGEN DE SALIDAS
-        digitalWrite(DO_Bombas, Valor_DO_Bombas);
-        digitalWrite(DO_Calentador, Valor_DO_Calentador);
-        digitalWrite(DO_Valvula4Vias, Valor_DO_V4V);
-        digitalWrite(DO_Compressor, Valor_DO_Compressor);
-        digitalWrite(DO_ValvulaACS, Valor_DO_VACS);
+        digitalWrite(doBombas, valorDoBombas);
+        digitalWrite(doCalentador, valorDoCalentador);
+        digitalWrite(doValvula4Vias, valorDoV4v);
+        digitalWrite(doCompressor, valorDoCompressor);
+        digitalWrite(doValvulaAcs, valorDoVacs);
         // El buzzer se controla con tone() para los avisos breves y con
         // Timer1.pwm() durante una alarma. No escribir el pin aquí: esa
         // escritura interrumpe el tono en cada vuelta del loop.
 }
 
 void refreshDataToShow() {
-    if (millis() - Periodo_Refresco > 500) {
+    if (millis() - periodoRefresco > 500) {
         temperatureCalculation();
 
         lcdRefreshValues();
 
-        Periodo_Refresco = millis();
+        periodoRefresco = millis();
     }
 }
 
@@ -93,14 +93,14 @@ void calculateStartStopSignal() {
     di marcha on == LOW -> arrancar
     di marcha on == HIGH -> parar
 
-  digitalRead(DI_Marcha_on) == HIGH
+  digitalRead(diMarchaOn) == HIGH
   modoFrio
 
   */
 
-    senal_start = ((digitalRead(DI_Marcha_on) == HIGH) && !modoFrio) || ((digitalRead(DI_Marcha_on) == LOW) && modoFrio);
+    senalStart = ((digitalRead(diMarchaOn) == HIGH) && !modoFrio) || ((digitalRead(diMarchaOn) == LOW) && modoFrio);
 
-    senal_stop = ((digitalRead(DI_Marcha_on) == LOW) && !modoFrio) || ((digitalRead(DI_Marcha_on) == HIGH) && modoFrio);
+    senalStop = ((digitalRead(diMarchaOn) == LOW) && !modoFrio) || ((digitalRead(diMarchaOn) == HIGH) && modoFrio);
 }
 
 uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {
@@ -116,47 +116,47 @@ uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {
 bool heatingCheck() {
     // le damos tiempo a que las bombas funcionen antes controlar
     // para que si viene de calentar agua, circule el agua caliente.
-    return ((millis() - Ingreso_E3) > 120000) && !modoFrio &&
-           ((Temp_out_H > MAX_TEMP_OUT_H_HEATING)     // control por temp losa
-            || (Temp_out_H < MIN_TEMP_OUT_H_HEATING)  // condicion de arranque en invierno
-            || (Temp_out_T < MIN_TEMP_OUT_T)          // condicion de corte
-            || (Temp_Admision < MIN_TEMP_ADMISION)    // condicion de corte
+    return ((millis() - ingresoE3) > 120000) && !modoFrio &&
+           ((tempOutH > MAX_TEMP_OUT_H_HEATING)     // control por temp losa
+            || (tempOutH < MIN_TEMP_OUT_H_HEATING)  // condicion de arranque en invierno
+            || (tempOutT < MIN_TEMP_OUT_T)          // condicion de corte
+            || (tempAdmision < MIN_TEMP_ADMISION)    // condicion de corte
            );
 }
 
 bool coolingCheck() {
-    return modoFrio && ((Temp_out_H < MIN_TEMP_OUT_H_COOLING)  // condicion de corte
-                        || (Temp_out_T > MAX_TEMP_OUT_T)       // condicion de corte
+    return modoFrio && ((tempOutH < MIN_TEMP_OUT_H_COOLING)  // condicion de corte
+                        || (tempOutT > MAX_TEMP_OUT_T)       // condicion de corte
                        );
 }
 
 bool longPeriodRunningCheck() {
-    return ((millis() - Ingreso_E3) > 43200000);  // 12 horas
+    return ((millis() - ingresoE3) > 43200000);  // 12 horas
 }
 
 void takeRestControl() {
     if (heatingCheck() || coolingCheck() || longPeriodRunningCheck()) {
-        Estado_Maquina = 6;
-        Ingreso_Descanso = millis();
+        estadoMaquina = 6;
+        ingresoDescanso = millis();
     }
 }
 
 void buzzerControl() {
-    if (Estado_Maquina == 4) return;
-    if (Flag_Buzzer) {
+    if (estadoMaquina == 4) return;
+    if (flagBuzzer) {
         buzzerBip();
-        Flag_Buzzer = false;
+        flagBuzzer = false;
     }
 }
 
 void buzzerStop() {
-    Flag_Buzzer = false;
-    Valor_DO_Buzzer = LOW;
-    noTone(DO_Buzzer);
-    Timer1.disablePwm(DO_Buzzer);
-    digitalWrite(DO_Buzzer, LOW);
+    flagBuzzer = false;
+    valorDoBuzzer = LOW;
+    noTone(doBuzzer);
+    Timer1.disablePwm(doBuzzer);
+    digitalWrite(doBuzzer, LOW);
 }
 
 void buzzerBip() {
-    tone(DO_Buzzer, 1500, 150);
+    tone(doBuzzer, 1500, 150);
 }

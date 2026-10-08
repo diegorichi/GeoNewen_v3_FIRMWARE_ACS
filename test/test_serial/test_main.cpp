@@ -2,42 +2,43 @@
 #include "SerialEsp8266.h"
 #include "../protocol_cases.h"
 
-unsigned long fake_millis_now = 0;
-int fake_digital_inputs[64] = {};
+unsigned long fakeMillisNow = 0;
+int fakeDigitalInputs[64] = {};
 HardwareSerial Serial;
 TimerOneFake Timer1;
 EEPROMFake EEPROM;
 
 #include "../fakes/mega_globals.h"
 
-unsigned long millis() { return fake_millis_now; }
+unsigned long millis() { return fakeMillisNow; }
 void digitalWrite(int, int) {}
-void stateMachine0() { Estado_Maquina = 1; }
-void resetAlarms() { Estado_Maquina = 0; }
+void stateMachine0() { estadoMaquina = 1; }
+void resetAlarms() { estadoMaquina = 0; }
 void changeModo(bool value) { modoFrio = value; }
 uint8_t normalizeAcsTemp(volatile uint8_t* value) {
     if (*value < 30) *value = 30;
     if (*value > 48) *value = 48;
     return *value;
 }
-void EEPROMwrite(int address, bool value) { EEPROM.update(address, value); }
-void EEPROMwrite(int address, uint8_t value) { EEPROM.update(address, value); }
+void eepromWrite(int address, bool value) { EEPROM.update(address, value); }
+void eepromWrite(int address, uint8_t value) { EEPROM.update(address, value); }
 
 SerialEsp8266* activeEsp = nullptr;
 
 void resetFixtures() {
-    fake_millis_now = 0;
+    fakeMillisNow = 0;
     Serial.input[0] = '\0';
     Serial.inputLength = 0;
     Serial.output[0] = '\0';
     Serial.outputLength = 0;
     EEPROM.update_count = 0;
-    EnableACS = true;
-    EnableACS_DeltaElectrico = true;
-    EnableElectricACS = false;
-    SetP_ACS = 45;
-    SetP_ACS_Edit = 45;
-    Estado_Maquina = 1;
+    enableAcs = true;
+    enableAcsDeltaElectrico = true;
+    enableElectricAcs = false;
+    heatingOff = false;
+    acsSetpoint = 45;
+    acsSetpointEdit = 45;
+    estadoMaquina = 1;
     pendingStatusActive = false;
     pendingStatusAttempts = 0;
     pendingStatusSequence = 0;
@@ -52,7 +53,7 @@ void test_valid_command_updates_state_and_sends_ack(void) {
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
 
-    TEST_ASSERT_TRUE(EnableACS);
+    TEST_ASSERT_TRUE(enableAcs);
     TEST_ASSERT_EQUAL(1, EEPROM.update_count);
     TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:1#"));
 }
@@ -60,12 +61,12 @@ void test_valid_command_updates_state_and_sends_ack(void) {
 void test_duplicate_command_only_acknowledges_without_reexecuting(void) {
     resetFixtures();
     SerialEsp8266 esp(&Serial);
-    EnableACS = true;
+    enableAcs = true;
     strcpy(Serial.input, "cmd:4:ACS_G:off#cmd:4:ACS_G:on#");
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
 
-    TEST_ASSERT_FALSE(EnableACS);
+    TEST_ASSERT_FALSE(enableAcs);
     TEST_ASSERT_EQUAL(1, EEPROM.update_count);
     const char* firstAck = strstr(Serial.output, "ack:cmd:4#");
     TEST_ASSERT_NOT_NULL(firstAck);
@@ -78,9 +79,46 @@ void test_setpoint_command_uses_existing_limits(void) {
     strcpy(Serial.input, "cmd:2:TEMP_ACS:99#");
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
-    TEST_ASSERT_EQUAL_UINT8(48, SetP_ACS);
-    TEST_ASSERT_EQUAL_UINT8(48, SetP_ACS_Edit);
+    TEST_ASSERT_EQUAL_UINT8(48, acsSetpoint);
+    TEST_ASSERT_EQUAL_UINT8(48, acsSetpointEdit);
     TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:2#"));
+}
+
+void test_heating_off_command_updates_state_and_persists(void) {
+    resetFixtures();
+    SerialEsp8266 esp(&Serial);
+    strcpy(Serial.input, "cmd:2:HEATING_OFF:on#");
+    Serial.inputLength = strlen(Serial.input);
+    esp.handleEspSerial();
+    TEST_ASSERT_TRUE(heatingOff);
+    TEST_ASSERT_EQUAL(1, EEPROM.update_count);
+    TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:2#"));
+}
+
+void test_status_request_enqueues_snapshot_without_state_change(void) {
+    resetFixtures();
+    SerialEsp8266 esp(&Serial);
+    strcpy(Serial.input, "cmd:2:STATUS:publish#");
+    Serial.inputLength = strlen(Serial.input);
+    esp.handleEspSerial();
+    TEST_ASSERT_EQUAL(20, espQueue.item_count());
+    TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:2#"));
+}
+
+void test_discrete_change_enqueues_snapshot_but_continuous_change_does_not(void) {
+    resetFixtures();
+    SerialEsp8266 esp(&Serial);
+    esp.detectAndEnqueueChangedStatus();
+    TEST_ASSERT_EQUAL(20, espQueue.item_count());
+    espQueue.clear();
+
+    tempAcsAcu = 31.25;
+    esp.detectAndEnqueueChangedStatus();
+    TEST_ASSERT_TRUE(espQueue.isEmpty());
+
+    estadoMaquina = 3;
+    esp.detectAndEnqueueChangedStatus();
+    TEST_ASSERT_EQUAL(20, espQueue.item_count());
 }
 
 void test_status_queue_sends_then_retries_until_limit(void) {
@@ -90,13 +128,13 @@ void test_status_queue_sends_then_retries_until_limit(void) {
     sendToSerial(&Serial);
     TEST_ASSERT_TRUE(pendingStatusActive);
     TEST_ASSERT_EQUAL(1, pendingStatusAttempts);
-    fake_millis_now = 2000;
+    fakeMillisNow = 2000;
     sendToSerial(&Serial);
     TEST_ASSERT_EQUAL(2, pendingStatusAttempts);
-    fake_millis_now = 4000;
+    fakeMillisNow = 4000;
     sendToSerial(&Serial);
     TEST_ASSERT_EQUAL(3, pendingStatusAttempts);
-    fake_millis_now = 6000;
+    fakeMillisNow = 6000;
     sendToSerial(&Serial);
     TEST_ASSERT_FALSE(pendingStatusActive);
 }
@@ -116,11 +154,11 @@ void test_status_ack_clears_pending_message(void) {
 void test_invalid_and_overlong_frames_are_not_executed(void) {
     resetFixtures();
     SerialEsp8266 esp(&Serial);
-    EnableACS = true;
+    enableAcs = true;
     strcpy(Serial.input, "cmd:x:ACS_G:off#cmd:5:ACS_G:off");
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
-    TEST_ASSERT_TRUE(EnableACS);
+    TEST_ASSERT_TRUE(enableAcs);
     TEST_ASSERT_EQUAL(0, EEPROM.update_count);
     TEST_ASSERT_EQUAL(0, Serial.outputLength);
 }
@@ -132,29 +170,30 @@ void test_all_inbound_commands_update_their_target(void) {
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
 
-    TEST_ASSERT_TRUE(EnableElectricACS);
-    TEST_ASSERT_FALSE(EnableACS);
-    TEST_ASSERT_FALSE(EnableACS_DeltaElectrico);
+    TEST_ASSERT_TRUE(enableElectricAcs);
+    TEST_ASSERT_FALSE(enableAcs);
+    TEST_ASSERT_FALSE(enableAcsDeltaElectrico);
     TEST_ASSERT_TRUE(modoFrio);
-    TEST_ASSERT_EQUAL_UINT8(31, SetP_ACS);
-    TEST_ASSERT_EQUAL_UINT8(31, SetP_ACS_Edit);
+    TEST_ASSERT_EQUAL_UINT8(31, acsSetpoint);
+    TEST_ASSERT_EQUAL_UINT8(31, acsSetpointEdit);
     TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:6#"));
 }
 
 void test_status_snapshot_contains_all_expected_frames(void) {
     resetFixtures();
     SerialEsp8266 esp(&Serial);
-    EnableACS = true;
-    EnableACS_DeltaElectrico = false;
-    EnableElectricACS = true;
+    enableAcs = true;
+    enableAcsDeltaElectrico = false;
+    enableElectricAcs = true;
     modoFrio = true;
-    Estado_Maquina = 3;
-    Nro_Alarma = 9;
+    estadoMaquina = 3;
+    nroAlarma = 9;
     strcpy(Serial.input, "cmd:1:ACS_G:on#");
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
+    esp.detectAndEnqueueChangedStatus();
 
-    TEST_ASSERT_EQUAL(16, espQueue.item_count());
+    TEST_ASSERT_EQUAL(20, espQueue.item_count());
     EspMessage first = espQueue.dequeue();
     TEST_ASSERT_EQUAL_STRING("status:1:contrl:ACS_GEO___:1#", first.text);
     EspMessage second = espQueue.dequeue();
@@ -202,6 +241,9 @@ int main(void) {
     RUN_TEST(test_valid_command_updates_state_and_sends_ack);
     RUN_TEST(test_duplicate_command_only_acknowledges_without_reexecuting);
     RUN_TEST(test_setpoint_command_uses_existing_limits);
+    RUN_TEST(test_heating_off_command_updates_state_and_persists);
+    RUN_TEST(test_status_request_enqueues_snapshot_without_state_change);
+    RUN_TEST(test_discrete_change_enqueues_snapshot_but_continuous_change_does_not);
     RUN_TEST(test_status_queue_sends_then_retries_until_limit);
     RUN_TEST(test_status_ack_clears_pending_message);
     RUN_TEST(test_invalid_and_overlong_frames_are_not_executed);

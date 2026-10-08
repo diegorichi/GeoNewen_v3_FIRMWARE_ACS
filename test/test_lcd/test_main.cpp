@@ -1,27 +1,27 @@
 #include <unity.h>
 #include "functionsLCDMenu.cpp"
 
-unsigned long fake_millis_now = 0;
-int fake_lcd_begin_calls = 0;
-int fake_lcd_clear_calls = 0;
-int fake_lcd_cursor_calls = 0;
-int fake_lcd_print_calls = 0;
-int fake_lcd_write_calls = 0;
+unsigned long fakeMillisNow = 0;
+int fakeLcdBeginCalls = 0;
+int fakeLcdClearCalls = 0;
+int fakeLcdCursorCalls = 0;
+int fakeLcdPrintCalls = 0;
+int fakeLcdWriteCalls = 0;
 EEPROMFake EEPROM;
 
 #include "../fakes/mega_globals.h"
 
-unsigned long millis() { return fake_millis_now; }
-uint8_t EEPROMreaduint8_t(int address) { return EEPROM.read(address); }
+unsigned long millis() { return fakeMillisNow; }
+uint8_t eepromReadUint8(int address) { return EEPROM.read(address); }
 void refreshCurrentMenu() {}
 
 void resetFixtures() {
-    fake_lcd_begin_calls = 0;
-    fake_lcd_clear_calls = 0;
-    fake_lcd_cursor_calls = 0;
-    fake_lcd_print_calls = 0;
-    fake_lcd_write_calls = 0;
-    Alarma_Eeprom = 0;
+    fakeLcdBeginCalls = 0;
+    fakeLcdClearCalls = 0;
+    fakeLcdCursorCalls = 0;
+    fakeLcdPrintCalls = 0;
+    fakeLcdWriteCalls = 0;
+    alarmaEeprom = 0;
 }
 
 void test_all_draw_functions_initialize_the_display(void) {
@@ -45,9 +45,9 @@ void test_all_draw_functions_initialize_the_display(void) {
     drawAlarmHistoryMenu();
     drawAlarmHistoryScreen();
 
-    TEST_ASSERT_EQUAL(18, fake_lcd_begin_calls);
-    TEST_ASSERT_EQUAL(18, fake_lcd_clear_calls);
-    TEST_ASSERT_TRUE(fake_lcd_print_calls > 18);
+    TEST_ASSERT_EQUAL(18, fakeLcdBeginCalls);
+    TEST_ASSERT_EQUAL(18, fakeLcdClearCalls);
+    TEST_ASSERT_TRUE(fakeLcdPrintCalls > 18);
 }
 
 void test_refresh_functions_cover_alarm_codes_and_history(void) {
@@ -56,18 +56,18 @@ void test_refresh_functions_cover_alarm_codes_and_history(void) {
     for (uint8_t code : alarmCodes) {
         refreshAlarmMessage(code);
     }
-    TEST_ASSERT_TRUE(fake_lcd_print_calls >= 8);
+    TEST_ASSERT_TRUE(fakeLcdPrintCalls >= 8);
 
-    EEPROM.memory[Alarma_Address] = 18;
+    EEPROM.memory[alarmaAddress] = 18;
     refreshAlarmHistoryScreen();
-    TEST_ASSERT_EQUAL_UINT8(18, Alarma_Eeprom);
+    TEST_ASSERT_EQUAL_UINT8(18, alarmaEeprom);
 }
 
 void test_special_chars_and_navigation_markers_are_written(void) {
     resetFixtures();
     lcdCreateSpecialChars();
     showNavigation();
-    TEST_ASSERT_EQUAL(2, fake_lcd_write_calls);
+    TEST_ASSERT_EQUAL(2, fakeLcdWriteCalls);
 }
 
 int main(void) {

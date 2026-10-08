@@ -1,17 +1,17 @@
 #include <unity.h>
 #include "machine_control.cpp"
 
-unsigned long fake_millis_now = 0;
-int fake_digital_inputs[64] = {};
-int fake_digital_outputs[64] = {};
+unsigned long fakeMillisNow = 0;
+int fakeDigitalInputs[64] = {};
+int fakeDigitalOutputs[64] = {};
 TimerOneFake Timer1;
 EEPROMFake EEPROM;
 
 #include "../fakes/mega_globals.h"
 
-unsigned long millis() { return fake_millis_now; }
-int digitalRead(int pin) { return fake_digital_inputs[pin]; }
-void digitalWrite(int pin, int value) { fake_digital_outputs[pin] = value; }
+unsigned long millis() { return fakeMillisNow; }
+int digitalRead(int pin) { return fakeDigitalInputs[pin]; }
+void digitalWrite(int pin, int value) { fakeDigitalOutputs[pin] = value; }
 void pinMode(int, int) {}
 void tone(int, unsigned int, unsigned long) {}
 void noTone(int) {}
@@ -19,43 +19,43 @@ void noInterrupts() {}
 void interrupts() {}
 void attachInterrupt(int, void (*)(), int) {}
 void detachInterrupt(int) {}
-void EEPROMwrite(int address, bool value) { EEPROM.update(address, value); }
-void EEPROMwrite(int address, uint8_t value) { EEPROM.update(address, value); }
+void eepromWrite(int address, bool value) { EEPROM.update(address, value); }
+void eepromWrite(int address, uint8_t value) { EEPROM.update(address, value); }
 void temperatureCalculation() {}
 void lcdRefreshValues() {}
 
 void resetFixtures() {
-    fake_millis_now = 0;
-    for (int& value : fake_digital_inputs) value = LOW;
-    for (int& value : fake_digital_outputs) value = LOW;
-    Estado_Maquina = 1;
+    fakeMillisNow = 0;
+    for (int& value : fakeDigitalInputs) value = LOW;
+    for (int& value : fakeDigitalOutputs) value = LOW;
+    estadoMaquina = 1;
     modoFrio = false;
-    heating_off = false;
-    Temp_out_H = Temp_out_T = Temp_Admision = 0;
-    Ingreso_E3 = 0;
-    Periodo_Refresco = 0;
-    Flag_Buzzer = false;
-    Valor_DO_Buzzer = LOW;
+    heatingOff = false;
+    tempOutH = tempOutT = tempAdmision = 0;
+    ingresoE3 = 0;
+    periodoRefresco = 0;
+    flagBuzzer = false;
+    valorDoBuzzer = LOW;
     EEPROM.update_count = 0;
     lastModeChangeAt = 0;
 }
 
 void test_start_stop_signal_follows_mode(void) {
     resetFixtures();
-    fake_digital_inputs[DI_Marcha_on] = HIGH;
+    fakeDigitalInputs[diMarchaOn] = HIGH;
     calculateStartStopSignal();
-    TEST_ASSERT_TRUE(senal_start);
-    TEST_ASSERT_FALSE(senal_stop);
+    TEST_ASSERT_TRUE(senalStart);
+    TEST_ASSERT_FALSE(senalStop);
 
     modoFrio = true;
     calculateStartStopSignal();
-    TEST_ASSERT_FALSE(senal_start);
-    TEST_ASSERT_TRUE(senal_stop);
+    TEST_ASSERT_FALSE(senalStart);
+    TEST_ASSERT_TRUE(senalStop);
 
-    fake_digital_inputs[DI_Marcha_on] = LOW;
+    fakeDigitalInputs[diMarchaOn] = LOW;
     calculateStartStopSignal();
-    TEST_ASSERT_TRUE(senal_start);
-    TEST_ASSERT_FALSE(senal_stop);
+    TEST_ASSERT_TRUE(senalStart);
+    TEST_ASSERT_FALSE(senalStop);
 }
 
 void test_normalize_setpoint_clamps_both_limits(void) {
@@ -71,7 +71,7 @@ void test_normalize_setpoint_clamps_both_limits(void) {
 void test_mode_change_requires_idle_and_respects_lockout(void) {
     resetFixtures();
     modoFrio = false;
-    fake_millis_now = 1;
+    fakeMillisNow = 1;
     changeModo(true);
     TEST_ASSERT_TRUE(modoFrio);
     TEST_ASSERT_EQUAL(1, EEPROM.update_count);
@@ -79,80 +79,80 @@ void test_mode_change_requires_idle_and_respects_lockout(void) {
 
     changeModo(false);
     TEST_ASSERT_TRUE(modoFrio);
-    fake_millis_now = 3001;
+    fakeMillisNow = 3001;
     changeModo(false);
     TEST_ASSERT_FALSE(modoFrio);
 
-    Estado_Maquina = 3;
+    estadoMaquina = 3;
     changeModo(true);
     TEST_ASSERT_FALSE(modoFrio);
 }
 
 void test_heating_cooling_and_long_period_checks(void) {
     resetFixtures();
-    fake_millis_now = 120001;
-    Temp_out_H = 43;
+    fakeMillisNow = 120001;
+    tempOutH = 43;
     TEST_ASSERT_TRUE(heatingCheck());
 
     modoFrio = true;
-    Temp_out_H = 9;
+    tempOutH = 9;
     TEST_ASSERT_TRUE(coolingCheck());
 
-    fake_millis_now = 43200001;
+    fakeMillisNow = 43200001;
     TEST_ASSERT_TRUE(longPeriodRunningCheck());
 }
 
 void test_take_rest_control_enters_rest_for_each_condition(void) {
     resetFixtures();
-    fake_millis_now = 120001;
-    Temp_out_H = 43;
+    fakeMillisNow = 120001;
+    tempOutH = 43;
     takeRestControl();
-    TEST_ASSERT_EQUAL(6, Estado_Maquina);
-    TEST_ASSERT_EQUAL(120001, Ingreso_Descanso);
+    TEST_ASSERT_EQUAL(6, estadoMaquina);
+    TEST_ASSERT_EQUAL(120001, ingresoDescanso);
 
     resetFixtures();
     modoFrio = true;
-    Temp_out_T = 41;
+    tempOutT = 41;
     takeRestControl();
-    TEST_ASSERT_EQUAL(6, Estado_Maquina);
+    TEST_ASSERT_EQUAL(6, estadoMaquina);
 }
 
 void test_outputs_and_buzzer_follow_existing_control(void) {
     resetFixtures();
-    Valor_DO_Bombas = HIGH;
-    Valor_DO_Calentador = HIGH;
-    Valor_DO_V4V = HIGH;
-    Valor_DO_Compressor = HIGH;
-    Valor_DO_VACS = HIGH;
+    valorDoBombas = HIGH;
+    valorDoCalentador = HIGH;
+    valorDoV4v = HIGH;
+    valorDoCompressor = HIGH;
+    valorDoVacs = HIGH;
     writeOutput();
-    TEST_ASSERT_EQUAL(HIGH, fake_digital_outputs[DO_Bombas]);
-    TEST_ASSERT_EQUAL(HIGH, fake_digital_outputs[DO_Compressor]);
-    TEST_ASSERT_EQUAL(HIGH, fake_digital_outputs[DO_ValvulaACS]);
+    TEST_ASSERT_EQUAL(HIGH, fakeDigitalOutputs[doBombas]);
+    TEST_ASSERT_EQUAL(HIGH, fakeDigitalOutputs[doCompressor]);
+    TEST_ASSERT_EQUAL(HIGH, fakeDigitalOutputs[doValvulaAcs]);
 
-    Flag_Buzzer = true;
-    Estado_Maquina = 1;
+    flagBuzzer = true;
+    estadoMaquina = 1;
     buzzerControl();
-    TEST_ASSERT_FALSE(Flag_Buzzer);
-    Estado_Maquina = 4;
-    Flag_Buzzer = true;
+    TEST_ASSERT_FALSE(flagBuzzer);
+    estadoMaquina = 4;
+    flagBuzzer = true;
     buzzerControl();
-    TEST_ASSERT_TRUE(Flag_Buzzer);
+    TEST_ASSERT_TRUE(flagBuzzer);
     buzzerStop();
-    TEST_ASSERT_FALSE(Flag_Buzzer);
-    TEST_ASSERT_EQUAL(LOW, Valor_DO_Buzzer);
+    TEST_ASSERT_FALSE(flagBuzzer);
+    TEST_ASSERT_EQUAL(LOW, valorDoBuzzer);
 }
 
 void test_output_initialization_turns_every_output_off(void) {
     resetFixtures();
-    for (int& value : fake_digital_outputs) value = HIGH;
+    for (int& value : fakeDigitalOutputs) value = HIGH;
     initializeDigitalOuputs();
-    TEST_ASSERT_EQUAL(LOW, fake_digital_outputs[DO_Compressor]);
-    TEST_ASSERT_EQUAL(LOW, fake_digital_outputs[DO_ValvulaACS]);
-    TEST_ASSERT_EQUAL(LOW, fake_digital_outputs[DO_Bombas]);
-    TEST_ASSERT_EQUAL(LOW, fake_digital_outputs[DO_Calentador]);
-    TEST_ASSERT_EQUAL(LOW, fake_digital_outputs[DO_Valvula4Vias]);
-    TEST_ASSERT_EQUAL(LOW, fake_digital_outputs[DO_Triac_01]);
-    TEST_ASSERT_EQUAL(LOW, fake_digital_outputs[DO_Buzzer]);
+    TEST_ASSERT_EQUAL(LOW, fakeDigitalOutputs[doCompressor]);
+    TEST_ASSERT_EQUAL(LOW, fakeDigitalOutputs[doValvulaAcs]);
+    TEST_ASSERT_EQUAL(LOW, fakeDigitalOutputs[doBombas]);
+    TEST_ASSERT_EQUAL(LOW, fakeDigitalOutputs[doCalentador]);
+    TEST_ASSERT_EQUAL(LOW, fakeDigitalOutputs[doValvula4Vias]);
+    TEST_ASSERT_EQUAL(LOW, fakeDigitalOutputs[doTriac01]);
+    TEST_ASSERT_EQUAL(LOW, fakeDigitalOutputs[doBuzzer]);
 }
 
 int main(void) {

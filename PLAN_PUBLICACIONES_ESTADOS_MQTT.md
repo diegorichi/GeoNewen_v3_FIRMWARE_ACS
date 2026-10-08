@@ -1,14 +1,14 @@
 # Plan: publicaciones inmediatas de estados MEGA → ESP → MQTT
 
-## Estado actual — 2026-10-02
+## Estado actual — implementación en `protocol_update`
 
-- `heating_off` todavía no está implementado en el ESP.
-- Actualmente se manejan dos valores de temperatura ACS: temperatura actual y
-  temperatura deseada/seteada.
-- La temperatura deseada viaja a la MEGA y se guarda; al publicarse se expone
-  como temperatura seteada.
-- Falta separar y publicar explícitamente los tres conceptos: temperatura ACS
-  actual, temperatura ACS deseada y temperatura ACS seteada.
+- `refresh_period` continúa siendo el máximo período de respaldo: 4 minutos.
+- Los cambios discretos detectados por la MEGA disparan una instantánea completa.
+- Flujos y temperaturas no participan en la detección; se incluyen en la
+  instantánea disparada por otro cambio.
+- Se publican por separado temperatura ACS actual, deseada y seteada.
+- `heating_off` se controla y publica mediante `kume/heating_off`.
+- `kume/status/request` solicita una instantánea inmediata manual.
 
 ## Objetivo
 
@@ -29,6 +29,9 @@ La MEGA deberá publicar cuando cambie cualquiera de estos valores:
 - delta eléctrico habilitado/deshabilitado;
 - setpoint de ACS;
 - `heating_off`, que indica apagado manual de la caldera.
+
+El comando manual de publicación usa `kume/status/request` con payload `1` o
+`publish`.
 
 El setpoint debe publicarse tanto cuando cambia por MQTT como cuando cambia
 desde el menú de la MEGA.

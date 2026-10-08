@@ -27,137 +27,137 @@
 
 // 0x28, 0xAE, 0x16, 0xFF, 0x1B, 0x19, 0x01, 0xD1 }; //n5
 
-extern const int DI_Caud_T;     // 18; //ENTRADAS DE CAUDALIMETROS (no se pueden modificar)
-extern const int DI_Caud_H;     // 19;
-extern const int DI_Marcha_on;  // 33; //Entrada de señal de Marcha
-extern const int DI_Pres_HI;    // 35;   //Preostato de alta
-extern const int DI_Pres_LOW;   // 37;  //Presotato de baja
+extern const int diCaudT;     // 18; //ENTRADAS DE CAUDALIMETROS (no se pueden modificar)
+extern const int diCaudH;     // 19;
+extern const int diMarchaOn;  // 33; //Entrada de señal de Marcha
+extern const int diPresHi;    // 35;   //Preostato de alta
+extern const int diPresLow;   // 37;  //Presotato de baja
 
-extern const int DO_Calentador;    // 23; //Compresor
-extern const int DO_Compressor;    // 25;    //Boombas de circulacion
-extern const int DO_Bombas;        // 27;     //Valvula Calefaccion
-extern const int DO_Valvula4Vias;  // 29;       //V4V
-extern const int DO_ValvulaACS;    // 31;       //V ACS
+extern const int doCalentador;    // 23; //Compresor
+extern const int doCompressor;    // 25;    //Boombas de circulacion
+extern const int doBombas;        // 27;     //Valvula Calefaccion
+extern const int doValvula4Vias;  // 29;       //V4V
+extern const int doValvulaAcs;    // 31;       //V ACS
 
-extern const int DO_Triac_01;  // 11; //Triacs,Pin salida PWM (no se puede modificar)
-extern const int DO_Buzzer;    // 12;   //
+extern const int doTriac01;  // 11; //Triacs,Pin salida PWM (no se puede modificar)
+extern const int doBuzzer;    // 12;   //
 
 // VARIABLES DEL PROGRAMA
 
-extern int Caud_T;
-extern int C1_T;       // 0;
-extern int C2_T;       // 0;
-extern int C3_T;       // 0;
-extern int Caud_Tacu;  // 0;
+extern int caudT;
+extern int c1T;       // 0;
+extern int c2T;       // 0;
+extern int c3T;       // 0;
+extern int caudTacu;  // 0;
 
-extern int Caud_H;
-extern int C1_H;       // 0;
-extern int C2_H;       // 0;
-extern int C3_H;       // 0;
-extern int Caud_Hacu;  // 0;
+extern int caudH;
+extern int c1H;       // 0;
+extern int c2H;       // 0;
+extern int c3H;       // 0;
+extern int caudHacu;  // 0;
 
-extern volatile int Estado_Maquina;  // 0;
+extern volatile int estadoMaquina;  // 0;
 
-extern int Cont_Temp_Des;  // 0;
+extern int contTempDes;  // 0;
 
 // Contadores auxiliares de alarmas
 
-extern int Cont_Temp_Compressor;  // 0;
-extern int Cont_Press_HI;         // 0;
-extern int Cont_Press_LOW;        // 0;
-extern int Cont_Temp_Descarga;    // 0;
+extern int contTempCompressor;  // 0;
+extern int contPressHi;         // 0;
+extern int contPressLow;        // 0;
+extern int contTempDescarga;    // 0;
 
-extern float Temp_Compressor;
-extern float T5_Comp;             // 0;
-extern float T4_Comp;             // 0;
-extern float T3_Comp;             // 0;
-extern float T2_Comp;             // 0;
-extern float T1_Comp;             // 0;
-extern float Temp_CompressorAcu;  // 0;
+extern float tempCompressor;
+extern float t5Comp;             // 0;
+extern float t4Comp;             // 0;
+extern float t3Comp;             // 0;
+extern float t2Comp;             // 0;
+extern float t1Comp;             // 0;
+extern float tempCompressorAcu;  // 0;
 
-extern float Temp_ACS;
-extern float T1_ACS;       // 0;
-extern float T2_ACS;       // 0;
-extern float T3_ACS;       // 0;
-extern float Temp_ACSacu;  // 0;
+extern float tempAcs;
+extern float t1Acs;       // 0;
+extern float t2Acs;       // 0;
+extern float t3Acs;       // 0;
+extern float tempAcsAcu;  // 0;
 
-extern float Temp_out_H;
-extern float Temp_in_H;
-extern float Temp_out_T;
-extern float Temp_in_T;
-extern float Temp_Descarga;
-extern float Temp_Admision;
+extern float tempOutH;
+extern float tempInH;
+extern float tempOutT;
+extern float tempInT;
+extern float tempDescarga;
+extern float tempAdmision;
 
-extern float T1_OH;          // 0;
-extern float T2_OH;          // 0;
-extern float T3_OH;          // 0;
-extern float Temp_out_Hacu;  // 0;
-extern float T1_IH;          // 0;
-extern float T2_IH;          // 0;
-extern float T3_IH;          // 0;
-extern float Temp_in_Hacu;   // 0;
+extern float t1Oh;          // 0;
+extern float t2Oh;          // 0;
+extern float t3Oh;          // 0;
+extern float tempOutHacu;  // 0;
+extern float t1Ih;          // 0;
+extern float t2Ih;          // 0;
+extern float t3Ih;          // 0;
+extern float tempInHacu;   // 0;
 
-extern float T1_Des;            // 0;
-extern float T2_Des;            // 0;
-extern float T3_Des;            // 0;
-extern float Temp_DescargaAcu;  // 0;
+extern float t1Des;            // 0;
+extern float t2Des;            // 0;
+extern float t3Des;            // 0;
+extern float tempDescargaAcu;  // 0;
 
-extern bool Flag_TempCompressor;  // false;
-extern bool Flag_Temp_Descarga;   // false;
+extern bool flagTempCompressor;  // false;
+extern bool flagTempDescarga;   // false;
 
 extern const uint8_t GAP_ACS;  // 2 grados
 
-extern unsigned long valvulaACSStart;  // 0;
-extern unsigned long PumpStart;        // 0;
-extern unsigned long Ingreso_E7;       // 0;
-extern unsigned long Ingreso_E71;      // 0;
+extern unsigned long valvulaAcsStart;  // 0;
+extern unsigned long pumpStart;        // 0;
+extern unsigned long ingresoE7;       // 0;
+extern unsigned long ingresoE71;      // 0;
 
-extern unsigned long Periodo_Refresco;
+extern unsigned long periodoRefresco;
 extern unsigned long compressorStart;
-extern unsigned long Salto_E1;
-extern unsigned long dontStuckPumpsStart_activation;
+extern unsigned long saltoE1;
+extern unsigned long dontStuckPumpsStartActivation;
 extern unsigned long dontStuckPumpsStart;
-extern unsigned long Ingreso_E3;
+extern unsigned long ingresoE3;
 
-extern unsigned long Ingreso_Descanso;  // 0;
+extern unsigned long ingresoDescanso;  // 0;
 
-extern volatile MenuId MenuActual;
+extern volatile MenuId menuActual;
 
-extern volatile uint8_t Nro_Alarma;     // 0;
-extern volatile uint8_t SetP_ACS;       // 0;
-extern volatile uint8_t SetP_ACS_Edit;  // 0;
+extern volatile uint8_t nroAlarma;     // 0;
+extern volatile uint8_t acsSetpoint;       // 0;
+extern volatile uint8_t acsSetpointEdit;  // 0;
 
-extern uint8_t Alarma_Eeprom;
+extern uint8_t alarmaEeprom;
 
 // FLAGS     //Banderas de uso general para el funcionamiento del programa
 
-extern bool deltaACSElectricResult;  // false;
-extern bool Flag_CaudT;              // false;
-extern bool Flag_CaudH;              // false;
-extern bool Flag_PresHI;             // false;
-extern bool Flag_PresLOW;            // false;
+extern bool deltaAcsElectricResult;  // false;
+extern bool flagCaudT;              // false;
+extern bool flagCaudH;              // false;
+extern bool flagPresHi;             // false;
+extern bool flagPresLow;            // false;
 
-extern bool Flag_Temp_Adm;      // false;
+extern bool flagTempAdm;      // false;
 extern volatile bool modoFrio;  // false; //Frio ; // true , Calor ; // false
-extern volatile bool Alarma_Activa;
-extern bool Flag_Marcha_ON;  // control de salto e1
-extern bool senal_start;     // senal de marcha, segun modoFrio
+extern volatile bool alarmaActiva;
+extern bool flagMarchaOn;  // control de salto e1
+extern bool senalStart;     // senal de marcha, segun modoFrio
 // se trabaja con 1 termostato.
-extern bool senal_stop;
-extern volatile bool heating_off;
-extern volatile bool Flag_Buzzer;
+extern bool senalStop;
+extern volatile bool heatingOff;
+extern volatile bool flagBuzzer;
 
-extern volatile bool EnableFlowAlarm;  // Alarmas de caudal
-extern volatile bool EnableACS;
-extern volatile bool EnableACS_DeltaElectrico;
-extern volatile bool EnableElectricACS;
+extern volatile bool enableFlowAlarm;  // Alarmas de caudal
+extern volatile bool enableAcs;
+extern volatile bool enableAcsDeltaElectrico;
+extern volatile bool enableElectricAcs;
 
 // IMAGENES DE ENTRADAS/SALIDAS
-extern int Valor_DO_Bombas;
-extern int Valor_DO_Calentador;
-extern int Valor_DO_Compressor;
-extern int Valor_DO_VACS;
-extern int Valor_DO_V4V;
-extern volatile int Valor_DO_Buzzer;
+extern int valorDoBombas;
+extern int valorDoCalentador;
+extern int valorDoCompressor;
+extern int valorDoVacs;
+extern int valorDoV4v;
+extern volatile int valorDoBuzzer;
 
 #endif

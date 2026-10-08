@@ -1,8 +1,8 @@
 #pragma once
 #include <stdint.h>
-extern float fake_temperature_by_sensor[256];
-extern bool fake_conversion_complete;
-extern int fake_temperature_requests;
+extern float fakeTemperatureBySensor[256];
+extern bool fakeConversionComplete;
+extern int fakeTemperatureRequests;
 
 class DallasTemperature {
 public:
@@ -10,8 +10,8 @@ public:
     void begin() {}
     void setWaitForConversion(bool) {}
     float getTempC(const uint8_t* address) const {
-        return fake_temperature_by_sensor[address[1]];
+        return fakeTemperatureBySensor[address[1]];
     }
-    bool isConversionComplete() const { return fake_conversion_complete; }
-    void requestTemperatures() { ++fake_temperature_requests; }
+    bool isConversionComplete() const { return fakeConversionComplete; }
+    void requestTemperatures() { ++fakeTemperatureRequests; }
 };

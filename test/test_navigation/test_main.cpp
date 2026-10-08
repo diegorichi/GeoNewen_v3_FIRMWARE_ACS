@@ -2,33 +2,33 @@
 #include "menu_navigation.cpp"
 #include "menu_actions.cpp"
 
-unsigned long fake_millis_now = 0;
-int fake_digital_inputs[64] = {};
+unsigned long fakeMillisNow = 0;
+int fakeDigitalInputs[64] = {};
 TimerOneFake Timer1;
 EEPROMFake EEPROM;
 
 #include "../fakes/mega_globals.h"
 
-int draw_calls = 0;
-int refresh_calls = 0;
-int action_calls = 0;
-int reset_alarm_calls = 0;
-int modo_changes = 0;
+int drawCalls = 0;
+int refreshCalls = 0;
+int actionCalls = 0;
+int resetAlarmCalls = 0;
+int modoChanges = 0;
 
-unsigned long millis() { return fake_millis_now; }
+unsigned long millis() { return fakeMillisNow; }
 void digitalWrite(int, int) {}
-void EEPROMwrite(int address, bool value) { EEPROM.update(address, value); }
-void EEPROMwrite(int address, uint8_t value) { EEPROM.update(address, value); }
-void resetAlarms() { ++reset_alarm_calls; }
-void changeModo(bool value) { modoFrio = value; ++modo_changes; }
+void eepromWrite(int address, bool value) { EEPROM.update(address, value); }
+void eepromWrite(int address, uint8_t value) { EEPROM.update(address, value); }
+void resetAlarms() { ++resetAlarmCalls; }
+void changeModo(bool value) { modoFrio = value; ++modoChanges; }
 uint8_t normalizeAcsTemp(volatile uint8_t* value) {
     if (*value < 30) *value = 30;
     if (*value > 48) *value = 48;
     return *value;
 }
 
-#define DRAW_STUB(name) void name() { ++draw_calls; }
-#define REFRESH_STUB(name) void name() { ++refresh_calls; }
+#define DRAW_STUB(name) void name() { ++drawCalls; }
+#define REFRESH_STUB(name) void name() { ++refreshCalls; }
 DRAW_STUB(drawHomeScreen)
 DRAW_STUB(drawMonitorMenu)
 DRAW_STUB(drawMonitorScreen1)
@@ -61,88 +61,88 @@ REFRESH_STUB(refreshActiveAlarmScreen)
 REFRESH_STUB(refreshAlarmHistoryScreen)
 
 void resetFixtures() {
-    MenuActual = MENU_HOME;
-    SetP_ACS = 45;
-    SetP_ACS_Edit = 45;
+    menuActual = MENU_HOME;
+    acsSetpoint = 45;
+    acsSetpointEdit = 45;
     modoFrio = false;
-    EnableFlowAlarm = false;
-    heating_off = false;
-    EnableACS = true;
-    EnableACS_DeltaElectrico = true;
-    EnableElectricACS = false;
-    Valor_DO_Buzzer = HIGH;
-    draw_calls = refresh_calls = action_calls = reset_alarm_calls = modo_changes = 0;
+    enableFlowAlarm = false;
+    heatingOff = false;
+    enableAcs = true;
+    enableAcsDeltaElectrico = true;
+    enableElectricAcs = false;
+    valorDoBuzzer = HIGH;
+    drawCalls = refreshCalls = actionCalls = resetAlarmCalls = modoChanges = 0;
     EEPROM.update_count = 0;
 }
 
 void test_navigation_uses_declared_routes(void) {
     resetFixtures();
     navigateTo(MENU_MONITOR);
-    TEST_ASSERT_EQUAL(MENU_MONITOR, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_MONITOR, menuActual);
     processMenuButton(BUTTON_DOWN);
-    TEST_ASSERT_EQUAL(MENU_CONFIGURATION, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_CONFIGURATION, menuActual);
     processMenuButton(BUTTON_BACK);
-    TEST_ASSERT_EQUAL(MENU_HOME, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_HOME, menuActual);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_EQUAL(MENU_MONITOR, MenuActual);
-    TEST_ASSERT_TRUE(draw_calls >= 4);
+    TEST_ASSERT_EQUAL(MENU_MONITOR, menuActual);
+    TEST_ASSERT_TRUE(drawCalls >= 4);
 }
 
 void test_monitor_routes_all_navigation_buttons(void) {
     resetFixtures();
     navigateTo(MENU_MONITOR);
     processMenuButton(BUTTON_UP);
-    TEST_ASSERT_EQUAL(MENU_ALARM_LOG, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_ALARM_LOG, menuActual);
     processMenuButton(BUTTON_DOWN);
-    TEST_ASSERT_EQUAL(MENU_MONITOR, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_MONITOR, menuActual);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_EQUAL(MENU_MONITOR_VALUES_1, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_MONITOR_VALUES_1, menuActual);
     processMenuButton(BUTTON_BACK);
-    TEST_ASSERT_EQUAL(MENU_MONITOR, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_MONITOR, menuActual);
 }
 
 void test_actions_run_only_when_button_has_no_navigation_target(void) {
     resetFixtures();
-    SetP_ACS = 45;
-    SetP_ACS_Edit = SetP_ACS;
+    acsSetpoint = 45;
+    acsSetpointEdit = acsSetpoint;
     navigateTo(MENU_ACS_EDIT);
     processMenuButton(BUTTON_UP);
-    TEST_ASSERT_EQUAL_UINT8(46, SetP_ACS_Edit);
-    TEST_ASSERT_EQUAL_UINT8(45, SetP_ACS);
+    TEST_ASSERT_EQUAL_UINT8(46, acsSetpointEdit);
+    TEST_ASSERT_EQUAL_UINT8(45, acsSetpoint);
     processMenuButton(BUTTON_DOWN);
-    TEST_ASSERT_EQUAL_UINT8(45, SetP_ACS_Edit);
+    TEST_ASSERT_EQUAL_UINT8(45, acsSetpointEdit);
     processMenuButton(BUTTON_BACK);
-    TEST_ASSERT_EQUAL(MENU_ACS_CONFIG, MenuActual);
-    TEST_ASSERT_EQUAL_UINT8(45, SetP_ACS);
+    TEST_ASSERT_EQUAL(MENU_ACS_CONFIG, menuActual);
+    TEST_ASSERT_EQUAL_UINT8(45, acsSetpoint);
 
     resetFixtures();
-    SetP_ACS = 45;
-    SetP_ACS_Edit = SetP_ACS;
+    acsSetpoint = 45;
+    acsSetpointEdit = acsSetpoint;
     navigateTo(MENU_ACS_EDIT);
     processMenuButton(BUTTON_UP);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_EQUAL_UINT8(46, SetP_ACS);
-    TEST_ASSERT_EQUAL_UINT8(46, SetP_ACS_Edit);
-    TEST_ASSERT_EQUAL_UINT8(46, EEPROM.memory[SetP_ACS_Address]);
+    TEST_ASSERT_EQUAL_UINT8(46, acsSetpoint);
+    TEST_ASSERT_EQUAL_UINT8(46, acsSetpointEdit);
+    TEST_ASSERT_EQUAL_UINT8(46, EEPROM.memory[acsSetpointAddress]);
 
     resetFixtures();
     navigateTo(MENU_FLOW_ALARMS);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_TRUE(EnableFlowAlarm);
+    TEST_ASSERT_TRUE(enableFlowAlarm);
     TEST_ASSERT_EQUAL(1, EEPROM.update_count);
-    TEST_ASSERT_EQUAL(MENU_FLOW_ALARMS, MenuActual);
+    TEST_ASSERT_EQUAL(MENU_FLOW_ALARMS, menuActual);
 }
 
 void test_back_cancels_setpoint_edit(void) {
     resetFixtures();
-    SetP_ACS = 45;
-    SetP_ACS_Edit = SetP_ACS;
+    acsSetpoint = 45;
+    acsSetpointEdit = acsSetpoint;
     navigateTo(MENU_ACS_EDIT);
     processMenuButton(BUTTON_UP);
     processMenuButton(BUTTON_BACK);
 
-    TEST_ASSERT_EQUAL_UINT8(45, SetP_ACS);
-    TEST_ASSERT_EQUAL_UINT8(45, SetP_ACS_Edit);
+    TEST_ASSERT_EQUAL_UINT8(45, acsSetpoint);
+    TEST_ASSERT_EQUAL_UINT8(45, acsSetpointEdit);
 }
 
 void test_configuration_actions_persist_each_existing_flag(void) {
@@ -150,20 +150,20 @@ void test_configuration_actions_persist_each_existing_flag(void) {
     navigateTo(MENU_MODE);
     processMenuButton(BUTTON_ENTER);
     TEST_ASSERT_TRUE(modoFrio);
-    TEST_ASSERT_EQUAL(1, modo_changes);
+    TEST_ASSERT_EQUAL(1, modoChanges);
 
     navigateTo(MENU_HEATING);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_TRUE(heating_off);
+    TEST_ASSERT_TRUE(heatingOff);
     navigateTo(MENU_ACS_ENABLE);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_FALSE(EnableACS);
+    TEST_ASSERT_FALSE(enableAcs);
     navigateTo(MENU_ACS_DELTA);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_FALSE(EnableACS_DeltaElectrico);
+    TEST_ASSERT_FALSE(enableAcsDeltaElectrico);
     navigateTo(MENU_ACS_ELECTRIC);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_TRUE(EnableElectricACS);
+    TEST_ASSERT_TRUE(enableElectricAcs);
     TEST_ASSERT_EQUAL(4, EEPROM.update_count);
 }
 
@@ -171,45 +171,45 @@ void test_alarm_actions_and_history_action_are_reachable(void) {
     resetFixtures();
     navigateTo(MENU_ALARM_ACTIVE);
     processMenuButton(BUTTON_UP);
-    TEST_ASSERT_EQUAL(LOW, Valor_DO_Buzzer);
-    Valor_DO_Buzzer = HIGH;
+    TEST_ASSERT_EQUAL(LOW, valorDoBuzzer);
+    valorDoBuzzer = HIGH;
     processMenuButton(BUTTON_DOWN);
-    TEST_ASSERT_EQUAL(LOW, Valor_DO_Buzzer);
+    TEST_ASSERT_EQUAL(LOW, valorDoBuzzer);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_EQUAL(1, reset_alarm_calls);
+    TEST_ASSERT_EQUAL(1, resetAlarmCalls);
 
     navigateTo(MENU_ALARM_LOG_VIEW);
     processMenuButton(BUTTON_ENTER);
-    TEST_ASSERT_EQUAL_UINT8(0, EEPROM.memory[Alarma_Address]);
+    TEST_ASSERT_EQUAL_UINT8(0, EEPROM.memory[alarmaAddress]);
 }
 
 void test_refresh_calls_current_menu_refresh_only_when_defined(void) {
     resetFixtures();
     navigateTo(MENU_MONITOR);
     refreshCurrentMenu();
-    TEST_ASSERT_EQUAL(0, refresh_calls);
+    TEST_ASSERT_EQUAL(0, refreshCalls);
     navigateTo(MENU_MONITOR_VALUES_1);
     refreshCurrentMenu();
-    TEST_ASSERT_EQUAL(1, refresh_calls);
+    TEST_ASSERT_EQUAL(1, refreshCalls);
 }
 
 void test_setpoint_actions_clamp_at_both_limits(void) {
     resetFixtures();
     navigateTo(MENU_ACS_EDIT);
-    SetP_ACS_Edit = 30;
+    acsSetpointEdit = 30;
     processMenuButton(BUTTON_DOWN);
-    TEST_ASSERT_EQUAL_UINT8(30, SetP_ACS_Edit);
-    SetP_ACS_Edit = 48;
+    TEST_ASSERT_EQUAL_UINT8(30, acsSetpointEdit);
+    acsSetpointEdit = 48;
     processMenuButton(BUTTON_UP);
-    TEST_ASSERT_EQUAL_UINT8(48, SetP_ACS_Edit);
+    TEST_ASSERT_EQUAL_UINT8(48, acsSetpointEdit);
 }
 
 void test_invalid_menu_is_ignored(void) {
     resetFixtures();
-    MenuActual = MENU_HOME;
+    menuActual = MENU_HOME;
     navigateTo(static_cast<MenuId>(99));
-    TEST_ASSERT_EQUAL(MENU_HOME, MenuActual);
-    TEST_ASSERT_EQUAL(0, draw_calls);
+    TEST_ASSERT_EQUAL(MENU_HOME, menuActual);
+    TEST_ASSERT_EQUAL(0, drawCalls);
 }
 
 int main(void) {

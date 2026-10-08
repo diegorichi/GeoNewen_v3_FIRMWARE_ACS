@@ -7,7 +7,7 @@
 #include "machine_control.h"
 #include "vars.h"
 
-#define GENERATE_ACS (Temp_ACS < (SetP_ACS - GAP_ACS) && EnableACS)
+#define GENERATE_ACS (tempAcs < (acsSetpoint - GAP_ACS) && enableAcs)
 
 void initializeStateMachine();
 

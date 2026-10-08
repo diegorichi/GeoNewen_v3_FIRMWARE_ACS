@@ -34,10 +34,10 @@ void lcdRefreshValues() {
 // Solo en la ventana de bienvenida se muestra el estado actual del sistema y de la señal de marcha
 void refreshHomeScreen() {
     lcd.setCursor(19, 2);
-    lcd.print(Estado_Maquina);
+    lcd.print(estadoMaquina);
 
     lcd.setCursor(19, 1);
-    if (senal_start)
+    if (senalStart)
         lcd.print(F("H"));
     else
         lcd.print(F("L"));
@@ -59,13 +59,13 @@ void refreshMonitorScreen1() {
         lcd.print(F("CALOR"));
     }
     lcd.setCursor(5, 2);
-    lcd.print(Temp_CompressorAcu, 1);
+    lcd.print(tempCompressorAcu, 1);
     lcd.setCursor(15, 2);
-    lcd.print(Temp_Admision, 1);
+    lcd.print(tempAdmision, 1);
     lcd.setCursor(5, 3);
-    lcd.print(Temp_DescargaAcu, 1);
+    lcd.print(tempDescargaAcu, 1);
     lcd.setCursor(15, 3);
-    lcd.print(Temp_ACSacu, 1);
+    lcd.print(tempAcsAcu, 1);
 }
 
 // La visualización de la segunda ventana del monitor depende del modo de funcionamiento, ya que en función de este se cambian de lugar las variables motradas
@@ -77,21 +77,21 @@ void refreshMonitorScreen2() {
         lcd.print(F("CALOR"));
     }
     lcd.setCursor(5, 1);
-    lcd.print(Temp_in_Hacu, 1);
+    lcd.print(tempInHacu, 1);
     lcd.setCursor(15, 1);
-    lcd.print(Temp_out_Hacu, 1);
+    lcd.print(tempOutHacu, 1);
     lcd.setCursor(5, 2);
-    lcd.print(Temp_in_T, 1);
+    lcd.print(tempInT, 1);
     lcd.setCursor(15, 2);
-    lcd.print(Temp_out_T, 1);
+    lcd.print(tempOutT, 1);
     lcd.setCursor(5, 3);
     lcd.print(F("    "));
     lcd.setCursor(5, 3);
-    lcd.print(Caud_Tacu);
+    lcd.print(caudTacu);
     lcd.setCursor(15, 3);
     lcd.print(F("    "));
     lcd.setCursor(15, 3);
-    lcd.print(Caud_Hacu);
+    lcd.print(caudHacu);
 }
 
 // Modo Frio / Calor
@@ -107,15 +107,15 @@ void refreshModeScreen() {
 // Editar valor ACS
 void refreshAcsEditScreen() {
     lcd.setCursor(14, 1);
-    lcd.print(SetP_ACS);
+    lcd.print(acsSetpoint);
     lcd.setCursor(13, 2);
-    lcd.print(SetP_ACS_Edit);
+    lcd.print(acsSetpointEdit);
 }
 
 // Alarmas
 void refreshFlowAlarmScreen() {
     lcd.setCursor(8, 2);
-    if (EnableFlowAlarm) {
+    if (enableFlowAlarm) {
         lcd.print(F("ON "));
     } else
         lcd.print(F("OFF"));
@@ -124,7 +124,7 @@ void refreshFlowAlarmScreen() {
 // Funcionamiento Auto/Manual
 void refreshHeatingScreen() {
     lcd.setCursor(10, 2);
-    if (!heating_off) {
+    if (!heatingOff) {
         lcd.print(F("ENCENDIDO"));
     } else
         lcd.print(F("APAGADO  "));
@@ -133,7 +133,7 @@ void refreshHeatingScreen() {
 // Activacion/desactivacion de ACS
 void refreshAcsEnableScreen() {
     lcd.setCursor(15, 1);
-    if (EnableACS) {
+    if (enableAcs) {
         lcd.print(F("ON "));
     } else
         lcd.print(F("OFF"));
@@ -142,13 +142,13 @@ void refreshAcsEnableScreen() {
 // Activacion/desactivacion de delta de ACS electrico final
 void refreshAcsDeltaScreen() {
     lcd.setCursor(12, 1);
-    if (EnableACS_DeltaElectrico) {
+    if (enableAcsDeltaElectrico) {
         lcd.print(F("ON "));
     } else
         lcd.print(F("OFF"));
 
     lcd.setCursor(0, 2);
-    if (deltaACSElectricResult) {
+    if (deltaAcsElectricResult) {
         lcd.print(F("ENCENDIDO"));
     } else
         lcd.print(F("APAGADO  "));
@@ -157,13 +157,13 @@ void refreshAcsDeltaScreen() {
 // Activacion/desactivacion de ACS electrico
 void refreshAcsElectricScreen() {
     lcd.setCursor(15, 1);
-    if (EnableElectricACS) {
+    if (enableElectricAcs) {
         lcd.print(F("ON "));
     } else
         lcd.print(F("OFF"));
 
     lcd.setCursor(0, 2);
-    if (Valor_DO_Calentador == HIGH) {
+    if (valorDoCalentador == HIGH) {
         lcd.print(F("ENCENDIDO"));
     } else
         lcd.print(F("APAGADO  "));
@@ -214,12 +214,12 @@ void refreshAlarmMessage(uint8_t _nro_Alarma) {
 
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
 void refreshActiveAlarmScreen() {
-    refreshAlarmMessage(Nro_Alarma);
+    refreshAlarmMessage(nroAlarma);
 }
 // En función al número de alarma devuelto por la función ConvertFlagToAlarm(), se muestra el mensaje indicando la causa de la misma
 void refreshAlarmHistoryScreen() {
-    Alarma_Eeprom = EEPROMreaduint8_t(Alarma_Address);
-    refreshAlarmMessage(Alarma_Eeprom);
+    alarmaEeprom = eepromReadUint8(alarmaAddress);
+    refreshAlarmMessage(alarmaEeprom);
 }
 
 /**********************************/

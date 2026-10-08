@@ -1,23 +1,23 @@
 #include "keyboard.h"
 
 // BOTONES DE TECLADO (no se pueden modificar)
-const int DI_Teclado_Arriba = 7;
-const int DI_Teclado_Abajo = 5;
-const int DI_Teclado_Enter = 6;
-const int DI_Teclado_Atras = 4;
+const int diTecladoArriba = 7;
+const int diTecladoAbajo = 5;
+const int diTecladoEnter = 6;
+const int diTecladoAtras = 4;
 
 // Pin de interrupcion para funcionamiento del teclado
-const int InterruptPin = 3;
+const int interruptPin = 3;
 
 volatile bool tecladoPendiente = false;
 const unsigned long KEYBOARD_DEBOUNCE_MS = 150;
 
 void keyboardSetup() {
-    pinMode(DI_Teclado_Arriba, INPUT);
-    pinMode(DI_Teclado_Abajo, INPUT);
-    pinMode(DI_Teclado_Enter, INPUT);
-    pinMode(DI_Teclado_Atras, INPUT);
-    pinMode(InterruptPin, INPUT);
+    pinMode(diTecladoArriba, INPUT);
+    pinMode(diTecladoAbajo, INPUT);
+    pinMode(diTecladoEnter, INPUT);
+    pinMode(diTecladoAtras, INPUT);
+    pinMode(interruptPin, INPUT);
     attachInterrupt(1, AtencionTeclado, FALLING);
 }
 
@@ -39,13 +39,13 @@ void procesarTeclado() {
 
     ultimoEvento = ahora;
 
-    const bool botonArriba = digitalRead(DI_Teclado_Arriba) == LOW;
-    const bool botonAbajo = digitalRead(DI_Teclado_Abajo) == LOW;
-    const bool botonEnter = digitalRead(DI_Teclado_Enter) == LOW;
-    const bool botonAtras = digitalRead(DI_Teclado_Atras) == LOW;
+    const bool botonArriba = digitalRead(diTecladoArriba) == LOW;
+    const bool botonAbajo = digitalRead(diTecladoAbajo) == LOW;
+    const bool botonEnter = digitalRead(diTecladoEnter) == LOW;
+    const bool botonAtras = digitalRead(diTecladoAtras) == LOW;
 
     if (botonEnter || botonAbajo || botonArriba || botonAtras) {
-        Flag_Buzzer = true;
+        flagBuzzer = true;
     }
 
     if (botonEnter) processMenuButton(BUTTON_ENTER);
