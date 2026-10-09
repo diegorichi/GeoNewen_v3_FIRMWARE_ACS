@@ -35,6 +35,8 @@ void resetFixtures() {
     enableAcs = true;
     enableAcsDeltaElectrico = true;
     enableElectricAcs = false;
+    deltaAcsElectricResult = false;
+    valorDoCalentador = LOW;
     heatingOff = false;
     acsSetpoint = 45;
     acsSetpointEdit = 45;
@@ -44,6 +46,19 @@ void resetFixtures() {
     pendingStatusSequence = 0;
     pendingStatusSentAt = 0;
     espQueue.clear();
+}
+
+void assertActiveEnergyFrames(bool expectedElectric, bool expectedDelta) {
+    for (int i = 0; i < 3; ++i) {
+        espQueue.dequeue();
+    }
+    EspMessage electric = espQueue.dequeue();
+    EspMessage delta = espQueue.dequeue();
+    TEST_ASSERT_NOT_NULL(strstr(electric.text, expectedElectric ? "status:ACS_ELEC_ACT:1#" : "status:ACS_ELEC_ACT:0#"));
+    TEST_ASSERT_NOT_NULL(strstr(delta.text, expectedDelta ? "status:ACS_DT_ACT:1#" : "status:ACS_DT_ACT:0#"));
+    for (int i = 5; i < 22; ++i) {
+        espQueue.dequeue();
+    }
 }
 
 void test_valid_command_updates_state_and_sends_ack(void) {
@@ -101,7 +116,7 @@ void test_status_request_enqueues_snapshot_without_state_change(void) {
     strcpy(Serial.input, "cmd:2:STATUS:publish#");
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
-    TEST_ASSERT_EQUAL(20, espQueue.item_count());
+    TEST_ASSERT_EQUAL(22, espQueue.item_count());
     TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:2#"));
 }
 
@@ -109,7 +124,7 @@ void test_discrete_change_enqueues_snapshot_but_continuous_change_does_not(void)
     resetFixtures();
     SerialEsp8266 esp(&Serial);
     esp.detectAndEnqueueChangedStatus();
-    TEST_ASSERT_EQUAL(20, espQueue.item_count());
+    TEST_ASSERT_EQUAL(22, espQueue.item_count());
     espQueue.clear();
 
     tempAcsAcu = 31.25;
@@ -118,7 +133,7 @@ void test_discrete_change_enqueues_snapshot_but_continuous_change_does_not(void)
 
     estadoMaquina = 3;
     esp.detectAndEnqueueChangedStatus();
-    TEST_ASSERT_EQUAL(20, espQueue.item_count());
+    TEST_ASSERT_EQUAL(22, espQueue.item_count());
 }
 
 void test_status_queue_sends_then_retries_until_limit(void) {
@@ -193,11 +208,40 @@ void test_status_snapshot_contains_all_expected_frames(void) {
     esp.handleEspSerial();
     esp.detectAndEnqueueChangedStatus();
 
-    TEST_ASSERT_EQUAL(20, espQueue.item_count());
+    TEST_ASSERT_EQUAL(22, espQueue.item_count());
     EspMessage first = espQueue.dequeue();
     TEST_ASSERT_EQUAL_STRING("status:1:contrl:ACS_GEO___:1#", first.text);
     EspMessage second = espQueue.dequeue();
     TEST_ASSERT_EQUAL_STRING("status:2:contrl:ACS_DT_ELE:0#", second.text);
+}
+
+void test_active_energy_frames_follow_the_source(void) {
+    resetFixtures();
+    SerialEsp8266 esp(&Serial);
+    enableAcs = true;
+    enableAcsDeltaElectrico = true;
+    enableElectricAcs = true;
+    deltaAcsElectricResult = true;
+    valorDoCalentador = HIGH;
+    esp.detectAndEnqueueChangedStatus();
+    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    assertActiveEnergyFrames(true, true);
+
+    deltaAcsElectricResult = false;
+    esp.detectAndEnqueueChangedStatus();
+    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    assertActiveEnergyFrames(true, false);
+
+    resetFixtures();
+    SerialEsp8266 deltaOnlyEsp(&Serial);
+    enableAcs = true;
+    enableAcsDeltaElectrico = true;
+    enableElectricAcs = false;
+    deltaAcsElectricResult = true;
+    valorDoCalentador = HIGH;
+    deltaOnlyEsp.detectAndEnqueueChangedStatus();
+    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    assertActiveEnergyFrames(false, true);
 }
 
 void test_wrong_status_ack_does_not_clear_pending(void) {
@@ -249,6 +293,7 @@ int main(void) {
     RUN_TEST(test_invalid_and_overlong_frames_are_not_executed);
     RUN_TEST(test_all_inbound_commands_update_their_target);
     RUN_TEST(test_status_snapshot_contains_all_expected_frames);
+    RUN_TEST(test_active_energy_frames_follow_the_source);
     RUN_TEST(test_wrong_status_ack_does_not_clear_pending);
     RUN_TEST(test_non_numeric_status_sequence_is_not_sent);
     RUN_TEST(test_protocol_cases_cover_real_mega_handlers);

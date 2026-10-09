@@ -1,4 +1,5 @@
 #include "functionsLCDMenu.h"
+#include "machine_control.h"
 LiquidCrystal lcd(30, 32, 34, 36, 38, 40, 42, 44, 46, 48);  // Se definen los pines RS, EN y D0 a D7 del display (en ese orden)
 
 // DEFINICIÓN DE CARACTERES (símbolos especiales a mostrar)
@@ -148,7 +149,7 @@ void refreshAcsDeltaScreen() {
         lcd.print(F("OFF"));
 
     lcd.setCursor(0, 2);
-    if (deltaAcsElectricResult) {
+    if (isDeltaAcsElectricActive()) {
         lcd.print(F("ENCENDIDO"));
     } else
         lcd.print(F("APAGADO  "));
@@ -163,7 +164,7 @@ void refreshAcsElectricScreen() {
         lcd.print(F("OFF"));
 
     lcd.setCursor(0, 2);
-    if (valorDoCalentador == HIGH) {
+    if (isElectricAcsActive()) {
         lcd.print(F("ENCENDIDO"));
     } else
         lcd.print(F("APAGADO  "));

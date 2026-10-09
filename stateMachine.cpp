@@ -57,7 +57,7 @@ void stateMachine1() {
         }
 
         if ((millis() - valvulaAcsStart) > 15000) {
-            if GENERATE_ACS {
+            if (isAcsGenerationRequired()) {
                 // la generacion de ACS requiere que la valv 4v este activa
                 valorDoVacs = HIGH;
                 // abre la valvula de 4v para calentar el agua
@@ -130,7 +130,7 @@ void stateMachine3() {
         }
 
         /* Si hay que generar ACS, pasamos por este estado 0 */
-        if ((heatingOff || senalStop) || GENERATE_ACS) {
+        if ((heatingOff || senalStop) || isAcsGenerationRequired()) {
             estadoMaquina = 0;
             return;
         }

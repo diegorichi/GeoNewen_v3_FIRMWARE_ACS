@@ -96,6 +96,8 @@ bool sendToSerial(HardwareSerial* espSerial) {
 char bufferAcsGeo[26];
 char bufferAcsDtEle[26];
 char bufferAcsElec[26];
+char bufferAcsElecActive[26];
+char bufferAcsDtEleActive[26];
 char bufferHeatingOff[26];
 char bufferThermostat[26];
 char bufferModoFrio[26];
@@ -139,6 +141,8 @@ class SerialEsp8266 {
     bool lastPublishedAcsEnabled = false;
     bool lastPublishedAcsDeltaEnabled = false;
     bool lastPublishedAcsElectricEnabled = false;
+    bool lastPublishedAcsElectricActive = false;
+    bool lastPublishedAcsDeltaActive = false;
     bool lastPublishedHeatingOff = false;
     bool lastPublishedColdMode = false;
     uint8_t lastPublishedAcsDesired = 0;
@@ -257,6 +261,12 @@ class SerialEsp8266 {
         sprintf(bufferAcsElec, "contrl:ACS_ELEC__:%s#", enableElectricAcs ? "1" : "0");
         enqueueStatusFrame(bufferAcsElec);
 
+        sprintf(bufferAcsElecActive, "status:ACS_ELEC_ACT:%s#", isElectricAcsActive() ? "1" : "0");
+        enqueueStatusFrame(bufferAcsElecActive);
+
+        sprintf(bufferAcsDtEleActive, "status:ACS_DT_ACT:%s#", isDeltaAcsElectricActive() ? "1" : "0");
+        enqueueStatusFrame(bufferAcsDtEleActive);
+
         sprintf(bufferHeatingOff, "contrl:HEATING_OFF:%s#", heatingOff ? "1" : "0");
         enqueueStatusFrame(bufferHeatingOff);
 
@@ -328,6 +338,8 @@ class SerialEsp8266 {
             lastPublishedAcsEnabled != enableAcs ||
             lastPublishedAcsDeltaEnabled != enableAcsDeltaElectrico ||
             lastPublishedAcsElectricEnabled != enableElectricAcs ||
+            lastPublishedAcsElectricActive != isElectricAcsActive() ||
+            lastPublishedAcsDeltaActive != isDeltaAcsElectricActive() ||
             lastPublishedHeatingOff != heatingOff ||
             lastPublishedColdMode != modoFrio ||
             lastPublishedAcsDesired != acsSetpointEdit ||
@@ -338,6 +350,8 @@ class SerialEsp8266 {
         lastPublishedAcsEnabled = enableAcs;
         lastPublishedAcsDeltaEnabled = enableAcsDeltaElectrico;
         lastPublishedAcsElectricEnabled = enableElectricAcs;
+        lastPublishedAcsElectricActive = isElectricAcsActive();
+        lastPublishedAcsDeltaActive = isDeltaAcsElectricActive();
         lastPublishedHeatingOff = heatingOff;
         lastPublishedColdMode = modoFrio;
         lastPublishedAcsDesired = acsSetpointEdit;

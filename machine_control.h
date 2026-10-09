@@ -5,6 +5,18 @@
 #include "measurement_and_calculations.h"
 #include "vars.h"
 
+inline bool isAcsGenerationRequired() {
+    return tempAcs < (acsSetpoint - GAP_ACS) && enableAcs;
+}
+
+inline bool isElectricAcsActive() {
+    return enableElectricAcs && valorDoCalentador == HIGH;
+}
+
+inline bool isDeltaAcsElectricActive() {
+    return enableAcs && enableAcsDeltaElectrico && deltaAcsElectricResult && valorDoCalentador == HIGH;
+}
+
 void changeModo(bool paramModoFrio);  // funcion extra para cambio de Modo de Funcionamiento
 bool isModeChangeLocked();
 

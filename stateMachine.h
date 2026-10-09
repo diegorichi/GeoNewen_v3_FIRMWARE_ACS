@@ -7,8 +7,6 @@
 #include "machine_control.h"
 #include "vars.h"
 
-#define GENERATE_ACS (tempAcs < (acsSetpoint - GAP_ACS) && enableAcs)
-
 void initializeStateMachine();
 
 void stateMachine0();   // Estado inicial del sistema, tanto el compresor como las bombas de circulación están apagados
