@@ -255,6 +255,34 @@ void test_state_seven_starts_pumps_and_compressor_after_delays(void) {
     TEST_ASSERT_EQUAL(HIGH, valorDoCompressor);
 }
 
+void test_second_boiler_stop_does_not_block_acs_states(void) {
+    resetFixtures();
+    estadoMaquina = 7;
+    senalStop = true;
+    enableAcs = true;
+    tempAcs = 30;
+    acsSetpoint = 45;
+    valvulaAcsStart = 0;
+    fakeMillisNow = 15001;
+
+    stateMachine7();
+
+    TEST_ASSERT_EQUAL(7, estadoMaquina);
+    TEST_ASSERT_EQUAL(HIGH, valorDoBombas);
+
+    resetFixtures();
+    estadoMaquina = 71;
+    senalStop = true;
+    tempAcs = 40;
+    tempOutH = 50;
+    acsSetpoint = 45;
+    fakeMillisNow = 1000;
+
+    stateMachine71();
+
+    TEST_ASSERT_EQUAL(71, estadoMaquina);
+}
+
 void test_state_seven_stops_for_disable_target_or_heating_off(void) {
     resetFixtures();
     estadoMaquina = 7;
@@ -402,6 +430,7 @@ int main(void) {
     RUN_TEST(test_alarm_state_stops_outputs_and_starts_buzzer_once);
     RUN_TEST(test_rest_state_exits_after_time_or_heating_off);
     RUN_TEST(test_state_seven_starts_pumps_and_compressor_after_delays);
+    RUN_TEST(test_second_boiler_stop_does_not_block_acs_states);
     RUN_TEST(test_state_seven_stops_for_disable_target_or_heating_off);
     RUN_TEST(test_state_seven_enters_71_for_temperature_safety_or_alarm);
     RUN_TEST(test_state_71_returns_to_generation_for_each_release_condition);

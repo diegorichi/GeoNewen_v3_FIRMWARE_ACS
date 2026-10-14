@@ -38,6 +38,7 @@ void resetFixtures() {
     deltaAcsElectricResult = false;
     valorDoCalentador = LOW;
     heatingOff = false;
+    segundaCalderaActiva = false;
     acsSetpoint = 45;
     acsSetpointEdit = 45;
     estadoMaquina = 1;
@@ -56,7 +57,7 @@ void assertActiveEnergyFrames(bool expectedElectric, bool expectedDelta) {
     EspMessage delta = espQueue.dequeue();
     TEST_ASSERT_NOT_NULL(strstr(electric.text, expectedElectric ? "status:ACS_ELEC_ACT:1#" : "status:ACS_ELEC_ACT:0#"));
     TEST_ASSERT_NOT_NULL(strstr(delta.text, expectedDelta ? "status:ACS_DT_ACT:1#" : "status:ACS_DT_ACT:0#"));
-    for (int i = 5; i < 22; ++i) {
+    for (int i = 5; i < 23; ++i) {
         espQueue.dequeue();
     }
 }
@@ -110,13 +111,24 @@ void test_heating_off_command_updates_state_and_persists(void) {
     TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:2#"));
 }
 
+void test_second_boiler_command_updates_state_and_persists(void) {
+    resetFixtures();
+    SerialEsp8266 esp(&Serial);
+    strcpy(Serial.input, "cmd:3:CALDERA_2:on#");
+    Serial.inputLength = strlen(Serial.input);
+    esp.handleEspSerial();
+    TEST_ASSERT_TRUE(segundaCalderaActiva);
+    TEST_ASSERT_EQUAL(1, EEPROM.update_count);
+    TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:3#"));
+}
+
 void test_status_request_enqueues_snapshot_without_state_change(void) {
     resetFixtures();
     SerialEsp8266 esp(&Serial);
     strcpy(Serial.input, "cmd:2:STATUS:publish#");
     Serial.inputLength = strlen(Serial.input);
     esp.handleEspSerial();
-    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    TEST_ASSERT_EQUAL(23, espQueue.item_count());
     TEST_ASSERT_NOT_NULL(strstr(Serial.output, "ack:cmd:2#"));
 }
 
@@ -124,7 +136,7 @@ void test_discrete_change_enqueues_snapshot_but_continuous_change_does_not(void)
     resetFixtures();
     SerialEsp8266 esp(&Serial);
     esp.detectAndEnqueueChangedStatus();
-    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    TEST_ASSERT_EQUAL(23, espQueue.item_count());
     espQueue.clear();
 
     tempAcsAcu = 31.25;
@@ -133,7 +145,7 @@ void test_discrete_change_enqueues_snapshot_but_continuous_change_does_not(void)
 
     estadoMaquina = 3;
     esp.detectAndEnqueueChangedStatus();
-    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    TEST_ASSERT_EQUAL(23, espQueue.item_count());
 }
 
 void test_status_queue_sends_then_retries_until_limit(void) {
@@ -200,6 +212,7 @@ void test_status_snapshot_contains_all_expected_frames(void) {
     enableAcs = true;
     enableAcsDeltaElectrico = false;
     enableElectricAcs = true;
+    segundaCalderaActiva = true;
     modoFrio = true;
     estadoMaquina = 3;
     nroAlarma = 9;
@@ -208,11 +221,20 @@ void test_status_snapshot_contains_all_expected_frames(void) {
     esp.handleEspSerial();
     esp.detectAndEnqueueChangedStatus();
 
-    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    TEST_ASSERT_EQUAL(23, espQueue.item_count());
     EspMessage first = espQueue.dequeue();
     TEST_ASSERT_EQUAL_STRING("status:1:contrl:ACS_GEO___:1#", first.text);
     EspMessage second = espQueue.dequeue();
     TEST_ASSERT_EQUAL_STRING("status:2:contrl:ACS_DT_ELE:0#", second.text);
+
+    bool foundSecondBoiler = false;
+    while (!espQueue.isEmpty()) {
+        EspMessage message = espQueue.dequeue();
+        if (strstr(message.text, "contrl:CALDERA_2:1#") != nullptr) {
+            foundSecondBoiler = true;
+        }
+    }
+    TEST_ASSERT_TRUE(foundSecondBoiler);
 }
 
 void test_active_energy_frames_follow_the_source(void) {
@@ -224,12 +246,12 @@ void test_active_energy_frames_follow_the_source(void) {
     deltaAcsElectricResult = true;
     valorDoCalentador = HIGH;
     esp.detectAndEnqueueChangedStatus();
-    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    TEST_ASSERT_EQUAL(23, espQueue.item_count());
     assertActiveEnergyFrames(true, true);
 
     deltaAcsElectricResult = false;
     esp.detectAndEnqueueChangedStatus();
-    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    TEST_ASSERT_EQUAL(23, espQueue.item_count());
     assertActiveEnergyFrames(true, false);
 
     resetFixtures();
@@ -240,7 +262,7 @@ void test_active_energy_frames_follow_the_source(void) {
     deltaAcsElectricResult = true;
     valorDoCalentador = HIGH;
     deltaOnlyEsp.detectAndEnqueueChangedStatus();
-    TEST_ASSERT_EQUAL(22, espQueue.item_count());
+    TEST_ASSERT_EQUAL(23, espQueue.item_count());
     assertActiveEnergyFrames(false, true);
 }
 
@@ -286,6 +308,7 @@ int main(void) {
     RUN_TEST(test_duplicate_command_only_acknowledges_without_reexecuting);
     RUN_TEST(test_setpoint_command_uses_existing_limits);
     RUN_TEST(test_heating_off_command_updates_state_and_persists);
+    RUN_TEST(test_second_boiler_command_updates_state_and_persists);
     RUN_TEST(test_status_request_enqueues_snapshot_without_state_change);
     RUN_TEST(test_discrete_change_enqueues_snapshot_but_continuous_change_does_not);
     RUN_TEST(test_status_queue_sends_then_retries_until_limit);

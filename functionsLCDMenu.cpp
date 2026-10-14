@@ -131,6 +131,15 @@ void refreshHeatingScreen() {
         lcd.print(F("APAGADO  "));
 }
 
+void refreshSecondBoilerScreen() {
+    lcd.setCursor(10, 2);
+    if (segundaCalderaActiva) {
+        lcd.print(F("SI "));
+    } else {
+        lcd.print(F("NO "));
+    }
+}
+
 // Activacion/desactivacion de ACS
 void refreshAcsEnableScreen() {
     lcd.setCursor(15, 1);
@@ -365,6 +374,16 @@ void drawHeatingScreen() {
     lcd.print(F("ENCENDIDO/APAGADO "));
     lcd.setCursor(0, 2);
     lcd.print(F("MODO ACT:"));
+    lcd.setCursor(0, 3);
+    lcd.print(F("Enter modifica"));
+    showNavigation();
+}
+
+void drawSecondBoilerScreen() {
+    beginLcd();
+    lcd.print(F("SEGUNDA CALDERA    "));
+    lcd.setCursor(0, 2);
+    lcd.print(F("ACTIVA:            "));
     lcd.setCursor(0, 3);
     lcd.print(F("Enter modifica"));
     showNavigation();

@@ -87,9 +87,24 @@ ESP → MEGA: ack:status:<sequence>#
   duplicadas.
 - Verificar la publicación periódica de respaldo.
 
+## Interbloqueo por segunda caldera
+
+La segunda caldera será controlada exclusivamente por el ESP8266. La MEGA
+solo recibirá su estado mediante un control adicional y lo usará para impedir
+el arranque de la caldera actual mientras la segunda esté funcionando.
+
+- El flag debe iniciar en `false`.
+- El comando serial es `CALDERA_2:on/off`.
+- El control MQTT usa `kume/caldera_2` y publica en `kume/status/caldera_2`.
+- Con el flag activo, la MEGA debe bloquear `senalStart` y generar `senalStop`.
+- `heatingOff` permanece independiente y continúa significando apagado total.
+- El bloqueo no debe impedir la generación de ACS de la caldera actual.
+- El menú de la MEGA permite visualizar y modificar el flag.
+- El flag se persiste en EEPROM en la dirección 25.
+
 ## Fuera de alcance
 
 - Modo invierno/verano.
 - `EnableFlowAlarm`.
-- Control de la segunda caldera.
+- Control directo de la segunda caldera desde la MEGA.
 - OTA de la MEGA.

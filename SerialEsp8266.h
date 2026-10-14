@@ -99,6 +99,7 @@ char bufferAcsElec[26];
 char bufferAcsElecActive[26];
 char bufferAcsDtEleActive[26];
 char bufferHeatingOff[26];
+char bufferSecondBoiler[26];
 char bufferThermostat[26];
 char bufferModoFrio[26];
 char bufferAlarma[26];
@@ -144,6 +145,7 @@ class SerialEsp8266 {
     bool lastPublishedAcsElectricActive = false;
     bool lastPublishedAcsDeltaActive = false;
     bool lastPublishedHeatingOff = false;
+    bool lastPublishedSecondBoiler = false;
     bool lastPublishedColdMode = false;
     uint8_t lastPublishedAcsDesired = 0;
     uint8_t lastPublishedAcsSet = 0;
@@ -188,6 +190,12 @@ class SerialEsp8266 {
         } else if (command.indexOf("HEATING_OFF:off") >= 0) {
             heatingOff = false;
             eepromWrite(heatingOffAddress, heatingOff);
+        } else if (command.indexOf("CALDERA_2:on") >= 0) {
+            segundaCalderaActiva = true;
+            eepromWrite(segundaCalderaActivaAddress, segundaCalderaActiva);
+        } else if (command.indexOf("CALDERA_2:off") >= 0) {
+            segundaCalderaActiva = false;
+            eepromWrite(segundaCalderaActivaAddress, segundaCalderaActiva);
         } else if (command.indexOf("ALARM:reset") >= 0) {
             resetAlarms();
             estadoMaquina = 0;
@@ -270,6 +278,9 @@ class SerialEsp8266 {
         sprintf(bufferHeatingOff, "contrl:HEATING_OFF:%s#", heatingOff ? "1" : "0");
         enqueueStatusFrame(bufferHeatingOff);
 
+        sprintf(bufferSecondBoiler, "contrl:CALDERA_2:%s#", segundaCalderaActiva ? "1" : "0");
+        enqueueStatusFrame(bufferSecondBoiler);
+
         sprintf(bufferThermostat, "contrl:TERMOSTATO:%s#", senalStart ? "1" : "0");
         enqueueStatusFrame(bufferThermostat);
 
@@ -341,6 +352,7 @@ class SerialEsp8266 {
             lastPublishedAcsElectricActive != isElectricAcsActive() ||
             lastPublishedAcsDeltaActive != isDeltaAcsElectricActive() ||
             lastPublishedHeatingOff != heatingOff ||
+            lastPublishedSecondBoiler != segundaCalderaActiva ||
             lastPublishedColdMode != modoFrio ||
             lastPublishedAcsDesired != acsSetpointEdit ||
             lastPublishedAcsSet != acsSetpoint;
@@ -353,6 +365,7 @@ class SerialEsp8266 {
         lastPublishedAcsElectricActive = isElectricAcsActive();
         lastPublishedAcsDeltaActive = isDeltaAcsElectricActive();
         lastPublishedHeatingOff = heatingOff;
+        lastPublishedSecondBoiler = segundaCalderaActiva;
         lastPublishedColdMode = modoFrio;
         lastPublishedAcsDesired = acsSetpointEdit;
         lastPublishedAcsSet = acsSetpoint;

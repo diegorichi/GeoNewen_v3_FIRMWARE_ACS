@@ -17,6 +17,7 @@ void test_eeprom_reads_saved_values(void) {
     EEPROM.memory[enableElectricAcsAddress] = 1;
     EEPROM.memory[modoFrioAddress] = 1;
     EEPROM.memory[heatingOffAddress] = 1;
+    EEPROM.memory[segundaCalderaActivaAddress] = 1;
 
     EEPROMLectura();
 
@@ -28,18 +29,22 @@ void test_eeprom_reads_saved_values(void) {
     TEST_ASSERT_TRUE(enableElectricAcs);
     TEST_ASSERT_TRUE(modoFrio);
     TEST_ASSERT_TRUE(heatingOff);
+    TEST_ASSERT_TRUE(segundaCalderaActiva);
 }
 
 void test_eeprom_invalid_boolean_uses_current_default(void) {
     enableFlowAlarm = true;
     enableAcs = false;
+    segundaCalderaActiva = true;
     EEPROM.memory[enableFlowAlarmAddress] = 99;
     EEPROM.memory[enableAcsAddress] = 99;
+    EEPROM.memory[segundaCalderaActivaAddress] = 99;
 
     EEPROMLectura();
 
     TEST_ASSERT_FALSE(enableFlowAlarm);
     TEST_ASSERT_TRUE(enableAcs);
+    TEST_ASSERT_FALSE(segundaCalderaActiva);
 }
 
 void test_eeprom_write_uses_update_and_correct_address(void) {

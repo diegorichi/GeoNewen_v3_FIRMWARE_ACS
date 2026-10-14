@@ -40,6 +40,7 @@ DRAW_STUB(drawAcsConfigurationScreen)
 DRAW_STUB(drawAcsEditScreen)
 DRAW_STUB(drawFlowAlarmScreen)
 DRAW_STUB(drawHeatingScreen)
+DRAW_STUB(drawSecondBoilerScreen)
 DRAW_STUB(drawAlarmMenu)
 DRAW_STUB(drawActiveAlarmScreen)
 DRAW_STUB(drawAlarmHistoryMenu)
@@ -54,6 +55,7 @@ REFRESH_STUB(refreshModeScreen)
 REFRESH_STUB(refreshAcsEditScreen)
 REFRESH_STUB(refreshFlowAlarmScreen)
 REFRESH_STUB(refreshHeatingScreen)
+REFRESH_STUB(refreshSecondBoilerScreen)
 REFRESH_STUB(refreshAcsEnableScreen)
 REFRESH_STUB(refreshAcsDeltaScreen)
 REFRESH_STUB(refreshAcsElectricScreen)
@@ -67,6 +69,7 @@ void resetFixtures() {
     modoFrio = false;
     enableFlowAlarm = false;
     heatingOff = false;
+    segundaCalderaActiva = false;
     enableAcs = true;
     enableAcsDeltaElectrico = true;
     enableElectricAcs = false;
@@ -155,6 +158,9 @@ void test_configuration_actions_persist_each_existing_flag(void) {
     navigateTo(MENU_HEATING);
     processMenuButton(BUTTON_ENTER);
     TEST_ASSERT_TRUE(heatingOff);
+    navigateTo(MENU_SECOND_BOILER);
+    processMenuButton(BUTTON_ENTER);
+    TEST_ASSERT_TRUE(segundaCalderaActiva);
     navigateTo(MENU_ACS_ENABLE);
     processMenuButton(BUTTON_ENTER);
     TEST_ASSERT_FALSE(enableAcs);
@@ -164,7 +170,7 @@ void test_configuration_actions_persist_each_existing_flag(void) {
     navigateTo(MENU_ACS_ELECTRIC);
     processMenuButton(BUTTON_ENTER);
     TEST_ASSERT_TRUE(enableElectricAcs);
-    TEST_ASSERT_EQUAL(4, EEPROM.update_count);
+    TEST_ASSERT_EQUAL(5, EEPROM.update_count);
 }
 
 void test_alarm_actions_and_history_action_are_reachable(void) {

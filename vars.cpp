@@ -125,6 +125,7 @@ bool senalStart;  // senal de marcha, segun modoFrio
 // se trabaja con 1 termostato.
 bool senalStop;
 volatile bool heatingOff = false;
+volatile bool segundaCalderaActiva = false;
 volatile bool flagBuzzer;
 
 volatile bool enableAcs = true;

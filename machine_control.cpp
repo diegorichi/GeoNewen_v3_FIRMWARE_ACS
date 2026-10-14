@@ -98,9 +98,12 @@ void calculateStartStopSignal() {
 
   */
 
-    senalStart = ((digitalRead(diMarchaOn) == HIGH) && !modoFrio) || ((digitalRead(diMarchaOn) == LOW) && modoFrio);
+    const bool marchaSolicitada = ((digitalRead(diMarchaOn) == HIGH) && !modoFrio) ||
+                                  ((digitalRead(diMarchaOn) == LOW) && modoFrio);
 
-    senalStop = ((digitalRead(diMarchaOn) == LOW) && !modoFrio) || ((digitalRead(diMarchaOn) == HIGH) && modoFrio);
+    // La segunda caldera tiene prioridad sobre la señal externa de marcha.
+    senalStart = marchaSolicitada && !segundaCalderaActiva;
+    senalStop = !marchaSolicitada || segundaCalderaActiva;
 }
 
 uint8_t normalizeAcsTemp(volatile uint8_t* acsValue) {

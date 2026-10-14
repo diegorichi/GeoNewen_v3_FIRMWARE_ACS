@@ -14,6 +14,7 @@ const int enableFlowAlarmAddress = 15;
 const int enableAcsDeltaElectricoAddress = 19;
 const int enableAcsAddress = 21;
 const int enableElectricAcsAddress = 23;
+const int segundaCalderaActivaAddress = 25;
 
 uint8_t eepromReadUint8(int address);
 

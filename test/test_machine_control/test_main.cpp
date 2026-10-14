@@ -31,6 +31,7 @@ void resetFixtures() {
     estadoMaquina = 1;
     modoFrio = false;
     heatingOff = false;
+    segundaCalderaActiva = false;
     tempOutH = tempOutT = tempAdmision = 0;
     ingresoE3 = 0;
     periodoRefresco = 0;
@@ -56,6 +57,24 @@ void test_start_stop_signal_follows_mode(void) {
     calculateStartStopSignal();
     TEST_ASSERT_TRUE(senalStart);
     TEST_ASSERT_FALSE(senalStop);
+}
+
+void test_second_boiler_blocks_start_with_priority(void) {
+    resetFixtures();
+    fakeDigitalInputs[diMarchaOn] = HIGH;
+    segundaCalderaActiva = true;
+
+    calculateStartStopSignal();
+
+    TEST_ASSERT_FALSE(senalStart);
+    TEST_ASSERT_TRUE(senalStop);
+    TEST_ASSERT_FALSE(heatingOff);
+
+    modoFrio = true;
+    fakeDigitalInputs[diMarchaOn] = LOW;
+    calculateStartStopSignal();
+    TEST_ASSERT_FALSE(senalStart);
+    TEST_ASSERT_TRUE(senalStop);
 }
 
 void test_normalize_setpoint_clamps_both_limits(void) {
@@ -158,6 +177,7 @@ void test_output_initialization_turns_every_output_off(void) {
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_start_stop_signal_follows_mode);
+    RUN_TEST(test_second_boiler_blocks_start_with_priority);
     RUN_TEST(test_normalize_setpoint_clamps_both_limits);
     RUN_TEST(test_mode_change_requires_idle_and_respects_lockout);
     RUN_TEST(test_heating_cooling_and_long_period_checks);

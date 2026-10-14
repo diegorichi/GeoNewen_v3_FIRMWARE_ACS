@@ -35,4 +35,5 @@ void EEPROMLectura()  // Función de lectura de valores almacenados en memoria E
     enableElectricAcs = readBoolOrDefault(enableElectricAcsAddress, false);
     modoFrio = readBoolOrDefault(modoFrioAddress, false);
     heatingOff = readBoolOrDefault(heatingOffAddress, false);
+    segundaCalderaActiva = readBoolOrDefault(segundaCalderaActivaAddress, false);
 }

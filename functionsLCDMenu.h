@@ -36,6 +36,7 @@ void refreshFlowAlarmScreen();
 
 // Funcionamiento Auto/Manual
 void refreshHeatingScreen();
+void refreshSecondBoilerScreen();
 
 // Activacion/desactivacion de ACS
 void refreshAcsEnableScreen();
@@ -75,6 +76,7 @@ void drawAcsEditScreen();  // Seteo de temp de ACS
 void drawFlowAlarmScreen();  // Habilitacion alarmas de caudal
 
 void drawHeatingScreen();  // Cambio a modo manual o automatico
+void drawSecondBoilerScreen();
 
 void drawAlarmMenu();  // Menú de Visualización de Alarmas
 

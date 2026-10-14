@@ -145,6 +145,7 @@ extern bool senalStart;     // senal de marcha, segun modoFrio
 // se trabaja con 1 termostato.
 extern bool senalStop;
 extern volatile bool heatingOff;
+extern volatile bool segundaCalderaActiva;
 extern volatile bool flagBuzzer;
 
 extern volatile bool enableFlowAlarm;  // Alarmas de caudal

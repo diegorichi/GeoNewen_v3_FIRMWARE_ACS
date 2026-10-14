@@ -38,6 +38,11 @@ void toggleHeating() {
     eepromWrite(heatingOffAddress, heatingOff);
 }
 
+void toggleSecondBoiler() {
+    segundaCalderaActiva = !segundaCalderaActiva;
+    eepromWrite(segundaCalderaActivaAddress, segundaCalderaActiva);
+}
+
 void toggleAcs() {
     enableAcs = !enableAcs;
     eepromWrite(enableAcsAddress, enableAcs);
@@ -68,6 +73,7 @@ MenuAction menuActionFor(MenuId id, MenuButton button) {
     if (button == BUTTON_ENTER && id == MENU_ACS_EDIT) return saveAcsSetpoint;
     if (button == BUTTON_ENTER && id == MENU_FLOW_ALARMS) return toggleFlowAlarm;
     if (button == BUTTON_ENTER && id == MENU_HEATING) return toggleHeating;
+    if (button == BUTTON_ENTER && id == MENU_SECOND_BOILER) return toggleSecondBoiler;
     if (button == BUTTON_ENTER && id == MENU_ACS_ENABLE) return toggleAcs;
     if (button == BUTTON_ENTER && id == MENU_ACS_DELTA) return toggleAcsDelta;
     if (button == BUTTON_ENTER && id == MENU_ACS_ELECTRIC) return toggleAcsElectric;

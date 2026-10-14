@@ -27,7 +27,7 @@ volatile uint8_t nroAlarma, acsSetpoint, acsSetpointEdit;
 uint8_t alarmaEeprom;
 bool deltaAcsElectricResult, flagCaudT, flagCaudH;
 bool flagPresHi, flagPresLow, flagTempAdm;
-volatile bool modoFrio, alarmaActiva, heatingOff, flagBuzzer;
+volatile bool modoFrio, alarmaActiva, heatingOff, segundaCalderaActiva, flagBuzzer;
 bool flagMarchaOn, senalStart, senalStop;
 volatile bool enableFlowAlarm, enableAcs, enableAcsDeltaElectrico;
 volatile bool enableElectricAcs;
